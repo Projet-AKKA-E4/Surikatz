@@ -1,15 +1,15 @@
-import SecuritySolution
-import Leaks
-import Vulnerability
-import Enumeration
-import Other
-import Nmap
-import WebExploitation
-import TheHarvester
+import security_solution
+import leaks
+import vulnerability
+import enumeration
+import other
+import nmap
+import web_exploitation
+import the_harvester
 
 if __name__ == '__main__':
 
-    a=SecuritySolution.SecuritySolution()
+    a=security_solution.SecuritySolution()
     a.hello() #class test hello world
 
     #b=Classes.MyNextClass()

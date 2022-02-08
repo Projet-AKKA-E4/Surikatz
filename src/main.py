@@ -34,9 +34,12 @@ from surikatz.the_harvester import TheHarvester
 
 if __name__ == '__main__':
 
-    a = Nmap()
-    a.hello() #class test hello world
+    a = Enumeration()
+    a.WhoIs() #class test hello world
+
 
     #b=Classes.MyNextClass()
     #b.greetAgain()
+
+
 

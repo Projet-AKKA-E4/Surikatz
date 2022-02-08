@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from enum import Enum
-
 import click
 
 """
@@ -26,15 +25,6 @@ import click
         Nathan SAUCET
         Laurent DELATTE
 """
-
-from surikatz.security_solution import SecuritySolution
-from surikatz.leaks import Leaks
-from surikatz.vulnerability import Vulnerability
-from surikatz.enumeration import Enumeration
-from surikatz.other import Other
-from surikatz.nmap import Nmap
-from surikatz.web_exploitation import WebExploitation
-from surikatz.the_harvester import TheHarvester
 
 class ScanMode(Enum):
     PASSIVE = 0

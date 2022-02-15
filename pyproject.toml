@@ -9,6 +9,7 @@ python = "^3.9"
 Sphinx = "^4.4.0"
 sphinx-rtd-theme = "^1.0.0"
 myst-parser = "^0.16.1"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from enum import Enum
+import click
+
 """
     Surikatz
 
@@ -23,20 +26,23 @@
         Laurent DELATTE
 """
 
-from surikatz.security_solution import SecuritySolution
-from surikatz.leaks import Leaks
-from surikatz.vulnerability import Vulnerability
-from surikatz.enumeration import Enumeration
-from surikatz.other import Other
-from surikatz.nmap import Nmap
-from surikatz.web_exploitation import WebExploitation
-from surikatz.the_harvester import TheHarvester
+class ScanMode(Enum):
+    PASSIVE = 0
+    DISCRET = 1
+    AGRESSIVE = 2
+
+@click.command()
+@click.argument("target")
+@click.option("-a", "--agressive", "level", flag_value=ScanMode.AGRESSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use Discret and vulerability scanner, ennumeration and bruteforce")
+@click.option("-d", "--discret", "level", flag_value=ScanMode.DISCRET, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use passive mode with soft scans")
+@click.option("-p", "--passive", "level", flag_value=ScanMode.PASSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use only OSINT technics to retrive data")
+def launch(target, level):
+    if level == ScanMode.PASSIVE:
+        print("Mode passif")
+    if level == ScanMode.DISCRET:
+        print("Mode discret")
+    if level == ScanMode.AGRESSIVE:
+        print("Mode agressif")
 
 if __name__ == '__main__':
-
-    a = Nmap()
-    a.hello() #class test hello world
-
-    #b=Classes.MyNextClass()
-    #b.greetAgain()
-
+    launch()

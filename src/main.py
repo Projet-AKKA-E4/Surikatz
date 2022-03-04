@@ -3,7 +3,9 @@
 from enum import Enum
 import click
 from surikatz import osint
-
+from rich import print
+from rich.console import Console
+console = Console() # Console configuration for rich package allowing beautiful print
 """
     Surikatz
 
@@ -39,15 +41,13 @@ class ScanMode(Enum):
 @click.option("-p", "--passive", "level", flag_value=ScanMode.PASSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use only OSINT technics to retrive data")
 def launch(target, level):
     if level == ScanMode.PASSIVE:
-        print("Mode passif")
+        console.print("Mode passif", style="bold red")
+        a = osint.Whois()
+        a.whoIs(target)
     if level == ScanMode.DISCRET:
-        print("Mode discret")
+        console.print("Mode discret", style="bold red")
     if level == ScanMode.AGRESSIVE:
-        print("Mode agressif")
+        console.print("Mode agressif", style="bold red")
 
 if __name__ == '__main__':
-
-    a = osint.Whois()
-    a.WhoIs() 
-    
-    #launch()
+    launch()

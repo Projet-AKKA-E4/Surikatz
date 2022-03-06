@@ -41,13 +41,25 @@ class ScanMode(Enum):
 @click.option("-p", "--passive", "level", flag_value=ScanMode.PASSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use only OSINT technics to retrive data")
 def launch(target, level):
     if level == ScanMode.PASSIVE:
-        console.print("Mode passif", style="bold red")
-        a = osint.Whois()
-        a.whoIs(target)
+        print("Mode passif")
+        passive_mode(target)
     if level == ScanMode.DISCRET:
         console.print("Mode discret", style="bold red")
     if level == ScanMode.AGRESSIVE:
         console.print("Mode agressif", style="bold red")
+
+def passive_mode(target):
+
+    console.print("Mode passif", style="bold red")
+    whoisAPI = osint.Whois()
+    whoisData = whoisAPI.whoIs(target)
+    
+    shodan_api = osint.ShodanUtils(whoisData["ip address"])
+
+    a = shodan_api.get_data()
+    del a["data"]
+
+    print(a)
 
 if __name__ == '__main__':
     launch()

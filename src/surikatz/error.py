@@ -11,3 +11,8 @@ class FQDNError(Exception):
     """
         Exception generated when an FQDN address is misformed
     """
+
+class APIError(Exception):
+    """
+        Exception generated when an API is unreachable
+    """

@@ -34,17 +34,19 @@ class TheHarvester:
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
         interresting = ["test","admin","vpn","login"]
 
-        for email in harvester_obj.theHarvester.email:
-            emails.add(email.cdata)
+        if "emails" in harvester_obj.theHarvester:
+            for email in harvester_obj.theHarvester.email:
+                emails.add(email.cdata)
 
-        for host in harvester_obj.theHarvester.host:
-            if(host.cdata==""):
-                hostnames.add(host.hostname.cdata)
-                if(not(re.search(regex, host.ip.cdata))):
-                    ips.add(host.ip.cdata)
-                
-            else:
-                hostnames.add(host.cdata)
+        if "host" in harvester_obj.theHarvester:
+            for host in harvester_obj.theHarvester.host:
+                if(host.cdata==""):
+                    hostnames.add(host.hostname.cdata)
+                    if(not(re.search(regex, host.ip.cdata))):
+                        ips.add(host.ip.cdata)
+                    
+                else:
+                    hostnames.add(host.cdata)
 
         print("emails: ", emails)
         print("ips: ", ips)

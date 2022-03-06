@@ -136,7 +136,7 @@ class Whois:
         else:
             return False
 
-    def whoIs(self, a):
+    def whoIs(self, target):
         """
         Whois function get information about an Ip address or a domain name
 
@@ -145,13 +145,13 @@ class Whois:
         a : str
             The IP address or the domain name
         """
-        if self.checkIpAddress(a):  # For an ip Address
-            print("Valid Ip address: ", a)
+        if self.checkIpAddress(target):  # For an ip Address
+            print("Valid Ip address: ", target)
 
-            host = whois.whois(a)
+            host = whois.whois(target)
             dict_ip = {
                 "domain name" : host.domain_name,
-                "ip address" : a,
+                "ip address" : target,
                 "status" : host.status,
                 "registrar" : host.registrar,
                 "emails" : host.emails,
@@ -166,22 +166,22 @@ class Whois:
 
             return dict_ip
 
-        elif self.checkDomain(a):   # For Domain Name
-            print("Valid Domain Name: ",a)
-            b= whois.whois(a)
+        elif self.checkDomain(target):   # For Domain Name
+            print("Valid Domain Name: ",target)
+            whoisData = whois.whois(target)
 
             try :
-                host = socket.gethostbyname(b.domain_name)
-            except :
+                host = socket.gethostbyname(target)
+            except:
                 host = None
 
             dict_domain = {
-                "domain name": b.domain_name,
+                "domain name": target,
                 "ip address": host,
-                "status": b.status,
-                "registrar": b.registrar,
-                "emails": b.emails,
-                "name servers": b.name_servers,
+                "status": whoisData.status,
+                "registrar": whoisData.registrar,
+                "emails": whoisData.emails,
+                "name servers": whoisData.name_servers,
             }
             print(dict_domain)
             num = 0

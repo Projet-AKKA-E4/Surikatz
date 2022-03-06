@@ -59,7 +59,6 @@ class TheHarvester:
             for i in hostnames:
                 if count == 5:
                     break
-                print(i)
                 count += 1
 
         maxlen = max(len(emails),len(ips),len(hostnames))

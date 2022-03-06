@@ -54,12 +54,16 @@ def passive_mode(target):
     whoisAPI = osint.Whois()
     whoisData = whoisAPI.whoIs(target)
     
-    shodan_api = osint.ShodanUtils(whoisData["ip address"])
+    shodanApi = osint.ShodanUtils(whoisData["ip address"])
 
-    a = shodan_api.get_data()
-    del a["data"]
+    shodanData = shodanApi.get_data()
+    del shodanData["data"]
 
-    print(a)
+    theHarvesterAPI = osint.TheHarvester(whoisData["domain name"])
+    theHarvesterData = theHarvesterAPI.TheHarvester()
+    
+
+    print(shodanData)
 
 if __name__ == '__main__':
     launch()

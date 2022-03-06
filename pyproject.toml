@@ -13,6 +13,7 @@ python-whois = "^0.7.3"
 click = "^8.0.4"
 rich = "^11.2.0"
 shodan = "^1.26.1"
+untangle = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
 

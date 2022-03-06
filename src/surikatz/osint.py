@@ -6,6 +6,9 @@ import re
 import requests
 import whois
 import socket
+import subprocess
+import untangle
+import csv
 from rich import print
 from rich.console import Console
 import shodan
@@ -16,6 +19,74 @@ class TheHarvester:
     """
         Class allowing the manipulation of The Harvester tool and the parsing of its output
     """
+
+    def __init__(self, domain):
+        self.domain = domain
+
+    def TheHarvester(self):
+        harvester = subprocess.run(['theHarvester','-d',self.domain,'-b','all','-f','output'], stdout=subprocess.PIPE)
+        harvester = harvester.stdout.decode('utf-8')
+
+        harvester_obj = untangle.parse('output.xml')
+        emails = set()
+        hostnames = set()
+        ips = set()
+        regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
+        interresting = ["test","admin","vpn","login"]
+
+        for email in harvester_obj.theHarvester.email:
+            emails.add(email.cdata)
+
+        for host in harvester_obj.theHarvester.host:
+            if(host.cdata==""):
+                hostnames.add(host.hostname.cdata)
+                if(not(re.search(regex, host.ip.cdata))):
+                    ips.add(host.ip.cdata)
+                
+            else:
+                hostnames.add(host.cdata)
+
+        print("emails: ", emails)
+        print("ips: ", ips)
+
+        count = 0
+        for hostname in hostnames:
+            if hostname.split('.')[0] in interresting:
+                count += 1
+                print(hostname)
+
+        if count==0:
+            for i in hostnames:
+                if count == 5:
+                    break
+                print(i)
+                count += 1
+
+        maxlen = max(len(emails),len(ips),len(hostnames))
+        emails = list(emails)
+        hostnames = list(hostnames)
+        ips = list(ips)
+
+        with open('output.csv', 'w') as f:
+            writer = csv.writer(f)
+            for w in range(0,maxlen):
+                if(w<len(emails)):
+                    test_email = emails[w]
+                else:
+                    test_email = ""
+                    
+                if(w<len(ips)):
+                    test_ip = ips[w]
+                else:
+                    test_ip = ""
+
+                if(w<len(hostnames)):
+                    test_hostname = hostnames[w]
+                else:
+                    test_hostname = ""
+                
+                
+                writer.writerow([test_email, test_ip, test_hostname])
 
 class IHaveBeenPawn:
     """
@@ -221,7 +292,7 @@ class ShodanUtils:
 
         for service in shodan_data["data"]:
             if "cpe23" in service:
-                shodan_data["cpes"].append(*service["cpe23"])
+                shodan_data["cpes"]+=service["cpe23"]
         
         for unless_data in ["city", "region_code", "latitude", "longitude", "isp", "asn"]:
             del shodan_data[unless_data]

@@ -26,7 +26,6 @@ class TheHarvester:
     def TheHarvester(self):
         harvester = subprocess.run(['theHarvester','-d',self.domain,'-b','all','-f','output'], stdout=subprocess.PIPE)
         harvester = harvester.stdout.decode('utf-8')
-
         harvester_obj = untangle.parse('output.xml')
         emails = set()
         hostnames = set()
@@ -34,11 +33,11 @@ class TheHarvester:
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
         interresting = ["test","admin","vpn","login"]
 
-        if "emails" in harvester_obj.theHarvester:
+        if "email" in dir(harvester_obj.theHarvester):
             for email in harvester_obj.theHarvester.email:
                 emails.add(email.cdata)
 
-        if "host" in harvester_obj.theHarvester:
+        if "host" in dir(harvester_obj.theHarvester):
             for host in harvester_obj.theHarvester.host:
                 if(host.cdata==""):
                     hostnames.add(host.hostname.cdata)

@@ -50,9 +50,11 @@ def launch(target, level):
         print("")
         passive_mode(target)
     if level == ScanMode.DISCRET:
-        console.print("Discret mode\n\n", style="bold blue")
+        console.print(Markdown("# Discret mode", style="white"), style="bold orange")
+        print("")
     if level == ScanMode.AGRESSIVE:
-        console.print("Agressive mode\n\n", style="bold red")
+        console.print(Markdown("# Agressive mode", style="white"), style="bold red")
+        print("")
 
 def motd(version):
     console.print(f"""
@@ -69,7 +71,7 @@ def motd(version):
 
 def passive_mode(target):
 
-    console.rule("Whois information")
+    console.rule("[bold]Whois information")
     console.print("")
     whoisAPI = osint.Whois()
     whoisData = whoisAPI.whoIs(target)

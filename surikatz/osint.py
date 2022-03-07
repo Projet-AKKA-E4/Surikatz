@@ -147,7 +147,7 @@ class Whois:
             The IP address or the domain name
         """
         if self.checkIpAddress(target):  # For an ip Address
-            print("Valid Ip address: ", target)
+            #print("Valid Ip address: ", target)
 
             host = whois.whois(target)
             dict_ip = {
@@ -168,7 +168,7 @@ class Whois:
             return dict_ip
 
         elif self.checkDomain(target):   # For Domain Name
-            print("Valid Domain Name: ",target)
+            #print("Valid Domain Name: ",target)
             whoisData = whois.whois(target)
 
             try :
@@ -198,14 +198,13 @@ class ShodanUtils:
     """
         Class allowing the manipulation of Shodan API
     """
+
     _SHODAN_API_KEY = "yZ77YuFRvpdwn9ZCA3Uk8yJkmkyisi3k"
+
     class InternetDB:
         """
             Class allowing the manipulation of Shodan's InternetDB API
         """
-
-        _SHODAN_API_KEY = "yZ77YuFRvpdwn9ZCA3Uk8yJkmkyisi3k"
-
         def __init__(self, proxies=None):
             self.base_url = "https://internetdb.shodan.io/"
             self._session = requests.Session()
@@ -298,35 +297,6 @@ class ShodanUtils:
             del shodan_data[unless_data]
 
         return shodan_data
-
-    # _SHODAN_API_KEY = "yZ77YuFRvpdwn9ZCA3Uk8yJkmkyisi3k"
-
-    # """
-    # country + city
-    # isp   
-    # os
-    # port
-    # has_vuln
-    # version
-
-    # """
-
-    # def __init__(self):
-    #     self.api = shodan.Shodan(Shodan._SHODAN_API_KEY)
-    
-    # def getIpInfo(self):
-    #     ipinfo = self.api.host("8.8.8.8")
-    #     ports = [(port, self.getServiceName(port)) for port in ipinfo["ports"]]
-
-    #     return {"countries": ipinfo["country_name"], "cities": ipinfo["city"], "services": ports}
-    
-    # def getServiceName(self, port):
-    #     services = self.api.services()
-    #     return services[f"{port}"]
-        
-    
-
-
 
 class PawnDB:
     """

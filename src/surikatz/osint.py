@@ -295,7 +295,7 @@ class ShodanUtils:
             if "cpe23" in service:
                 shodan_data["cpes"]+=service["cpe23"]
         
-        for unless_data in ["city", "region_code", "latitude", "longitude", "isp", "asn"]:
+        for unless_data in ["city", "region_code", "latitude", "longitude", "isp", "asn", "area_code"]:
             del shodan_data[unless_data]
 
         return shodan_data

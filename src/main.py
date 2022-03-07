@@ -3,9 +3,11 @@
 from enum import Enum
 import click
 from surikatz import osint
-from rich import print
 from rich.console import Console
+from rich.markdown import Markdown
+
 console = Console() # Console configuration for rich package allowing beautiful print
+
 """
     Surikatz
 
@@ -40,30 +42,52 @@ class ScanMode(Enum):
 @click.option("-d", "--discret", "level", flag_value=ScanMode.DISCRET, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use passive mode with soft scans")
 @click.option("-p", "--passive", "level", flag_value=ScanMode.PASSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use only OSINT technics to retrive data")
 def launch(target, level):
+
+    motd(0.1)
+
     if level == ScanMode.PASSIVE:
-        print("Mode passif")
+        console.print(Markdown("# Passive mode", style="white"), style="bold green")
+        print("")
         passive_mode(target)
     if level == ScanMode.DISCRET:
-        console.print("Mode discret", style="bold red")
+        console.print("Discret mode\n\n", style="bold blue")
     if level == ScanMode.AGRESSIVE:
-        console.print("Mode agressif", style="bold red")
+        console.print("Agressive mode\n\n", style="bold red")
+
+def motd(version):
+    console.print(f"""
+         ,/****/*,,          
+      (#%%%/,,,#%%##/*          _____               _  _           _        
+   %(#%&@@@#*,,%&&&&(*/(&      / ____|             (_)| |         | |       
+  .&&,,(&(/(%*#**,#(,.,&%.    | (___   _   _  _ __  _ | | __ __ _ | |_  ____
+   ,#/(*/#%&&&&(//*,*.,.,      \___ \ | | | || '__|| || |/ // _` || __||_  /
+     (##(%%%&%((%####((,       ____) || |_| || |   | ||   <| (_| || |_  / / 
+     .(##%%###%%&%%#((/       |_____/  \__,_||_|   |_||_|\_\\\\__,_| \__|/___| v{version}
+      ,(###%%%&%%%#(///      
+        .#%%%%%%%&%*,/,...                               
+    \n""", style="bold")
 
 def passive_mode(target):
 
-    console.print("Mode passif", style="bold red")
+    console.rule("Whois information")
+    console.print("")
     whoisAPI = osint.Whois()
     whoisData = whoisAPI.whoIs(target)
-    
-    shodanApi = osint.ShodanUtils(whoisData["ip address"])
+    console.print("\n")
 
+    console.rule("[bold]TheHarvester information")
+    console.print("")
+    #theHarvesterAPI = osint.TheHarvester(whoisData["domain name"])
+    #theHarvesterAPI.TheHarvester()
+    console.print("\n")
+    
+    console.rule("[bold]Shodan information")
+    console.print("")
+    shodanApi = osint.ShodanUtils(whoisData["ip address"])
     shodanData = shodanApi.get_data()
     del shodanData["data"]
-
-    theHarvesterAPI = osint.TheHarvester(whoisData["domain name"])
-    theHarvesterData = theHarvesterAPI.TheHarvester()
-    
-
-    print(shodanData)
+    console.print(shodanData)
+    console.print("\n")
 
 if __name__ == '__main__':
     launch()

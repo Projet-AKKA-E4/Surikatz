@@ -1,7 +1,7 @@
 """
     Module for using OSINT tools and databases to perform passives scans
 """
-from surikatz.error import APIError
+from surikatz.error import APIError, AppNotInstalled
 import re
 import requests
 import whois
@@ -92,11 +92,13 @@ class TheHarvester:
                 writer.writerow([test_email, test_ip, test_fqdn])
 
     def get_data(self):
-
-        harvester = subprocess.run(
-            ["theHarvester", "-d", self.domain, "-b", "all", "-f", "output"],
-            stdout=subprocess.PIPE,
-        )
+        try:
+            harvester = subprocess.run(
+                ["dzada", "-d", self.domain, "-b", "all", "-f", "output"],
+                stdout=subprocess.PIPE,
+            )
+        except OSError:
+            raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
         # harvester = harvester.stdout.decode("utf-8")
 
         emails, ips, fqdns = self._parse_xml()

@@ -32,7 +32,6 @@ class ConfReader:
 
 	def getRapid(self):
 		return self._getApiKey("RAPID_API")
-<<<<<<< HEAD
 
 	def getWappalyzer(self):
 		return self._getApiKey("WAPPALYZER_API")
@@ -54,7 +53,11 @@ class Checker:
                 -True if the domain name is valid
                 -False if the domain name is not valid
         """
-    
+
+
+class Checker:
+    @staticmethod
+    def checkIpAddress(Ip):
         regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
     	# pass the regular expression
     	# and the string in search() method
@@ -160,37 +163,34 @@ class APIClient:
            A dictionary containing the function's results.
 
         """
-            if params:
-                target += self.resultUrl(params)
+        if params:
+            target += self.resultUrl(params)
 
-            # Send the request
+        # Send the request
+        try:
+            data = self._session.get(self.base_url + target)
+        except Exception:
+            raise APIError(f'Unable to connect to {self.base_url}')
+
+        # Check that the API key wasn't rejected
+        if data.status_code == 401:
             try:
-                data = self._session.get(self.base_url + target)
-            except Exception:
-                raise APIError(f'Unable to connect to {self.base_url}')
+                # Return the actual error message if the API returned valid JSON
+                error = data.json()['error']
+            except Exception as e:
+                raise APIError(error)
+        elif data.status_code == 403:
+            raise APIError('Access denied (403 Forbidden)')
 
-            # Check that the API key wasn't rejected
-            if data.status_code == 401:
-                try:
-                    # Return the actual error message if the API returned valid JSON
-                    error = data.json()['error']
-                except Exception as e:
-                    raise APIError(error)
-            elif data.status_code == 403:
-                raise APIError('Access denied (403 Forbidden)')
+        # Parse the text into JSON
+        try:
+            data = data.json()
+        except ValueError:
+            raise APIError('Unable to parse JSON response')
 
-            # Parse the text into JSON
-            try:
-                data = data.json()
-            except ValueError:
-                raise APIError('Unable to parse JSON response')
+        # Raise an exception if an error occurred
+        if type(data) == dict and 'error' in data:
+            raise APIError(data['error'])
 
-            # Raise an exception if an error occurred
-            if type(data) == dict and 'error' in data:
-                raise APIError(data['error'])
-
-            # Return the data
-            return data
-
-=======
->>>>>>> ed44a44 (Add api key reader for .env file)
+        # Return the data
+        return data

@@ -127,40 +127,6 @@ class Whois:
         Return whois information from a
     """
 
-    def checkIpAddress(self, Ip):
-        """
-        Function allowing to check if an Ip have a correct form
-
-        Parameter
-        ----------
-        Ip : str
-            The IP address to check
-        """
-        regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
-        # pass the regular expression
-        # and the string in search() method
-        if re.search(regex, Ip):
-            return True
-        else:
-            return False
-
-    def checkDomain(self, domain):
-        """
-        Function allowing to check if a domain name have a correct form
-
-        Parameter
-        ----------
-        domain : str
-            The domain name to check
-        """
-        regex = "^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,6}$"
-        # a = input("Enter a domain name:")
-        if re.search(regex, domain):
-            return True
-
-        else:
-            return False
-
     def whoIs(self, target):
         """
         Whois function get information about an Ip address or a domain name

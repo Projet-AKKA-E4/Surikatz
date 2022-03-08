@@ -6,14 +6,7 @@ from dotenv import load_dotenv
 import os
 import re
 import requests
-import whois
-import socket
-import subprocess
-import untangle
-import csv
-from rich import print
 from rich.console import Console
-import shodan
 from datetime import datetime
 
 console = Console()
@@ -39,6 +32,7 @@ class ConfReader:
 
 	def getRapid(self):
 		return self._getApiKey("RAPID_API")
+<<<<<<< HEAD
 
 	def getWappalyzer(self):
 		return self._getApiKey("WAPPALYZER_API")
@@ -198,3 +192,5 @@ class APIClient:
             # Return the data
             return data
 
+=======
+>>>>>>> ed44a44 (Add api key reader for .env file)

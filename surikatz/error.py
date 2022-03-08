@@ -21,3 +21,8 @@ class AppNotInstalled(Exception):
     """
         Exception generated when an app isn't installed on the user device
     """
+    
+class ReadError(Exception):
+    """
+        Exception generated when an API is unreachable
+    """

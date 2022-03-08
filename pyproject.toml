@@ -3,7 +3,11 @@ name = "Surikatz"
 version = "0.1.0"
 description = "A powerful tool for searching informations during pentest"
 authors = ["alphae-nix <18laurent@gmail.com>", 
-           "Anemys <abdelmalik_kerbadou@yahoo.fr>"]
+           "Anemys <abdelmalik_kerbadou@yahoo.fr>",
+           "NathanSaucet <pro.nathan.saucet@gmail.com>",
+           "Mogulzz <raayanb94@gmail.com>",
+           "blackjack-nix <theo.peresse-gourbil@edu.esiee.fr>",
+           "CappiLucky <manon.hermann@edu.esiee.fr>"           ]
 readme = "README.md"
 
 [tool.poetry.dependencies]

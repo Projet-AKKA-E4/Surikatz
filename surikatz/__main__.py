@@ -80,7 +80,8 @@ def passive_mode(target):
     console.rule("[bold]TheHarvester information")
     console.print("")
     theHarvesterAPI = osint.TheHarvester(whoisData["domain name"])
-    theHarvesterAPI.TheHarvester()
+    harvesterDATA = theHarvesterAPI.get_data()
+ 
     console.print("\n")
     
     console.rule("[bold]Shodan information")

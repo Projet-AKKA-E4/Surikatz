@@ -94,7 +94,7 @@ class TheHarvester:
     def get_data(self):
         try:
             harvester = subprocess.run(
-                ["dzada", "-d", self.domain, "-b", "all", "-f", "output"],
+                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "output"],
                 stdout=subprocess.PIPE,
             )
         except OSError:

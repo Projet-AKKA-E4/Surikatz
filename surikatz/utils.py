@@ -1,6 +1,7 @@
 from surikatz.error import ReadError 
 from dotenv import load_dotenv
 import os
+import re
 
 class ConfReader:
 
@@ -23,3 +24,26 @@ class ConfReader:
 
 	def getRapid(self):
 		return self._getApiKey("RAPID_API")
+
+
+class Checker:
+    @staticmethod
+    def checkIpAddress(Ip):
+        regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
+    	# pass the regular expression
+    	# and the string in search() method
+        if(re.search(regex, Ip)):
+            return True
+        else:
+            return False
+            
+    @staticmethod        
+    def checkDomain(domain):
+        regex= "^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,6}$"
+        #a = input("Enter a domain name:")
+        if re.search(regex, domain):
+            return True
+
+        else:
+            return False
+

@@ -4,6 +4,7 @@ from enum import Enum
 import click
 from surikatz import osint, utils
 from surikatz.utils import ConfReader
+from surikatz import result
 from rich.console import Console
 from rich.markdown import Markdown
 
@@ -115,9 +116,9 @@ def passive_mode(target):
 
     console.rule("[bold]TheHarvester information")
     console.print("")
-    theHarvesterAPI = osint.TheHarvester(whoisData["domain name"])
+    theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
     harvesterDATA = theHarvesterAPI.get_data()
- 
+
     console.print("\n")
 
     console.rule("[bold]Shodan information")
@@ -128,6 +129,11 @@ def passive_mode(target):
     console.print(shodanData)
     console.print("\n")
 
+    #Dict concat
+    surikatz_dict = {**whoisData, **shodanData}
 
-if __name__ == "__main__":
+    result_analyze = result.Analyze(surikatz_dict)
+    result_analyze.dict_clean(surikatz_dict)
+
+if __name__ == '__main__':
     launch()

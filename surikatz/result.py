@@ -1,16 +1,19 @@
+from rich.console import Console
 """
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
-
-
-class Display:
-    pass
-
+console = Console()
 
 class Analyze:
-    """
-    Class for analysing the JSON, compare and eliminate obsolete data
-    """
+    def __init__(self,surikatz_dict):
+        self.surikatz_dict = surikatz_dict
+
+
+
+    def dict_clean(self, final_dict):
+        console.print(final_dict)
+        return self
+
 
 
 class Select:

@@ -1,3 +1,7 @@
+"""
+    Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
+"""
+
 from rich.console import Console
 from surikatz.utils import APIClient
 from rich.markdown import Markdown
@@ -8,10 +12,6 @@ import pandas as pd
 from pathlib import Path
 
 console = Console()
-"""
-    Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
-"""
-
 
 class Analyze:
     """

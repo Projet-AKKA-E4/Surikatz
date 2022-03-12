@@ -1,8 +1,9 @@
 """
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
+class Display:
 
-class Analyse:
+class Analyze:
     """
         Class for analysing the JSON, compare and eliminate obsolete data
     """

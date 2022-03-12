@@ -8,7 +8,7 @@ import whois
 import socket
 import subprocess
 import untangle
-import csv
+#import csv
 from rich import print
 from rich.console import Console
 import shodan

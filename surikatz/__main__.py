@@ -108,6 +108,8 @@ def motd(version):
 
 def passive_mode(target):
 
+    conf = ConfReader()
+    
     console.rule("[bold]Whois information")
     console.print("")
     whoisAPI = osint.Whois()

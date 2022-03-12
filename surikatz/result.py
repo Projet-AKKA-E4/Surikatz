@@ -4,19 +4,21 @@
 
 from rich.console import Console
 from surikatz.utils import APIClient
-from rich.markdown import Markdown
-from rich.table import Table
-import csv
 import json
 import pandas as pd
 from pathlib import Path
 
 console = Console()
-
 class Analyze:
-    """
-    Class for analysing the JSON, compare and eliminate obsolete data
-    """
+    def __init__(self,surikatz_dict):
+        self.surikatz_dict = surikatz_dict
+
+
+
+    def dict_clean(self, final_dict):
+        console.print(final_dict)
+        return self
+
 
     @staticmethod
     def clean_dict(global_dict):

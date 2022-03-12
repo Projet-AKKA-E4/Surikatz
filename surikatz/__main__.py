@@ -107,8 +107,6 @@ def motd(version):
 
 
 def passive_mode(target):
-
-    conf = ConfReader()
     
     console.rule("[bold]Whois information")
     console.print("")
@@ -157,6 +155,8 @@ def passive_mode(target):
 
     Analyze.save_to_csv(surikatz_dict)
 
+    #Dict concat
+    surikatz_dict = {**whoisData, **shodanData}
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)

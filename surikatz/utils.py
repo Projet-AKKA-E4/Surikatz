@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from surikatz.error import APIError
-from surikatz.error import ReadError 
+from surikatz.error import ReadError
 from dotenv import load_dotenv
 import os
 import re
@@ -11,30 +11,32 @@ from datetime import datetime
 
 console = Console()
 
+
 class ConfReader:
+    def __init__(self):
+        load_dotenv()
 
-	def __init__(self):
-		load_dotenv()
+    def _getApiKey(self, api):
+        try:
+            key = os.getenv(api)
+            if key == "":
+                raise ReadError(
+                    "Impossible to read API key value. Make sure you fill it in .env file"
+                )
 
-	def _getApiKey(self, api):
-		try:
-			key = os.getenv(api)
-			if key=="":
-				raise ReadError("Impossible to read API key value. Make sure you fill it in .env file")
+        except:
+            key = f"Error, no {api} API key fond in .env file"
 
-		except:
-			key = f"Error, no {api} API key fond in .env file"
-		
-		return key
-		
-	def getShodan(self):
-		return self._getApiKey("SHODAN_API")
+        return key
 
-	def getRapid(self):
-		return self._getApiKey("RAPID_API")
+    def getShodan(self):
+        return self._getApiKey("SHODAN_API")
 
-	def getWappalyzer(self):
-		return self._getApiKey("WAPPALYZER_API")
+    def getRapid(self):
+        return self._getApiKey("RAPID_API")
+
+    def getWappalyzer(self):
+        return self._getApiKey("WAPPALYZER_API")
 
 
 class Checker:
@@ -59,14 +61,14 @@ class Checker:
     @staticmethod
     def checkIpAddress(Ip):
         regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
-    	# pass the regular expression
-    	# and the string in search() method
-        if(re.search(regex, Ip)):
+        # pass the regular expression
+        # and the string in search() method
+        if re.search(regex, Ip):
             return True
         else:
             return False
-            
-    @staticmethod        
+
+    @staticmethod
     def checkDomain(domain):
         """
             A function that will check through RegEx if a domain name is valid or not.
@@ -78,8 +80,8 @@ class Checker:
                 -True if the domain name is valid
                 -False if the domain name is not valid
         """
-        regex= "^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,6}$"
-        #a = input("Enter a domain name:")
+        regex = "^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,6}$"
+        # a = input("Enter a domain name:")
         if re.search(regex, domain):
             return True
 
@@ -121,11 +123,12 @@ class Checker:
                 f.close()
                 raise OSError("You don't have a kali Distibution")
 
+
 class APIClient:
     """
         A class that will be used for gathering information from any API.
     """
-    def __init__(self, basic_url,key= None, proxies=None):
+    def __init__(self, basic_url, key=None, proxies=None):
         self.base_url = basic_url
         self._session = requests.Session()
         if proxies:
@@ -135,23 +138,22 @@ class APIClient:
             self._session.headers.update(key)
 
     def resultUrl(self, result):
-        """ A function that create a string that will return an URL link for accesssing any API
-        
+        """A function that create a string that will return an URL link for accesssing any API
+
         Arguments:
             result  -- a dictionnary that will contain the parameters that we must add to the URL in order to access the ressources
 
         Returns:
             A string character that will represent an URL link for accesssing the ressources of an API
         """
-        for i, key in enumerate(result.keys()):		
-            if i ==0:
+        for i, key in enumerate(result.keys()):
+            if i == 0:
                 res = f"?{key}={result[key]}"
             else:
-                res += ","+f"{key}={result[key]}"
-        return res 
+                res += "," + f"{key}={result[key]}"
+        return res
 
-
-    def request(self, target,params= None):
+    def request(self, target, params=None):
         """General-purpose function to create web requests to any API.
 
         Arguments:
@@ -159,8 +161,8 @@ class APIClient:
             target    -- The endpoint for accessing the ressources we aim for.
             params    -- dictionary of parameters for the function
 
-        Returns:
-           A dictionary containing the function's results.
+        Returns
+            A dictionary containing the function's results.
 
         """
         if params:
@@ -170,7 +172,7 @@ class APIClient:
         try:
             data = self._session.get(self.base_url + target)
         except Exception:
-            raise APIError(f'Unable to connect to {self.base_url}')
+            raise APIError(f"Unable to connect to {self.base_url}")
 
         # Check that the API key wasn't rejected
         if data.status_code == 401:

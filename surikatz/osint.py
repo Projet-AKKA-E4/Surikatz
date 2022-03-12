@@ -1,15 +1,14 @@
 """
     Module for using OSINT tools and databases to perform passives scans
 """
-from surikatz.error import APIError, AppNotInstalled
-from surikatz.utils import Checker
+from surikatz.error import AppNotInstalled
+from surikatz.utils import Checker, APIClient
 import re
-import requests
 import whois
 import socket
 import subprocess
 import untangle
-import csv
+#import csv
 from rich import print
 from rich.console import Console
 import shodan
@@ -66,32 +65,6 @@ class TheHarvester:
                     break
                 count += 1
 
-    def _write_csv(self, emails, ips, fqdns):
-        maxlen = max(len(emails), len(ips), len(fqdns))
-        emails = list(emails)
-        fqdns = list(fqdns)
-        ips = list(ips)
-
-        with open("output.csv", "w") as f:
-            writer = csv.writer(f)
-            for w in range(0, maxlen):
-                if w < len(emails):
-                    test_email = emails[w]
-                else:
-                    test_email = ""
-
-                if w < len(ips):
-                    test_ip = ips[w]
-                else:
-                    test_ip = ""
-
-                if w < len(fqdns):
-                    test_fqdn = fqdns[w]
-                else:
-                    test_fqdn = ""
-
-                writer.writerow([test_email, test_ip, test_fqdn])
-
     def get_data(self):
         try:
             harvester = subprocess.run(
@@ -100,15 +73,14 @@ class TheHarvester:
             )
         except OSError:
             raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
-        # harvester = harvester.stdout.decode("utf-8")
 
         emails, ips, fqdns = self._parse_xml()
 
+        emails, ips, fqdns = list(emails), list(ips), list(fqdns)
+
         self._print(emails, ips, fqdns)
 
-        self._write_csv(emails, ips, fqdns)
-
-        return {"emails": emails, "ips": ips, "FQDN": fqdns}
+        return {"emails": emails, "ips": ips, "fqdns": fqdns}
 
 
 class IHaveBeenPawn:
@@ -137,24 +109,21 @@ class Whois:
             The IP address or the domain name
         """
         if Checker.checkIpAddress(target):  # For an ip Address
-            #print("Valid Ip address: ", target)
+            # print("Valid Ip address: ", target)
 
             host = whois.whois(target)
             dict_ip = {
-                "domain name": host.domain_name,
-                "ip address": target,
+                "domain_name": host.domain_name,
+                "ip_address": target,
                 "status": host.status,
                 "registrar": host.registrar,
                 "emails": host.emails,
-                "name servers": host.name_servers,
+                "name_servers": host.name_servers,
             }
             print(dict_ip)
 
             num = 0
-            for (
-                key,
-                value,
-            ) in dict_ip.items():  # Test if there is no more 3 None in dict
+            for key, value in dict_ip.items():
                 if value == None:
                     num += 1
                 if num > 3:
@@ -165,8 +134,8 @@ class Whois:
 
             return dict_ip
 
-        elif Checker.checkDomain(target):   # For Domain Name
-            #print("Valid Domain Name: ",target)
+        elif Checker.checkDomain(target):  # For Domain Name
+            # print("Valid Domain Name: ",target)
             whoisData = whois.whois(target)
 
             try:
@@ -175,12 +144,12 @@ class Whois:
                 host = None
 
             dict_domain = {
-                "domain name": target,
-                "ip address": host,
+                "domain_name": target,
+                "ip_address": host,
                 "status": whoisData.status,
                 "registrar": whoisData.registrar,
                 "emails": whoisData.emails,
-                "name servers": whoisData.name_servers,
+                "name_servers": whoisData.name_servers,
             }
             print(dict_domain)
             num = 0
@@ -207,62 +176,9 @@ class ShodanUtils:
 
     _SHODAN_API_KEY = "yZ77YuFRvpdwn9ZCA3Uk8yJkmkyisi3k"
 
-    class InternetDB:
-        """
-        Class allowing the manipulation of Shodan's InternetDB API
-        """
-
-        def __init__(self, proxies=None):
-            self.base_url = "https://internetdb.shodan.io/"
-            self._session = requests.Session()
-            if proxies:
-                self._session.proxies.update(proxies)
-                self._session.trust_env = False
-
-        def request(self, target):
-            """General-purpose function to create web requests to InternetDB.
-
-            Arguments:
-                function  -- name of the function you want to execute
-                params    -- dictionary of parameters for the function
-
-            Returns
-                A dictionary containing the function's results.
-
-            """
-
-            # Send the request
-            try:
-                data = self._session.get(self.base_url + target)
-            except Exception:
-                raise APIError("Unable to connect to InternetDB")
-
-            # Check that the API key wasn't rejected
-            if data.status_code == 401:
-                try:
-                    # Return the actual error message if the API returned valid JSON
-                    error = data.json()["error"]
-                except Exception as e:
-                    raise APIError(error)
-            elif data.status_code == 403:
-                raise APIError("Access denied (403 Forbidden)")
-
-            # Parse the text into JSON
-            try:
-                data = data.json()
-            except ValueError:
-                raise APIError("Unable to parse JSON response")
-
-            # Raise an exception if an error occurred
-            if type(data) == dict and "error" in data:
-                raise APIError(data["error"])
-
-            # Return the data
-            return data
-
-    def __init__(self, target: str):
+    def __init__(self, target: str, key):
         self.target = target
-        self.internetdb = self.InternetDB()
+        self.internetdb = APIClient("https://internetdb.shodan.io/")
         self.shodan = shodan.Shodan(ShodanUtils._SHODAN_API_KEY)
 
     def _request_data(self) -> dict():

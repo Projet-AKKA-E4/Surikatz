@@ -3,10 +3,11 @@
 from enum import Enum
 import click
 from surikatz import osint, utils
+from surikatz.utils import ConfReader
 from rich.console import Console
 from rich.markdown import Markdown
 
-console = Console() # Console configuration for rich package allowing beautiful print
+console = Console()  # Console configuration for rich package allowing beautiful print
 
 """
     Surikatz
@@ -31,16 +32,42 @@ console = Console() # Console configuration for rich package allowing beautiful 
         Laurent DELATTE
 """
 
+
 class ScanMode(Enum):
     PASSIVE = 0
     DISCRET = 1
     AGRESSIVE = 2
 
+
 @click.command()
 @click.argument("target")
-@click.option("-a", "--agressive", "level", flag_value=ScanMode.AGRESSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use Discret and vulerability scanner, ennumeration and bruteforce")
-@click.option("-d", "--discret", "level", flag_value=ScanMode.DISCRET, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use passive mode with soft scans")
-@click.option("-p", "--passive", "level", flag_value=ScanMode.PASSIVE, type=ScanMode, default=ScanMode.AGRESSIVE, help="Use only OSINT technics to retrive data")
+@click.option(
+    "-a",
+    "--agressive",
+    "level",
+    flag_value=ScanMode.AGRESSIVE,
+    type=ScanMode,
+    default=ScanMode.AGRESSIVE,
+    help="Use Discret and vulerability scanner, ennumeration and bruteforce",
+)
+@click.option(
+    "-d",
+    "--discret",
+    "level",
+    flag_value=ScanMode.DISCRET,
+    type=ScanMode,
+    default=ScanMode.AGRESSIVE,
+    help="Use passive mode with soft scans",
+)
+@click.option(
+    "-p",
+    "--passive",
+    "level",
+    flag_value=ScanMode.PASSIVE,
+    type=ScanMode,
+    default=ScanMode.AGRESSIVE,
+    help="Use only OSINT technics to retrive data",
+)
 def launch(target, level):
 
     motd(0.1)
@@ -58,8 +85,10 @@ def launch(target, level):
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
 
+
 def motd(version):
-    console.print(f"""
+    console.print(
+        f"""
          ,/****/*,,          
       (#%%%/,,,#%%##/*          _____               _  _           _        
    %(#%&@@@#*,,%&&&&(*/(&      / ____|             (_)| |         | |       
@@ -69,10 +98,15 @@ def motd(version):
      .(##%%###%%&%%#((/       |_____/  \__,_||_|   |_||_|\_\\\\__,_| \__|/___| v{version}
       ,(###%%%&%%%#(///      
         .#%%%%%%%&%*,/,...                               
-    \n""", style="bold")
+    \n""",
+        style="bold",
+    )
+
 
 def passive_mode(target):
 
+    conf = ConfReader()
+    
     console.rule("[bold]Whois information")
     console.print("")
     whoisAPI = osint.Whois()
@@ -85,14 +119,15 @@ def passive_mode(target):
     harvesterDATA = theHarvesterAPI.get_data()
  
     console.print("\n")
-    
+
     console.rule("[bold]Shodan information")
     console.print("")
-    shodanApi = osint.ShodanUtils(whoisData["ip address"])
+    shodanApi = osint.ShodanUtils(whoisData["ip_address"], conf.getShodan())
     shodanData = shodanApi.get_data()
     del shodanData["data"]
     console.print(shodanData)
     console.print("\n")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     launch()

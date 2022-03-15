@@ -34,12 +34,10 @@ console = Console()  # Console configuration for rich package allowing beautiful
         Laurent DELATTE
 """
 
-
 class ScanMode(Enum):
     PASSIVE = 0
     DISCRET = 1
     AGRESSIVE = 2
-
 
 @click.command()
 @click.argument("target")
@@ -71,7 +69,7 @@ class ScanMode(Enum):
     help="Use only OSINT technics to retrive data",
 )
 def launch(target, level):
-    
+
     motd(0.1)
     utils.Checker.checkTime()
     utils.Checker.checkIPPublic()
@@ -87,10 +85,8 @@ def launch(target, level):
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
 
-
 def motd(version):
-    console.print(
-        f"""
+    console.print(f"""
          ,/****/*,,          
       (#%%%/,,,#%%##/*          _____               _  _           _        
    %(#%&@@@#*,,%&&&&(*/(&      / ____|             (_)| |         | |       
@@ -100,15 +96,12 @@ def motd(version):
      .(##%%###%%&%%#((/       |_____/  \__,_||_|   |_||_|\_\\\\__,_| \__|/___| v{version}
       ,(###%%%&%%%#(///      
         .#%%%%%%%&%*,/,...                               
-    \n""",
-        style="bold",
-    )
-
+    \n""", style="bold")
 
 def passive_mode(target):
 
     conf = ConfReader()
-    
+
     console.rule("[bold]Whois information")
     console.print("")
     whoisAPI = osint.Whois()
@@ -131,7 +124,15 @@ def passive_mode(target):
     console.print(shodanData)
     console.print("\n")
 
+    console.rule("[bold]GLOBAL INFORMATION")
+    surikatz_dict = { **whoisData, **harvesterDATA, **shodanData}
+
+    Analyze.clean_dict(surikatz_dict)
+    Analyze.save_csv(surikatz_dict)
+
+# CVSS Management
     for cve in cves:
         Analyze.get_cvss(cve)
         print("")
+
 

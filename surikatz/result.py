@@ -10,15 +10,24 @@ from pathlib import Path
 
 console = Console()
 class Analyze:
-    def __init__(self,surikatz_dict):
-        self.surikatz_dict = surikatz_dict
 
-
-
+    @staticmethod
     def dict_clean(self, final_dict):
         console.print(final_dict)
         return self
 
+    @staticmethod
+    def get_cvss(cve):
+        client = APIClient("https://cve.circl.lu/api/cve/")
+        r = client.request(cve)
+        try :
+            result = {
+                "cve":cve,
+                "cvss":r["cvss"],
+                "Type":r["capec"][0]["name"] if r["capec"] else ""
+            }
+        except :
+            result = None
 
     @staticmethod
     def clean_dict(global_dict):

@@ -72,7 +72,7 @@ class ScanMode(Enum):
     help="Use only OSINT technics to retrive data",
 )
 def launch(target, level):
-
+    
     motd(0.1)
     utils.Checker.checkTime()
     utils.Checker.checkIPPublic()

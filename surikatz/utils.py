@@ -14,6 +14,7 @@ import csv
 from rich import print
 from rich.console import Console
 import shodan
+#from requests import get
 
 console = Console()
 
@@ -60,6 +61,12 @@ class Checker:
 
         else:
             return False
+
+    @staticmethod
+    def checkIPPublic():
+        ip = APIClient('https://api.ipify.org')
+        ip = ip.request("/", params={"format": "json"})
+        print(f'My public IP address is: {ip["ip"]}')
 
 class APIClient:
 

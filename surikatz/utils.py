@@ -79,14 +79,14 @@ class Checker:
    
     @staticmethod
     def checkKali():
-    f = open("/etc/os-release", "r")
-    OS="ID=kali"
-    for line in f:  
-        if OS in line: 
-            return 
-        else:
-            f.close()
-            raise OSError("You don't have a kali Distibution")
+        f = open("/etc/os-release", "r")
+        OS="ID=kali"
+        for line in f:  
+            if OS in line: 
+                return 
+            else:
+                f.close()
+                raise OSError("You don't have a kali Distibution")
 
 class APIClient:
 

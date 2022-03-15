@@ -35,12 +35,10 @@ surikatz_dict = {}
         Laurent DELATTE
 """
 
-
 class ScanMode(Enum):
     PASSIVE = 0
     DISCRET = 1
     AGRESSIVE = 2
-
 
 @click.command()
 @click.argument("target")
@@ -72,7 +70,7 @@ class ScanMode(Enum):
     help="Use only OSINT technics to retrive data",
 )
 def launch(target, level):
-    
+
     motd(0.1)
     utils.Checker.checkTime()
     utils.Checker.checkIPPublic()
@@ -88,10 +86,8 @@ def launch(target, level):
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
 
-
 def motd(version):
-    console.print(
-        f"""
+    console.print(f"""
          ,/****/*,,          
       (#%%%/,,,#%%##/*          _____               _  _           _        
    %(#%&@@@#*,,%&&&&(*/(&      / ____|             (_)| |         | |       
@@ -101,10 +97,7 @@ def motd(version):
      .(##%%###%%&%%#((/       |_____/  \__,_||_|   |_||_|\_\\\\__,_| \__|/___| v{version}
       ,(###%%%&%%%#(///      
         .#%%%%%%%&%*,/,...                               
-    \n""",
-        style="bold",
-    )
-
+    \n""", style="bold")
 
 def passive_mode(target):
     

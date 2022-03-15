@@ -40,6 +40,9 @@ class ConfReader:
 	def getRapid(self):
 		return self._getApiKey("RAPID_API")
 
+	def getWappalyzer(self):
+		return self._getApiKey("WAPPALYZER_API")
+
 
 class Checker:
     @staticmethod

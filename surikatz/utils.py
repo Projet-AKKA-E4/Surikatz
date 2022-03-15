@@ -14,7 +14,7 @@ import csv
 from rich import print
 from rich.console import Console
 import shodan
-#from requests import get
+from datetime import datetime
 
 console = Console()
 
@@ -70,6 +70,12 @@ class Checker:
         ip = APIClient('https://api.ipify.org')
         ip = ip.request("/", params={"format": "json"})
         print(f'My public IP address is: {ip["ip"]}')
+
+    @staticmethod
+    def checkTime():
+        now = datetime.now()
+        datenow = now.strftime("%d/%m/%Y, %H:%M:%S")
+        print(f'Date: {datenow}')
 
 class APIClient:
 

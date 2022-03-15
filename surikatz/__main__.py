@@ -44,6 +44,7 @@ class ScanMode(Enum):
 def launch(target, level):
 
     motd(0.1)
+    utils.Checker.checkTime()
     utils.Checker.checkIPPublic()
 
     if level == ScanMode.PASSIVE:

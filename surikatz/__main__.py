@@ -7,6 +7,7 @@ from surikatz.utils import ConfReader
 from surikatz import result
 from rich.console import Console
 from rich.markdown import Markdown
+from surikatz.result import Analyze
 
 console = Console()  # Console configuration for rich package allowing beautiful print
 
@@ -70,7 +71,7 @@ class ScanMode(Enum):
     help="Use only OSINT technics to retrive data",
 )
 def launch(target, level):
-
+    
     motd(0.1)
     utils.Checker.checkTime()
     utils.Checker.checkIPPublic()
@@ -126,14 +127,11 @@ def passive_mode(target):
     shodanApi = osint.ShodanUtils(whoisData["ip_address"], conf.getShodan())
     shodanData = shodanApi.get_data()
     del shodanData["data"]
+    cves = shodanData.pop("vulns")
     console.print(shodanData)
     console.print("\n")
 
-    #Dict concat
-    surikatz_dict = {**whoisData, **shodanData}
+    for cve in cves:
+        Analyze.get_cvss(cve)
+        print("")
 
-    result_analyze = result.Analyze(surikatz_dict)
-    result_analyze.dict_clean(surikatz_dict)
-
-if __name__ == '__main__':
-    launch()

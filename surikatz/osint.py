@@ -45,7 +45,7 @@ class TheHarvester:
 
                 else:
                     fqdns.add(host.cdata)
-        return emails, ips, fqdns
+        return list(emails), list(ips), list(fqdns)
 
     def _print(self, emails, ips, fqdns):
         interresting = ["test", "admin", "vpn", "login"]

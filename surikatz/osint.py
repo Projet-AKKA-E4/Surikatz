@@ -22,29 +22,78 @@ class TheHarvester:
     """
 
     def __init__(self, domain):
+        """Init the theHarvester object.
+
+        Retrieves rows pertaining to the given keys from the Table instance
+        represented by table_handle.  String keys will be UTF-8 encoded.
+
+        Args:
+            self: TheHarvester object.
+            domain: domain name. For example : blabla.fr
+
+        Returns:
+            Three sets of emails, ips and FQDNs. For
+            example:
+
+            {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr},
+            {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1},
+            {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}
+
+        """
         self.domain = domain
 
     def _parse_xml(self):
+        """Parse the xml file output of theHarvester.
+
+        Retrieves rows pertaining to the given keys from the Table instance
+        represented by table_handle.  String keys will be UTF-8 encoded.
+
+        Args:
+            self: TheHarvester object.
+
+        Returns:
+            Three sets of emails, ips and FQDNs. For
+            example:
+
+            {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr},
+            {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1},
+            {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}
+
+        """
+        # Regex matching IPv4 IP address
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
-        harvester_obj = untangle.parse("output.xml")
+
+        # parse the xml
+        harvester_obj = untangle.parse("/tmp/output.xml")
+
+        # create sets for the data
         emails = set()
         fqdns = set()
         ips = set()
+
+        # Check if there is emails in the parsed object
         if "email" in dir(harvester_obj.theHarvester):
+            # Loop through the emails elements of the parsed objet and add them in the email set
             for email in harvester_obj.theHarvester.email:
                 emails.add(email.cdata)
 
+        # Check if there is hosts elements in the parsed object
         if "host" in dir(harvester_obj.theHarvester):
+            # Loop through the hosts elements of the parsed objet and add them to the corresponding set (ips or fqdns)
             for host in harvester_obj.theHarvester.host:
+                # If there is no cdata to the host element, it must have both fqdn and ip
                 if host.cdata == "":
                     fqdns.add(host.hostname.cdata)
+                    # Check if there is valid ip object
                     if not (re.search(regex, host.ip.cdata)):
+                        # Split the ip string when there is multiple IP in one string
                         tmp_ips = str(host.ip.cdata).split(",")
                         for ip in tmp_ips:
                             ips.add(ip.replace(" ", ""))
-
+                # If there is cdata, then it must have only an fqdn
                 else:
                     fqdns.add(host.cdata)
+        
         return list(emails), list(ips), list(fqdns)
 
     def _print(self, emails, ips, fqdns):
@@ -66,19 +115,30 @@ class TheHarvester:
                 count += 1
 
     def get_data(self):
+        """Returns data found by TheHarvester
+
+        Args:
+            self: TheHarvester object.
+
+        Returns:
+            A dict of set. For example :
+
+            {"emails": {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr}, 
+            "ips": {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1}, 
+            "FQDN": {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}}
+
+        Raises:
+            AppNotInstalled: lease install theHarvester on your device or use a Kali Linux.
+        """
         try:
             harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "output"],
+                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
                 stdout=subprocess.PIPE,
-            )
+            ) # Launch theHarvester from the user's computer
         except OSError:
             raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
 
         emails, ips, fqdns = self._parse_xml()
-
-        emails, ips, fqdns = list(emails), list(ips), list(fqdns)
-
-        self._print(emails, ips, fqdns)
 
         return {"emails": emails, "ips": ips, "fqdns": fqdns}
 

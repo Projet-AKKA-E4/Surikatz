@@ -128,7 +128,7 @@ class TheHarvester:
             "FQDN": {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}}
 
         Raises:
-            AppNotInstalled: lease install theHarvester on your device or use a Kali Linux.
+            AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
         try:
             harvester = subprocess.run(

@@ -18,27 +18,25 @@ class Analyze:
         console.print(global_dict)
 
     @staticmethod
-    def save_csv(dict_to_save):
-        print(type(dict_to_save))
+    def save_to_csv(dict_to_save):
+        """Transform dict data to a csv file
+        Args:
+            dict_to_save: All concatenated data in python dict form
+        """
+        df = pd.DataFrame(dict([ (k,pd.Series(v,dtype=pd.StringDtype())) for k,v in dict_to_save.items() ]))
+        df.to_csv (r'final_data.csv', index = False, header=True)
+        console.print("Writing all data in final_data.csv", style="bold #008000")
 
-        df = pd.DataFrame.from_dict(dict_to_save, orient='index')
-        print(df)
-        df = df.transpose()
-        print(df)
-        df.to_csv (r'final.csv', index = False, header=True)
+    @staticmethod
+    def save_to_json(dict_to_save):
+        """Transform dict data to a json file
+        Args:
+            dict_to_save: All concatenated data in python dict form
+        """
+        with open('final_data.json', 'w') as fp:
+            json.dump(dict_to_save, fp)
+            console.print("Writing all data in final_data.json", style="bold #008000")
 
-        # with open('mycsvfile.csv', 'w') as f:  # You will need 'wb' mode in Python 2.x
-        #     w = csv.DictWriter(f, dict_to_save.keys())
-        #     w.writeheader()
-        #     w.writerow(dict_to_save)
-
-            # x = list(dict_to_save.keys())
-            # print(x)
-            # print(type(x))
-            # writer = csv.DictWriter(csv_file, fieldnames=x)
-            # writer.writeheader()
-            # for data in dict_to_save:
-            #     writer.writerow(data)
 
     @staticmethod
     def get_cvss(cve):

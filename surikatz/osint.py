@@ -163,13 +163,12 @@ class Whois:
         """
         Whois function get information about an Ip address or a domain name
 
-        Parameters
-        ----------
-        a : str
-            The IP address or the domain name
+        Args:
+            target:
+                The IP address or the domain name
         """
-        if Checker.checkIpAddress(target):  # For an ip Address
-            # print("Valid Ip address: ", target)
+    # For an ip Address
+        if Checker.checkIpAddress(target):
 
             host = whois.whois(target)
             dict_ip = {
@@ -182,6 +181,7 @@ class Whois:
             }
             print(dict_ip)
 
+            # Test if dict_ip have more than 3 None inside -> means that probably the address is not correct
             num = 0
             for key, value in dict_ip.items():
                 if value == None:
@@ -193,9 +193,8 @@ class Whois:
                     )
 
             return dict_ip
-
-        elif Checker.checkDomain(target):  # For Domain Name
-            # print("Valid Domain Name: ",target)
+    # For Domain Name
+        elif Checker.checkDomain(target):
             whoisData = whois.whois(target)
 
             try:
@@ -212,6 +211,7 @@ class Whois:
                 "name_servers": whoisData.name_servers,
             }
             print(dict_domain)
+            # Test if dict_domain have more than 3 None inside -> means that probably the domain name is not correct
             num = 0
             for key, value in dict_domain.items():
                 if value == None:

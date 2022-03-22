@@ -102,11 +102,11 @@ class TheHarvester:
             self: TheHarvester object.
 
         Returns:
-            A dict of set. For example :
+            A dict of list. For example :
 
-            {"emails": {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr}, 
-            "ips": {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1}, 
-            "FQDN": {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}}
+            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr], 
+            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1], 
+            "FQDN": [vpn.blabla.fr, test200.blabla.fr, www.blabla.fr]}
 
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.

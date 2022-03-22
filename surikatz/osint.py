@@ -93,26 +93,7 @@ class TheHarvester:
                 # If there is cdata, then it must have only an fqdn
                 else:
                     fqdns.add(host.cdata)
-        
-        return list(emails), list(ips), list(fqdns)
-
-    def _print(self, emails, ips, fqdns):
-        interresting = ["test", "admin", "vpn", "login"]
-        console.print("emails:", emails)
-        console.print("ips:", ips)
-
-        console.print("FQDN:")
-        count = 0
-        for fqdn in fqdns:
-            if fqdn.split(".")[0] in interresting:
-                count += 1
-                console.print(fqdn)
-
-        if count == 0:
-            for i in fqdns:
-                if count == 5:
-                    break
-                count += 1
+        return emails, ips, fqdns
 
     def get_data(self):
         """Returns data found by TheHarvester
@@ -121,28 +102,26 @@ class TheHarvester:
             self: TheHarvester object.
 
         Returns:
-            A dict of list. For example :
+            A dict of set. For example :
 
-            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr],
-            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1],
-            "FQDN": [vpn.blabla.fr, test200.blabla.fr, www.blabla.fr]}
+            {"emails": {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr}, 
+            "ips": {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1}, 
+            "FQDN": {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}}
 
         Raises:
-            AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
+            AppNotInstalled: lease install theHarvester on your device or use a Kali Linux.
         """
         try:
             harvester = subprocess.run(
                 ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
                 stdout=subprocess.PIPE,
-            )  # Launch theHarvester from the user's computer
+            ) # Launch theHarvester from the user's computer
         except OSError:
-            raise AppNotInstalled(
-                "Please install theHarvester on your device or use a Kali Linux."
-            )
+            raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
 
         emails, ips, fqdns = self._parse_xml()
 
-        return {"emails": emails, "ips": ips, "fqdns": fqdns}
+        return {"emails": emails, "ips": ips, "FQDN": fqdns}
 
 
 class IHaveBeenPawn:

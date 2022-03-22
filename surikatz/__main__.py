@@ -126,9 +126,14 @@ def passive_mode(target):
 
     console.rule("[bold]GLOBAL INFORMATION")
     surikatz_dict = { **whoisData, **harvesterDATA, **shodanData}
+    console.print(surikatz_dict)
+    #Analyze.clean_dict(surikatz_dict)
 
-    Analyze.clean_dict(surikatz_dict)
-    Analyze.save_csv(surikatz_dict)
+# def csv_output(dict_to_store):
+    Analyze.save_to_csv(surikatz_dict)
+
+def json_output(dict_to_store):
+    Analyze.save_to_json(dict_to_store)
 
 # CVSS Management
     for cve in cves:

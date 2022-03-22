@@ -45,8 +45,22 @@ class ConfReader:
 
 
 class Checker:
+    """
+        A class that is mainly used for checking and verification parts that will be useful for the smooth running of the operation.
+    """
     @staticmethod
     def checkIpAddress(Ip):
+        """
+            A function that will check through RegEx if an IP address is valid or not.
+           
+            Arguments:
+                Ip : The IP address that we want to check
+            
+            Returns: 
+                -True if the domain name is valid
+                -False if the domain name is not valid
+        """
+    
         regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
     	# pass the regular expression
     	# and the string in search() method
@@ -57,6 +71,16 @@ class Checker:
             
     @staticmethod        
     def checkDomain(domain):
+        """
+            A function that will check through RegEx if a domain name is valid or not.
+           
+            Arguments:
+                domain : The domain that we want to check
+            
+            Returns: 
+                -True if the domain name is valid
+                -False if the domain name is not valid
+        """
         regex= "^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,6}$"
         #a = input("Enter a domain name:")
         if re.search(regex, domain):
@@ -67,18 +91,30 @@ class Checker:
 
     @staticmethod
     def checkIPPublic():
+        """
+            A function that will check and return our public IP address through the Ipify's
+        """
         ip = APIClient('https://api.ipify.org')
         ip = ip.request("/", params={"format": "json"})
         print(f'My public IP address is: {ip["ip"]}')
 
     @staticmethod
     def checkTime():
+        """
+            A function that will check and return the date and the time when we run our program
+        """
         now = datetime.now()
         datenow = now.strftime("%d/%m/%Y, %H:%M:%S")
         print(f'Date: {datenow}')
    
     @staticmethod
     def checkKali():
+        """
+            A function that will check if the OS used is a Kali Linux distribution
+
+            Returns:
+                - Raise an exception if we do not have a Kali Linux Distribution
+        """
         f = open("/etc/os-release", "r")
         OS="ID=kali"
         for line in f:  
@@ -89,7 +125,9 @@ class Checker:
                 raise OSError("You don't have a kali Distibution")
 
 class APIClient:
-
+    """
+        A class that will be used for gathering information from any API.
+    """
     def __init__(self, basic_url,key= None, proxies=None):
         self.base_url = basic_url
         self._session = requests.Session()
@@ -117,17 +155,17 @@ class APIClient:
 
 
     def request(self, target,params= None):
-            """General-purpose function to create web requests to any API.
+        """General-purpose function to create web requests to any API.
 
-            Arguments:
-                function  -- name of the function you want to execute
-                target    -- The endpoint for accessing the ressources we aim for.
-                params    -- dictionary of parameters for the function
+        Arguments:
+            function  -- name of the function you want to execute
+            target    -- The endpoint for accessing the ressources we aim for.
+            params    -- dictionary of parameters for the function
 
-            Returns
-                A dictionary containing the function's results.
+        Returns:
+           A dictionary containing the function's results.
 
-            """
+        """
             if params:
                 target += self.resultUrl(params)
 

@@ -311,5 +311,5 @@ tags
 
 # Files link to the project surikatz
 output.json
-output.csv
+*.csv
 output.xml

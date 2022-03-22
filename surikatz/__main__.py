@@ -112,7 +112,7 @@ def passive_mode(target):
     console.print("")
     theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
     harvesterDATA = theHarvesterAPI.get_data()
-
+    Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
     console.print("\n")
 
     console.rule("[bold]Shodan information")

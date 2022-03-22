@@ -56,6 +56,16 @@ class Analyze:
         colors = Select.display_CVSS(result)
         return colors
 
+    @staticmethod
+    def get_clean_data_theHarvester(theHarvesterDATA):
+        interresting = ["test", "admin", "vpn", "login", "dev", "data", "gdpr", "rgpd", "backup", "contact", "internship", "stage", "apply", "recrut", "recrutement", "ftp", "info", "smtp", "imaps", "pop3", "administrateur", "administrator", "file", "secretariat", "secretary" ,"hr", "rh", "it", "drh"]
+        lens = [len(theHarvesterDATA["ips"]), len(theHarvesterDATA["emails"]), len(theHarvesterDATA["FQDN"])]
+        theHarvesterDATA["emails"] = theHarvesterDATA["emails"][:10]
+        theHarvesterDATA["FQDN"] = [elt for elt in theHarvesterDATA["FQDN"] if elt.split(".")[0] in interresting]
+        theHarvesterDATA["ips"] = theHarvesterDATA["ips"][:10]
+        Select.display_TheHarvester_data(theHarvesterDATA, lens)
+
+
 class Select:
     """
         Class for determining revelant information for pentest
@@ -77,3 +87,10 @@ class Select:
         console.print(f"CVE : {cve['cve']}", style="bold "+cvss_color)
         console.print(f"Type : {cve['Type']}", style=cvss_color)
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
+    
+
+    @staticmethod
+    def display_TheHarvester_data(theHarvesterDATA, lens):
+        console.print("ips: ", lens[0], theHarvesterDATA["ips"], style="bold")
+        console.print("emails:", lens[1], theHarvesterDATA["emails"], style="bold")
+        console.print("fqdns:", lens[2], theHarvesterDATA["FQDN"], style="bold red")

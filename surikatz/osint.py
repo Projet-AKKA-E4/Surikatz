@@ -2,6 +2,7 @@
     Module for using OSINT tools and databases to perform passives scans
 """
 from surikatz.error import APIError, AppNotInstalled
+from surikatz.utils import Checker
 import re
 import requests
 import whois
@@ -169,8 +170,8 @@ class Whois:
         a : str
             The IP address or the domain name
         """
-        if self.checkIpAddress(target):  # For an ip Address
-            # print("Valid Ip address: ", target)
+        if Checker.checkIpAddress(target):  # For an ip Address
+            #print("Valid Ip address: ", target)
 
             host = whois.whois(target)
             dict_ip = {
@@ -198,8 +199,8 @@ class Whois:
 
             return dict_ip
 
-        elif self.checkDomain(target):  # For Domain Name
-            # print("Valid Domain Name: ",target)
+        elif Checker.checkDomain(target):   # For Domain Name
+            #print("Valid Domain Name: ",target)
             whoisData = whois.whois(target)
 
             try:

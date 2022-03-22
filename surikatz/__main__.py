@@ -2,7 +2,7 @@
 
 from enum import Enum
 import click
-from surikatz import osint
+from surikatz import osint, utils
 from rich.console import Console
 from rich.markdown import Markdown
 
@@ -44,6 +44,8 @@ class ScanMode(Enum):
 def launch(target, level):
 
     motd(0.1)
+    utils.Checker.checkTime()
+    utils.Checker.checkIPPublic()
 
     if level == ScanMode.PASSIVE:
         console.print(Markdown("# Passive mode", style="white"), style="bold green")

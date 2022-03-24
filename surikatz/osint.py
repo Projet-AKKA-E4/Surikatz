@@ -123,7 +123,7 @@ class TheHarvester:
 
         emails, ips, fqdns = self._parse_xml()
 
-        return {"emails": list(emails), "ips": list(ips), "FQDN": list(fqdns)}
+        return {"emails": list(emails), "ips": list(ips), "fqdns": list(fqdns)}
 
 
 class IHaveBeenPawn:

@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 from surikatz.error import APIError, ReadError
-
-# from error import APIError, ReadError
 import importlib.resources
 from dotenv import load_dotenv
 import os

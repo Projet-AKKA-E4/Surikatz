@@ -107,6 +107,8 @@ def motd(version):
 
 def passive_mode(target):
     
+    global surikatz_dict
+
     console.rule("[bold]Whois information")
     console.print("")
     whoisAPI = osint.Whois()
@@ -141,7 +143,7 @@ def passive_mode(target):
     if conf.getWappalyzer():
         console.rule("[bold]Wappalizer information")
         console.print("")
-        wappalizerApi = osint.Wappalyser(conf.getWappalyser())
+        wappalizerApi = osint.Wappalyser(conf.getWappalyzer())
         for fqdn in shodanData["hostnames"]:
             wappalizerData = wappalizerApi.lookup(fqdn)
             console.print(wappalizerData)
@@ -159,3 +161,6 @@ def passive_mode(target):
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)
+
+if __name__ == "__main__":
+    launch()

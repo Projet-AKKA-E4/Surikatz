@@ -9,12 +9,10 @@ authors = ["alphae-nix <18laurent@gmail.com>",
            "blackjack-nix <theo.peresse-gourbil@edu.esiee.fr>",
            "CappiLucky <manon.hermann@edu.esiee.fr>"           ]
 readme = "README.md"
+include = ["surikatz/static/.env"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Sphinx = "^4.4.0"
-sphinx-rtd-theme = "^1.0.0"
-myst-parser = "^0.16.1"
 click = "^8.0.4"
 rich = "^11.2.0"
 python-whois = "^0.7.3"
@@ -27,6 +25,9 @@ pandas = "^1.4.1"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 black = "^22.1.0"
+Sphinx = "^4.4.0"
+sphinx-rtd-theme = "^1.0.0"
+myst-parser = "^0.16.1"
 
 [tool.poetry.scripts]
 surikatz = "surikatz.__main__:launch"

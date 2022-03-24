@@ -3,13 +3,14 @@
 from enum import Enum
 import click
 from surikatz import osint, utils
-from surikatz.utils import ConfReader
-from surikatz import result
+from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
 from surikatz.result import Analyze
 
 console = Console()  # Console configuration for rich package allowing beautiful print
+conf = ConfManager()
+surikatz_dict = {}
 
 """
     Surikatz
@@ -34,10 +35,12 @@ console = Console()  # Console configuration for rich package allowing beautiful
         Laurent DELATTE
 """
 
+
 class ScanMode(Enum):
     PASSIVE = 0
     DISCRET = 1
     AGRESSIVE = 2
+
 
 @click.command()
 @click.argument("target")
@@ -85,8 +88,10 @@ def launch(target, level):
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
 
+
 def motd(version):
-    console.print(f"""
+    console.print(
+        f"""
          ,/****/*,,          
       (#%%%/,,,#%%##/*          _____               _  _           _        
    %(#%&@@@#*,,%&&&&(*/(&      / ____|             (_)| |         | |       
@@ -96,17 +101,19 @@ def motd(version):
      .(##%%###%%&%%#((/       |_____/  \__,_||_|   |_||_|\_\\\\__,_| \__|/___| v{version}
       ,(###%%%&%%%#(///      
         .#%%%%%%%&%*,/,...                               
-    \n""", style="bold")
+    \n""",
+        style="bold",
+    )
+
 
 def passive_mode(target):
-
-    conf = ConfReader()
 
     console.rule("[bold]Whois information")
     console.print("")
     whoisAPI = osint.Whois()
     whoisData = whoisAPI.whoIs(target)
     console.print("\n")
+    surikatz_dict.update({**whoisData})
 
     console.rule("[bold]TheHarvester information")
     console.print("")
@@ -114,30 +121,40 @@ def passive_mode(target):
     harvesterDATA = theHarvesterAPI.get_data()
     Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
     console.print("\n")
+    surikatz_dict.update({**harvesterDATA})
 
     console.rule("[bold]Shodan information")
     console.print("")
-    shodanApi = osint.ShodanUtils(whoisData["ip_address"], conf.getShodan())
-    shodanData = shodanApi.get_data()
-    del shodanData["data"]
+    shodanApi = osint.ShodanUtils(conf.getShodan())
+    shodanData = shodanApi.get_data(whoisData["ip_address"])
+    if conf.getShodan():
+        del shodanData["data"]
     cves = shodanData.pop("vulns")
     console.print(shodanData)
     console.print("\n")
+    surikatz_dict.update({**shodanData})
 
-    console.rule("[bold]GLOBAL INFORMATION")
-    surikatz_dict = { **whoisData, **harvesterDATA, **shodanData}
-    console.print(surikatz_dict)
-    #Analyze.clean_dict(surikatz_dict)
-
-# def csv_output(dict_to_store):
-    Analyze.save_to_csv(surikatz_dict)
-
-def json_output(dict_to_store):
-    Analyze.save_to_json(dict_to_store)
-
-# CVSS Management
+    # CVSS Management
     for cve in cves:
         Analyze.get_cvss(cve)
         print("")
 
+    if conf.getWappalyser():
+        console.rule("[bold]Wappalizer information")
+        console.print("")
+        wappalizerApi = osint.Wappalyser(conf.getWappalyser())
+        for fqdn in shodanData["hostnames"]:
+            wappalizerData = wappalizerApi.lookup(fqdn)
+            console.print(wappalizerData)
+            surikatz_dict.update({**wappalizerData})
+        console.print("\n")
 
+    console.rule("[bold]GLOBAL INFORMATION")
+    console.print(surikatz_dict)
+    console.print("\n")
+
+    Analyze.save_to_csv(surikatz_dict)
+
+
+def json_output(dict_to_store):
+    Analyze.save_to_json(dict_to_store)

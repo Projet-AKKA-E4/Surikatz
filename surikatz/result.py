@@ -5,16 +5,19 @@ from rich.table import Table
 import csv
 import json
 import pandas as pd
+from pathlib import Path
 
 console = Console()
 """
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
 
+
 class Analyze:
     """
-        Class for analysing the JSON, compare and eliminate obsolete data
+    Class for analysing the JSON, compare and eliminate obsolete data
     """
+
     @staticmethod
     def clean_dict(global_dict):
         console.print(global_dict)
@@ -25,8 +28,27 @@ class Analyze:
         Args:
             dict_to_save: All concatenated data in python dict form
         """
-        df = pd.DataFrame(dict([ (k,pd.Series(v,dtype=pd.StringDtype())) for k,v in dict_to_save.items() ]))
-        df.to_csv (r'final_data.csv', index = False, header=True)
+        df = pd.DataFrame(
+            dict(
+                [
+                    (k, pd.Series(v, dtype=pd.StringDtype()))
+                    for k, v in dict_to_save.items()
+                ]
+            )
+        )
+        filename = "final_data.csv"
+        tmp_dest = Path("/tmp/surikatz")
+        if not tmp_dest.exists():
+            Path.mkdir(tmp_dest, parents=True, exist_ok=True)
+        df.to_csv(tmp_dest / filename, index=False, header=True)
+        try:
+            dest = Path().cwd() / filename
+            dest.write_text(tmp_dest.joinpath(filename).read_text())
+        except OSError:
+            print(
+                "You don't have writing permission on current directory."
+                f"The output file is written at {tmp_dest / filename}"
+            )
         console.print("Writing all data in final_data.csv", style="bold #008000")
 
     @staticmethod
@@ -35,59 +57,94 @@ class Analyze:
         Args:
             dict_to_save: All concatenated data in python dict form
         """
-        with open('final_data.json', 'w') as fp:
+        with open(Path.home() / "surikatz/final_data.json", "w") as fp:
             json.dump(dict_to_save, fp)
             console.print("Writing all data in final_data.json", style="bold #008000")
-
 
     @staticmethod
     def get_cvss(cve):
         client = APIClient("https://cve.circl.lu/api/cve/")
         r = client.request(cve)
-        try :
+        try:
             result = {
-                "cve":cve,
-                "cvss":r["cvss"],
-                "Type":r["capec"][0]["name"] if r["capec"] else ""
+                "cve": cve,
+                "cvss": r["cvss"],
+                "Type": r["capec"][0]["name"] if r["capec"] else "Undefined",
             }
-        except :
+        except:
             result = None
 
-        colors = Select.display_CVSS(result)
+        colors = Display.display_CVSS(result)
         return colors
 
     @staticmethod
     def get_clean_data_theHarvester(theHarvesterDATA):
-        interresting = ["test", "admin", "vpn", "login", "dev", "data", "gdpr", "rgpd", "backup", "contact", "internship", "stage", "apply", "recrut", "recrutement", "ftp", "info", "smtp", "imaps", "pop3", "administrateur", "administrator", "file", "secretariat", "secretary" ,"hr", "rh", "it", "drh"]
-        lens = [len(theHarvesterDATA["ips"]), len(theHarvesterDATA["emails"]), len(theHarvesterDATA["FQDN"])]
+        interresting = [
+            "test",
+            "admin",
+            "vpn",
+            "login",
+            "dev",
+            "data",
+            "gdpr",
+            "rgpd",
+            "backup",
+            "contact",
+            "internship",
+            "stage",
+            "apply",
+            "recrut",
+            "recrutement",
+            "ftp",
+            "info",
+            "smtp",
+            "imaps",
+            "pop3",
+            "administrateur",
+            "administrator",
+            "file",
+            "secretariat",
+            "secretary",
+            "hr",
+            "rh",
+            "it",
+            "drh",
+        ]
+        lens = [
+            len(theHarvesterDATA["ips"]),
+            len(theHarvesterDATA["emails"]),
+            len(theHarvesterDATA["FQDN"]),
+        ]
         theHarvesterDATA["emails"] = theHarvesterDATA["emails"][:10]
-        theHarvesterDATA["FQDN"] = [elt for elt in theHarvesterDATA["FQDN"] if elt.split(".")[0] in interresting]
+        theHarvesterDATA["FQDN"] = [
+            elt for elt in theHarvesterDATA["FQDN"] if elt.split(".")[0] in interresting
+        ]
         theHarvesterDATA["ips"] = theHarvesterDATA["ips"][:10]
-        Select.display_TheHarvester_data(theHarvesterDATA, lens)
+        Display.display_TheHarvester_data(theHarvesterDATA, lens)
 
 
-class Select:
+class Display:
     """
-        Class for determining revelant information for pentest
+    Class for determining revelant information for pentest
     """
+
     @staticmethod
     def display_CVSS(cve):
 
-        if not cve :
+        if not cve:
             print("Error while getting this CVE information \n")
             return
 
-        if int(cve["cvss"]) > 8 :
+        if int(cve["cvss"]) > 8:
             cvss_color = "red"
-        elif int(cve["cvss"]) > 5 :
+        elif int(cve["cvss"]) > 5:
             cvss_color = "dark_orange"
-        else :
+        else:
             cvss_color = "white"
 
-        console.print(f"CVE : {cve['cve']}", style="bold "+cvss_color)
+        console.print(f"CVE : {cve['cve']}", style="bold " + cvss_color)
         console.print(f"Type : {cve['Type']}", style=cvss_color)
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
-    
 
     @staticmethod
     def display_TheHarvester_data(theHarvesterDATA, lens):

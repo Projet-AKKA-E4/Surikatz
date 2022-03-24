@@ -71,13 +71,13 @@ class TheHarvester:
         fqdns = set()
         ips = set()
 
-        # Check if there is emails in the parsed object
+        # Check if there is emails in the parsed object
         if "email" in dir(harvester_obj.theHarvester):
             # Loop through the emails elements of the parsed objet and add them in the email set
             for email in harvester_obj.theHarvester.email:
                 emails.add(email.cdata)
 
-        # Check if there is hosts elements in the parsed object
+        # Check if there is hosts elements in the parsed object
         if "host" in dir(harvester_obj.theHarvester):
             # Loop through the hosts elements of the parsed objet and add them to the corresponding set (ips or fqdns)
             for host in harvester_obj.theHarvester.host:
@@ -123,8 +123,8 @@ class TheHarvester:
         Returns:
             A dict of list. For example :
 
-            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr], 
-            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1], 
+            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr],
+            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1],
             "FQDN": [vpn.blabla.fr, test200.blabla.fr, www.blabla.fr]}
 
         Raises:
@@ -134,9 +134,11 @@ class TheHarvester:
             harvester = subprocess.run(
                 ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
                 stdout=subprocess.PIPE,
-            ) # Launch theHarvester from the user's computer
+            )  # Launch theHarvester from the user's computer
         except OSError:
-            raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
+            raise AppNotInstalled(
+                "Please install theHarvester on your device or use a Kali Linux."
+            )
 
         emails, ips, fqdns = self._parse_xml()
 
@@ -152,23 +154,21 @@ class IHaveBeenPawn:
 class Whois:
     """
     Class allowing the manipulation of Whois service provide by registars
-
-    Methods
-    -------
-    whoIs(a)
-        Return whois information from a
     """
 
-    def whoIs(self, target):
+    def whoIs(self, target: str) -> dict:
         """
         Whois function get information about an Ip address or a domain name
 
         Args:
-            target:
-                The IP address or the domain name
+            target: The IP address or the domain name
+
+        Return:
+            A dictionnary of Whois information
         """
-    # For an ip Address
-        if Checker.checkIpAddress(target):
+
+        if Checker.checkIpAddress(target):  # For an ip Address
+            # print("Valid Ip address: ", target)
 
             host = whois.whois(target)
             dict_ip = {
@@ -193,7 +193,7 @@ class Whois:
                     )
 
             return dict_ip
-    # For Domain Name
+        # For Domain Name
         elif Checker.checkDomain(target):
             whoisData = whois.whois(target)
 
@@ -234,28 +234,53 @@ class ShodanUtils:
     Class allowing the manipulation of Shodan API
     """
 
-    _SHODAN_API_KEY = "yZ77YuFRvpdwn9ZCA3Uk8yJkmkyisi3k"
-
-    def __init__(self, target: str, key):
-        self.target = target
+    def __init__(self, key):
         self.internetdb = APIClient("https://internetdb.shodan.io/")
-        self.shodan = shodan.Shodan(ShodanUtils._SHODAN_API_KEY)
+        self.shodan = shodan.Shodan(key)
 
-    def _request_data(self) -> dict():
-        return (self.internetdb.request(self.target), self.shodan.host(self.target))
+    def _request_data(self, target: str) -> tuple:
+        """
+        Make requests to InternetDB and Shodan databases
+
+        Args:
+            target: Device's IP to target
+
+        Returns:
+            A tuple containing two dictionnaries:
+             - the first contain InternetDB data
+             - the second contain Shodan data
+        """
+        if not self.shodan.api_key:
+            print("No Shodan key has been provided. Only InternetDB data will be used")
+            return (self.internetdb.request(target), None)
+        return (self.internetdb.request(target), self.shodan.host(target))
 
     def _cpe_to_cpe23(self, cpes: dict) -> dict:
+        """
+        Convert old CPEs to CPE 2.3 format
+
+        Args:
+            cpes: A dictionnary with outdated CPEs
+
+        Returns:
+            dict: A translated CPEs dictionnary
+        """
         return [cpe.replace("/", "2.3:") for cpe in cpes]
 
-    def get_data(self) -> dict():
-        """Collect and generate data from databases
-
-        Return:
-            A tuple containing two dictionnaries:
-             - the first contain most revelant data
-             - the second contain the complete data
+    def get_data(self, target: str) -> dict:
         """
-        intdb_data, shodan_data = self._request_data()
+        Collect and generate data from databases
+
+        Args:
+            target: Device's IP to target
+
+        Returns:
+            A dictionnary with all revelant information
+        """
+        intdb_data, shodan_data = self._request_data(target)
+
+        if not shodan_data:
+            return intdb_data
 
         for key in intdb_data.keys():
             if key not in shodan_data.keys():
@@ -287,7 +312,7 @@ class ShodanUtils:
         return shodan_data
 
 
-class PawnDB:
+class PwnDB:
     """
     Class allowing the manipulation of PawnDB database
     """
@@ -309,3 +334,46 @@ class SearchSploit:
     """
     Class allowing the manipulation of Searchsploit tool and Exploit-DB database and the parsing of its output
     """
+
+
+class Wappalyser:
+    """
+    Class allowing the manipulation of Wappalyser and the parsing of its output
+
+    Attributes:
+        key: API key for Wappalyser
+    """
+
+    def __init__(self, key: str):
+        self.api = APIClient("https://api.wappalyzer.com/v2", key={"x-api-key": key})
+
+    def lookup(self, target: str) -> dict:
+        """
+        Function for finding out the technology stack of any website, such as the CMS or ecommerce platform.
+
+        Args:
+            target: Device's FQDN to target
+
+        Returns:
+            data: Dict of technology stack of the target
+        """
+        rq = self.api.request(
+            "/lookup",
+            params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
+        )[0]
+        data = {"url": rq["url"], "technologies": []}
+        for techno in rq["technologies"]:
+            slugs = [categorie["slug"] for categorie in techno["categories"]]
+            if any( slug in [
+                    "cms",
+                    "web-servers",
+                    "programming-languages",
+                    "wordpress-plugins",
+                    "wordpress-themes",
+                    "security",
+                ]
+                for slug in slugs
+            ):
+                del techno["trafficRank"], techno["confirmedAt"]
+                data["technologies"].append(techno)
+        return data

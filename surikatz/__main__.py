@@ -35,10 +35,12 @@ surikatz_dict = {}
         Laurent DELATTE
 """
 
+
 class ScanMode(Enum):
     PASSIVE = 0
     DISCRET = 1
     AGRESSIVE = 2
+
 
 @click.command()
 @click.argument("target")
@@ -86,8 +88,10 @@ def launch(target, level):
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
 
+
 def motd(version):
-    console.print(f"""
+    console.print(
+        f"""
          ,/****/*,,          
       (#%%%/,,,#%%##/*          _____               _  _           _        
    %(#%&@@@#*,,%&&&&(*/(&      / ____|             (_)| |         | |       
@@ -97,7 +101,9 @@ def motd(version):
      .(##%%###%%&%%#((/       |_____/  \__,_||_|   |_||_|\_\\\\__,_| \__|/___| v{version}
       ,(###%%%&%%%#(///      
         .#%%%%%%%&%*,/,...                               
-    \n""", style="bold")
+    \n""",
+        style="bold",
+    )
 
 def passive_mode(target):
     

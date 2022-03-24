@@ -104,8 +104,8 @@ class TheHarvester:
         Returns:
             A dict of list. For example :
 
-            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr], 
-            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1], 
+            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr],
+            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1],
             "FQDN": [vpn.blabla.fr, test200.blabla.fr, www.blabla.fr]}
 
         Raises:
@@ -115,9 +115,11 @@ class TheHarvester:
             harvester = subprocess.run(
                 ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
                 stdout=subprocess.PIPE,
-            ) # Launch theHarvester from the user's computer
+            )  # Launch theHarvester from the user's computer
         except OSError:
-            raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
+            raise AppNotInstalled(
+                "Please install theHarvester on your device or use a Kali Linux."
+            )
 
         emails, ips, fqdns = self._parse_xml()
 

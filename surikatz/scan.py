@@ -3,7 +3,6 @@
 """
 
 
-
 class Nmap:
     """
     Class allowing the manipulation of nmap and the parsing of its output

@@ -113,11 +113,11 @@ class Analyze:
         lens = [
             len(theHarvesterDATA["ips"]),
             len(theHarvesterDATA["emails"]),
-            len(theHarvesterDATA["FQDN"]),
+            len(theHarvesterDATA["fqdns"]),
         ]
         theHarvesterDATA["emails"] = theHarvesterDATA["emails"][:10]
-        theHarvesterDATA["FQDN"] = [
-            elt for elt in theHarvesterDATA["FQDN"] if elt.split(".")[0] in interresting
+        theHarvesterDATA["fqdns"] = [
+            elt for elt in theHarvesterDATA["fqdns"] if elt.split(".")[0] in interresting
         ]
         theHarvesterDATA["ips"] = theHarvesterDATA["ips"][:10]
         Display.display_TheHarvester_data(theHarvesterDATA, lens)
@@ -150,4 +150,4 @@ class Display:
     def display_TheHarvester_data(theHarvesterDATA, lens):
         console.print("ips: ", lens[0], theHarvesterDATA["ips"], style="bold")
         console.print("emails:", lens[1], theHarvesterDATA["emails"], style="bold")
-        console.print("fqdns:", lens[2], theHarvesterDATA["FQDN"], style="bold red")
+        console.print("fqdns:", lens[2], theHarvesterDATA["fqdns"], style="bold red")

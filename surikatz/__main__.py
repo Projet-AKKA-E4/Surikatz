@@ -139,7 +139,7 @@ def passive_mode(target):
         Analyze.get_cvss(cve)
         print("")
 
-    if conf.getWappalyser():
+    if conf.getWappalyzer():
         console.rule("[bold]Wappalizer information")
         console.print("")
         wappalizerApi = osint.Wappalyser(conf.getWappalyser())

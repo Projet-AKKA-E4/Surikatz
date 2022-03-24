@@ -1,10 +1,9 @@
 """
     Module for using OSINT tools and databases to perform passives scans
 """
-from surikatz.error import APIError, AppNotInstalled
-from surikatz.utils import Checker
+from surikatz.error import AppNotInstalled
+from surikatz.utils import Checker, APIClient
 import re
-import requests
 import whois
 import socket
 import subprocess
@@ -23,92 +22,108 @@ class TheHarvester:
     """
 
     def __init__(self, domain):
+        """Init the theHarvester object.
+
+        Retrieves rows pertaining to the given keys from the Table instance
+        represented by table_handle.  String keys will be UTF-8 encoded.
+
+        Args:
+            self: TheHarvester object.
+            domain: domain name. For example : blabla.fr
+
+        Returns:
+            Three sets of emails, ips and FQDNs. For
+            example:
+
+            {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr},
+            {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1},
+            {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}
+
+        """
         self.domain = domain
 
     def _parse_xml(self):
+        """Parse the xml file output of theHarvester.
+
+        Retrieves rows pertaining to the given keys from the Table instance
+        represented by table_handle.  String keys will be UTF-8 encoded.
+
+        Args:
+            self: TheHarvester object.
+
+        Returns:
+            Three sets of emails, ips and FQDNs. For
+            example:
+
+            {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr},
+            {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1},
+            {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}
+
+        """
+        # Regex matching IPv4 IP address
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
-        harvester_obj = untangle.parse("output.xml")
+
+        # parse the xml
+        harvester_obj = untangle.parse("/tmp/output.xml")
+
+        # create sets for the data
         emails = set()
         fqdns = set()
         ips = set()
+
+        # Check if there is emails in the parsed object
         if "email" in dir(harvester_obj.theHarvester):
+            # Loop through the emails elements of the parsed objet and add them in the email set
             for email in harvester_obj.theHarvester.email:
                 emails.add(email.cdata)
 
+        # Check if there is hosts elements in the parsed object
         if "host" in dir(harvester_obj.theHarvester):
+            # Loop through the hosts elements of the parsed objet and add them to the corresponding set (ips or fqdns)
             for host in harvester_obj.theHarvester.host:
+                # If there is no cdata to the host element, it must have both fqdn and ip
                 if host.cdata == "":
                     fqdns.add(host.hostname.cdata)
+                    # Check if there is valid ip object
                     if not (re.search(regex, host.ip.cdata)):
+                        # Split the ip string when there is multiple IP in one string
                         tmp_ips = str(host.ip.cdata).split(",")
                         for ip in tmp_ips:
                             ips.add(ip.replace(" ", ""))
-
+                # If there is cdata, then it must have only an fqdn
                 else:
                     fqdns.add(host.cdata)
         return emails, ips, fqdns
 
-    def _print(self, emails, ips, fqdns):
-        interresting = ["test", "admin", "vpn", "login"]
-        console.print("emails:", emails)
-        console.print("ips:", ips)
-
-        console.print("FQDN:")
-        count = 0
-        for fqdn in fqdns:
-            if fqdn.split(".")[0] in interresting:
-                count += 1
-                console.print(fqdn)
-
-        if count == 0:
-            for i in fqdns:
-                if count == 5:
-                    break
-                count += 1
-
-    def _write_csv(self, emails, ips, fqdns):
-        maxlen = max(len(emails), len(ips), len(fqdns))
-        emails = list(emails)
-        fqdns = list(fqdns)
-        ips = list(ips)
-
-        with open("output.csv", "w") as f:
-            writer = csv.writer(f)
-            for w in range(0, maxlen):
-                if w < len(emails):
-                    test_email = emails[w]
-                else:
-                    test_email = ""
-
-                if w < len(ips):
-                    test_ip = ips[w]
-                else:
-                    test_ip = ""
-
-                if w < len(fqdns):
-                    test_fqdn = fqdns[w]
-                else:
-                    test_fqdn = ""
-
-                writer.writerow([test_email, test_ip, test_fqdn])
-
     def get_data(self):
+        """Returns data found by TheHarvester
+
+        Args:
+            self: TheHarvester object.
+
+        Returns:
+            A dict of list. For example :
+
+            {"emails": [admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr],
+            "ips": [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1],
+            "FQDN": [vpn.blabla.fr, test200.blabla.fr, www.blabla.fr]}
+
+        Raises:
+            AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
+        """
         try:
             harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "output"],
+                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
                 stdout=subprocess.PIPE,
-            )
+            )  # Launch theHarvester from the user's computer
         except OSError:
-            raise AppNotInstalled("Please install theHarvester on your device or use a Kali Linux.")
-        # harvester = harvester.stdout.decode("utf-8")
+            raise AppNotInstalled(
+                "Please install theHarvester on your device or use a Kali Linux."
+            )
 
         emails, ips, fqdns = self._parse_xml()
 
-        self._print(emails, ips, fqdns)
-
-        self._write_csv(emails, ips, fqdns)
-
-        return {"emails": emails, "ips": ips, "FQDN": fqdns}
+        return {"emails": list(emails), "ips": list(ips), "FQDN": list(fqdns)}
 
 
 class IHaveBeenPawn:
@@ -120,75 +135,36 @@ class IHaveBeenPawn:
 class Whois:
     """
     Class allowing the manipulation of Whois service provide by registars
-
-    Methods
-    -------
-    whoIs(a)
-        Return whois information from a
     """
 
-    def checkIpAddress(self, Ip):
-        """
-        Function allowing to check if an Ip have a correct form
-
-        Parameter
-        ----------
-        Ip : str
-            The IP address to check
-        """
-        regex = "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$"
-        # pass the regular expression
-        # and the string in search() method
-        if re.search(regex, Ip):
-            return True
-        else:
-            return False
-
-    def checkDomain(self, domain):
-        """
-        Function allowing to check if a domain name have a correct form
-
-        Parameter
-        ----------
-        domain : str
-            The domain name to check
-        """
-        regex = "^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,6}$"
-        # a = input("Enter a domain name:")
-        if re.search(regex, domain):
-            return True
-
-        else:
-            return False
-
-    def whoIs(self, target):
+    def whoIs(self, target: str) -> dict:
         """
         Whois function get information about an Ip address or a domain name
 
-        Parameters
-        ----------
-        a : str
-            The IP address or the domain name
+        Args:
+            target: The IP address or the domain name
+
+        Return:
+            A dictionnary of Whois information
         """
+
         if Checker.checkIpAddress(target):  # For an ip Address
-            #print("Valid Ip address: ", target)
+            # print("Valid Ip address: ", target)
 
             host = whois.whois(target)
             dict_ip = {
-                "domain name": host.domain_name,
-                "ip address": target,
+                "domain_name": host.domain_name,
+                "ip_address": target,
                 "status": host.status,
                 "registrar": host.registrar,
                 "emails": host.emails,
-                "name servers": host.name_servers,
+                "name_servers": host.name_servers,
             }
             print(dict_ip)
 
+            # Test if dict_ip have more than 3 None inside -> means that probably the address is not correct
             num = 0
-            for (
-                key,
-                value,
-            ) in dict_ip.items():  # Test if there is no more 3 None in dict
+            for key, value in dict_ip.items():
                 if value == None:
                     num += 1
                 if num > 3:
@@ -198,9 +174,8 @@ class Whois:
                     )
 
             return dict_ip
-
-        elif Checker.checkDomain(target):   # For Domain Name
-            #print("Valid Domain Name: ",target)
+        # For Domain Name
+        elif Checker.checkDomain(target):
             whoisData = whois.whois(target)
 
             try:
@@ -209,14 +184,15 @@ class Whois:
                 host = None
 
             dict_domain = {
-                "domain name": target,
-                "ip address": host,
+                "domain_name": target,
+                "ip_address": host,
                 "status": whoisData.status,
                 "registrar": whoisData.registrar,
                 "emails": whoisData.emails,
-                "name servers": whoisData.name_servers,
+                "name_servers": whoisData.name_servers,
             }
             print(dict_domain)
+            # Test if dict_domain have more than 3 None inside -> means that probably the domain name is not correct
             num = 0
             for key, value in dict_domain.items():
                 if value == None:
@@ -239,81 +215,53 @@ class ShodanUtils:
     Class allowing the manipulation of Shodan API
     """
 
-    _SHODAN_API_KEY = "yZ77YuFRvpdwn9ZCA3Uk8yJkmkyisi3k"
+    def __init__(self, key):
+        self.internetdb = APIClient("https://internetdb.shodan.io/")
+        self.shodan = shodan.Shodan(key)
 
-    class InternetDB:
+    def _request_data(self, target: str) -> tuple:
         """
-        Class allowing the manipulation of Shodan's InternetDB API
+        Make requests to InternetDB and Shodan databases
+
+        Args:
+            target: Device's IP to target
+
+        Returns:
+            A tuple containing two dictionnaries:
+             - the first contain InternetDB data
+             - the second contain Shodan data
         """
-
-        def __init__(self, proxies=None):
-            self.base_url = "https://internetdb.shodan.io/"
-            self._session = requests.Session()
-            if proxies:
-                self._session.proxies.update(proxies)
-                self._session.trust_env = False
-
-        def request(self, target):
-            """General-purpose function to create web requests to InternetDB.
-
-            Arguments:
-                function  -- name of the function you want to execute
-                params    -- dictionary of parameters for the function
-
-            Returns
-                A dictionary containing the function's results.
-
-            """
-
-            # Send the request
-            try:
-                data = self._session.get(self.base_url + target)
-            except Exception:
-                raise APIError("Unable to connect to InternetDB")
-
-            # Check that the API key wasn't rejected
-            if data.status_code == 401:
-                try:
-                    # Return the actual error message if the API returned valid JSON
-                    error = data.json()["error"]
-                except Exception as e:
-                    raise APIError(error)
-            elif data.status_code == 403:
-                raise APIError("Access denied (403 Forbidden)")
-
-            # Parse the text into JSON
-            try:
-                data = data.json()
-            except ValueError:
-                raise APIError("Unable to parse JSON response")
-
-            # Raise an exception if an error occurred
-            if type(data) == dict and "error" in data:
-                raise APIError(data["error"])
-
-            # Return the data
-            return data
-
-    def __init__(self, target: str):
-        self.target = target
-        self.internetdb = self.InternetDB()
-        self.shodan = shodan.Shodan(ShodanUtils._SHODAN_API_KEY)
-
-    def _request_data(self) -> dict():
-        return (self.internetdb.request(self.target), self.shodan.host(self.target))
+        if not self.shodan.api_key:
+            print("No Shodan key has been provided. Only InternetDB data will be used")
+            return (self.internetdb.request(target), None)
+        return (self.internetdb.request(target), self.shodan.host(target))
 
     def _cpe_to_cpe23(self, cpes: dict) -> dict:
+        """
+        Convert old CPEs to CPE 2.3 format
+
+        Args:
+            cpes: A dictionnary with outdated CPEs
+
+        Returns:
+            dict: A translated CPEs dictionnary
+        """
         return [cpe.replace("/", "2.3:") for cpe in cpes]
 
-    def get_data(self) -> dict():
-        """Collect and generate data from databases
-
-        Return:
-            A tuple containing two dictionnaries:
-             - the first contain most revelant data
-             - the second contain the complete data
+    def get_data(self, target: str) -> dict:
         """
-        intdb_data, shodan_data = self._request_data()
+        Collect and generate data from databases
+
+        Args:
+            target: Device's IP to target
+
+        Returns:
+            A dictionnary with all revelant information
+        """
+        intdb_data, shodan_data = self._request_data(target)
+
+        if not shodan_data:
+            return intdb_data
 
         for key in intdb_data.keys():
             if key not in shodan_data.keys():
@@ -345,7 +293,7 @@ class ShodanUtils:
         return shodan_data
 
 
-class PawnDB:
+class PwnDB:
     """
     Class allowing the manipulation of PawnDB database
     """
@@ -367,3 +315,46 @@ class SearchSploit:
     """
     Class allowing the manipulation of Searchsploit tool and Exploit-DB database and the parsing of its output
     """
+
+
+class Wappalyser:
+    """
+    Class allowing the manipulation of Wappalyser and the parsing of its output
+
+    Attributes:
+        key: API key for Wappalyser
+    """
+
+    def __init__(self, key: str):
+        self.api = APIClient("https://api.wappalyzer.com/v2", key={"x-api-key": key})
+
+    def lookup(self, target: str) -> dict:
+        """
+        Function for finding out the technology stack of any website, such as the CMS or ecommerce platform.
+
+        Args:
+            target: Device's FQDN to target
+
+        Returns:
+            data: Dict of technology stack of the target
+        """
+        rq = self.api.request(
+            "/lookup",
+            params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
+        )[0]
+        data = {"url": rq["url"], "technologies": []}
+        for techno in rq["technologies"]:
+            slugs = [categorie["slug"] for categorie in techno["categories"]]
+            if any( slug in [
+                    "cms",
+                    "web-servers",
+                    "programming-languages",
+                    "wordpress-plugins",
+                    "wordpress-themes",
+                    "security",
+                ]
+                for slug in slugs
+            ):
+                del techno["trafficRank"], techno["confirmedAt"]
+                data["technologies"].append(techno)
+        return data

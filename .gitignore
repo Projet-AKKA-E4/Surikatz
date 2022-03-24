@@ -262,7 +262,7 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea/
 
 ### Vim ###
 # Swap
@@ -286,6 +286,7 @@ tags
 [._]*.un~
 
 ### VisualStudioCode ###
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -311,5 +312,5 @@ tags
 
 # Files link to the project surikatz
 output.json
-output.csv
+*.csv
 output.xml

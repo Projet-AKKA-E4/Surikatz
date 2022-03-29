@@ -16,8 +16,24 @@ class Analyze:
     """
 
     @staticmethod
-    def clean_dict(global_dict):
-        console.print(global_dict)
+    def clean_dict(global_dict)->dict:
+        """Clean dict data
+        Args:
+            global_dict: All concatenated data in python dict form
+        """
+        if 'fqdns' in global_dict and 'hostnames' in global_dict:
+            used = set()
+            global_dict['fqdns'] = [x for x in global_dict['fqdns']+global_dict['hostnames'] if x not in used and (used.add(x) or True)]
+            del global_dict['hostnames']
+
+        global_dict.pop('ip', None)
+
+        if 'domain_name' in global_dict and 'domains' in global_dict:
+            used = set()
+            global_dict['domain_name'] = [x for x in [global_dict['domain_name']]+global_dict['domains'] if x not in used and (used.add(x) or True)]
+            del global_dict['domains']
+
+        return global_dict
 
     @staticmethod
     def save_to_csv(dict_to_save):
@@ -70,10 +86,6 @@ class Analyze:
             }
         except:
             result = None
-
-    @staticmethod
-    def clean_dict(global_dict):
-        console.print(global_dict)
 
     @staticmethod
     def save_to_csv(dict_to_save):

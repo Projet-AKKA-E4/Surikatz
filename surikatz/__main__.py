@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+from distutils.version import Version
 from enum import Enum
 import click
 from surikatz import osint, utils, scan
+from importlib_metadata import version
 from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
@@ -129,9 +131,10 @@ def passive_mode(target):
     console.print("")
     shodanApi = osint.ShodanUtils(conf.getShodan())
     shodanData = shodanApi.get_data(whoisData["ip_address"])
-    if conf.getShodan():
-        del shodanData["data"]
+
+    
     cves = shodanData.pop("vulns")
+
     console.print(shodanData)
     console.print("\n")
     surikatz_dict.update({**shodanData})

@@ -290,6 +290,11 @@ class ShodanUtils:
         ]:
             del shodan_data[unless_data]
 
+        new_data= []
+        for i,element in enumerate(shodan_data['data']):
+            new_data.append({"Module":element['_shodan']['module'],"FQDN":element['hostnames'],"Port":element['port'],"Product": element['product'] if 'product' in element else "Undefined","Version": element['version'] if 'version' in element else "Undefined"})
+    
+        shodan_data['data'] = new_data
         return shodan_data
 
 

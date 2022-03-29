@@ -22,7 +22,7 @@ class ConfManager:
         if not Path(Path.home() / ".config/surikatz/.env").exists():
             Path.mkdir(Path.home() / ".config/surikatz", parents=True, exist_ok=True)
             with importlib.resources.open_text(
-                "surikatz.static", ".env"
+                "surikatz.static", "template.env"
             ) as templatefile, Path(Path.home() / ".config/surikatz/.env") as envfile:
                 envfile.write_text(templatefile.read())
             print(

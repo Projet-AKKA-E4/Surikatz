@@ -151,14 +151,18 @@ def passive_mode(target):
             surikatz_dict.update({**wappalizerData})
         console.print("\n")
 
+    clean_surikatz_dict = Analyze.clean_dict(surikatz_dict)
+
     console.rule("[bold]GLOBAL INFORMATION")
-    console.print(surikatz_dict)
+    console.print(clean_surikatz_dict)
     console.print("\n")
 
-    Analyze.save_to_csv(surikatz_dict)
+    
+
+    Analyze.save_to_csv(clean_surikatz_dict)
 
     #Dict concat
-    surikatz_dict = {**whoisData, **shodanData}
+    clean_surikatz_dict = {**whoisData, **shodanData}
 
 
 def discret_mode(target):

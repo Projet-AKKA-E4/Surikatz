@@ -2,11 +2,11 @@
 
 from enum import Enum
 import click
-from surikatz import osint, utils
+from surikatz import osint, utils, scan
 from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
-from surikatz.result import Analyze
+from surikatz.result import Analyze, Display
 
 console = Console()  # Console configuration for rich package allowing beautiful print
 conf = ConfManager()
@@ -82,8 +82,9 @@ def launch(target, level):
         print("")
         passive_mode(target)
     if level == ScanMode.DISCRET:
-        console.print(Markdown("# Discret mode", style="white"), style="bold orange")
+        console.print(Markdown("# Discret mode", style="white"), style="bold red")
         print("")
+        discret_mode(target)
     if level == ScanMode.AGRESSIVE:
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
@@ -158,6 +159,15 @@ def passive_mode(target):
 
     #Dict concat
     surikatz_dict = {**whoisData, **shodanData}
+
+
+def discret_mode(target):
+    passive_mode(target)
+    nm = scan.Nmap()
+    nm.start_nmap(target, "-p 80,443,2222 -sV", 1000)
+    dictionnary = Analyze.parse_nmap(nm.scan_result)
+    console.rule("[bold]NMAP SCAN")
+    Display.print_nmap(target, dictionnary)
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)

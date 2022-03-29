@@ -2,6 +2,7 @@
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
 
+from click import style
 from rich.console import Console
 from surikatz.utils import APIClient
 import json
@@ -174,6 +175,27 @@ class Analyze:
         theHarvesterDATA["ips"] = theHarvesterDATA["ips"][:10]
         Display.display_TheHarvester_data(theHarvesterDATA, lens)
 
+    @staticmethod
+    def parse_nmap(scan_result):
+        if scan_result["nmap"]["scanstats"]["downhosts"]==scan_result["nmap"]["scanstats"]["totalhosts"]:
+            return None
+
+        dictionnary = {
+            "scan":{}
+        }
+
+        for host in scan_result["scan"]:
+            for port in scan_result["scan"][host]["tcp"]:
+                dictionnary["scan"][port] = {
+                    "state"  : scan_result["scan"][host]["tcp"][port]["state"],
+                    "produit": scan_result["scan"][host]["tcp"][port]["product"],
+                    "version": scan_result["scan"][host]["tcp"][port]["version"],
+                    "cpe"    : scan_result["scan"][host]["tcp"][port]["cpe"],
+                    "protocol": scan_result["scan"][host]["tcp"][port]["extrainfo"]
+                }
+        return dictionnary
+
+
 
 class Display:
     """
@@ -203,3 +225,19 @@ class Display:
         console.print("ips: ", lens[0], theHarvesterDATA["ips"], style="bold")
         console.print("emails:", lens[1], theHarvesterDATA["emails"], style="bold")
         console.print("fqdns:", lens[2], theHarvesterDATA["fqdns"], style="bold red")
+
+    @staticmethod
+    def print_nmap(target, dictionnary):
+        #Prind banner for nmap
+        if dictionnary == None:
+            console.print("Host is down", style="bold red")
+            return
+        
+        console.print(f"Scan for {target}")
+        for port in dictionnary["scan"]:
+            console.print(f"Port {port}")
+            console.print(f"    State : {dictionnary['scan'][port]['state']}")
+            console.print(f"    Produit : {dictionnary['scan'][port]['produit']}")
+            console.print(f"    Version : {dictionnary['scan'][port]['version']}")
+            console.print(f"    CPE : {dictionnary['scan'][port]['cpe']}")
+            console.print(f"    Protocol : {dictionnary['scan'][port]['protocol']}", end='\n\n')

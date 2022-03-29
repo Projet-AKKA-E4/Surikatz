@@ -21,6 +21,8 @@ shodan = "^1.26.1"
 untangle = "^1.1.1"
 python-dotenv = "^0.19.2"
 pandas = "^1.4.1"
+python-nmap = "^0.7.1"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -29,6 +29,8 @@ class ConfManager:
                 f"Configuration file generated at {Path.home() / '.config/surikatz/.env'}\n"
                 "For some modules, API key is required. Make sure you fill the configuration file."
             )
+        else:
+            console.print(f"Your .env file is located in {Path.home() / '.config/surikatz/.env'}\n", style="bold red",)
 
     def _getApiKey(self, api):
         try:
@@ -103,7 +105,7 @@ class Checker:
         """
         ip = APIClient('https://api.ipify.org')
         ip = ip.request("/", params={"format": "json"})
-        print(f'My public IP address is: {ip["ip"]}')
+        console.print(f'My public IP address is: {ip["ip"]}', style="bold red",)
 
     @staticmethod
     def checkTime():
@@ -112,7 +114,7 @@ class Checker:
         """
         now = datetime.now()
         datenow = now.strftime("%d/%m/%Y, %H:%M:%S")
-        print(f'Date: {datenow}')
+        console.print(f'Date: {datenow}', style="bold red",)
    
     @staticmethod
     def checkKali():

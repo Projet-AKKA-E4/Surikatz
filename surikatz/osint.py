@@ -232,7 +232,7 @@ class ShodanUtils:
              - the second contain Shodan data
         """
         if not self.shodan.api_key:
-            print("No Shodan key has been provided. Only InternetDB data will be used")
+            console.print("No Shodan key has been provided. Only InternetDB data will be used")
             return (self.internetdb.request(target), None)
             
         try : 

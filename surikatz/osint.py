@@ -1,7 +1,7 @@
 """
     Module for using OSINT tools and databases to perform passives scans
 """
-from surikatz.error import AppNotInstalled
+from surikatz.error import APIError, AppNotInstalled
 from surikatz.utils import Checker, APIClient
 import re
 import whois
@@ -234,7 +234,11 @@ class ShodanUtils:
         if not self.shodan.api_key:
             print("No Shodan key has been provided. Only InternetDB data will be used")
             return (self.internetdb.request(target), None)
-        return (self.internetdb.request(target), self.shodan.host(target))
+            
+        try : 
+            return (self.internetdb.request(target), self.shodan.host(target))
+        except APIError:
+            return (self.internetdb.request(target), None)
 
     def _cpe_to_cpe23(self, cpes: dict) -> dict:
         """
@@ -343,10 +347,14 @@ class Wappalyser:
         Returns:
             data: Dict of technology stack of the target
         """
-        rq = self.api.request(
-            "/lookup",
-            params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
-        )[0]
+        try: 
+            rq = self.api.request(
+                "/lookup",
+                params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
+            )[0]
+        except APIError:
+            return None
+
         data = {"url": rq["url"], "technologies": [], "wp-plugins": [], "wp-themes": []}
         for techno in rq["technologies"]:
             slugs = [categorie["slug"] for categorie in techno["categories"]]

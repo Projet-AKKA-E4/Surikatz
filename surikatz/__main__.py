@@ -151,8 +151,11 @@ def passive_mode(target):
         wappalizerApi = osint.Wappalyser(conf.getWappalyzer())
         for fqdn in shodanData["hostnames"]:
             wappalizerData = wappalizerApi.lookup(fqdn)
-            console.print(wappalizerData)
-            surikatz_dict.update({**wappalizerData})
+            if wappalizerData==None:
+                console.print("API Key is no longer valid : Error 403")
+            else : 
+                console.print(wappalizerData)
+                surikatz_dict.update({**wappalizerData})
         console.print("\n")
 
     clean_surikatz_dict = Analyze.clean_dict(surikatz_dict)

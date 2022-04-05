@@ -171,10 +171,11 @@ def passive_mode(target):
 def discret_mode(target):
     passive_mode(target)
     nm = scan.Nmap()
-    nm.start_nmap(target, "-p 80,443,2222 -sV", 1000)
-    dictionnary = Analyze.parse_nmap(nm.scan_result)
+    nm.start_nmap(target, "-sV -sC -oN /tmp/scan", 1000)
+    surikatz_dict.update({**nm.scan_result})
     console.rule("[bold]NMAP SCAN")
-    Display.print_nmap(target, dictionnary)
+    with open("/tmp/scan","r") as file:
+        console.print(file.read())
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)

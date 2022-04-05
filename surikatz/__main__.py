@@ -3,13 +3,14 @@
 from distutils.version import Version
 from enum import Enum
 import click
-from surikatz import osint, utils, scan
+from surikatz import osint, utils, scan, enumeration
 from importlib_metadata import version
 from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
 from surikatz.result import Analyze, Display
 import os
+
 
 console = Console()  # Console configuration for rich package allowing beautiful print
 conf = ConfManager()
@@ -139,6 +140,12 @@ def passive_mode(target):
     console.print(shodanData)
     console.print("\n")
     surikatz_dict.update({**shodanData})
+
+    console.rule("[bold]dirsearch information")
+    console.print("")
+    dirsearch = enumeration.DirSearch(whoisData["domain_name"])
+    dirSearchDATA = dirsearch.get_data_dirsearch()
+    console.print(dirSearchDATA)
 
     # CVSS Management
     for cve in cves:

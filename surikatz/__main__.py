@@ -9,6 +9,7 @@ from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
 from surikatz.result import Analyze, Display
+import os
 
 console = Console()  # Console configuration for rich package allowing beautiful print
 conf = ConfManager()
@@ -171,7 +172,24 @@ def passive_mode(target):
 def discret_mode(target):
     passive_mode(target)
     nm = scan.Nmap()
-    nm.start_nmap(target, "-sV -sC -oN /tmp/scan", 1000)
+    
+    try:
+
+        leures = f"{surikatz_dict['ips'][0]},{surikatz_dict['ips'][1]}"
+    except:
+        leures = surikatz_dict['ip_address']
+
+    try:
+        port = surikatz_dict["ports"][0]
+    except:
+        port = 45678
+
+    if os.geteuid() == 0:
+        frag = "-f"
+    else :
+        frag = ""
+    
+    nm.start_nmap(target, f"{frag} -D {leures} -sV -sC -oN /tmp/scan --source-port {port}", 1000)
     surikatz_dict.update({**nm.scan_result})
     console.rule("[bold]NMAP SCAN")
     with open("/tmp/scan","r") as file:

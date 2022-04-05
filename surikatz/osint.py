@@ -347,7 +347,7 @@ class Wappalyser:
             "/lookup",
             params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
         )[0]
-        data = {"url": rq["url"], "technologies": []}
+        data = {"url": rq["url"], "technologies": [], "wp-plugins": [], "wp-themes": []}
         for techno in rq["technologies"]:
             slugs = [categorie["slug"] for categorie in techno["categories"]]
             if any( slug in [
@@ -361,5 +361,10 @@ class Wappalyser:
                 for slug in slugs
             ):
                 del techno["trafficRank"], techno["confirmedAt"]
-                data["technologies"].append(techno)
+                if techno["categories"]["slug"] == "wordpress-plugins":
+                    data["wp-plugins"].append(techno)
+                elif techno["categories"]["slug"] == "wordpress-themes":
+                    data["wp-themes"].append(techno)
+                else:
+                    data["technologies"].append(techno)
         return data

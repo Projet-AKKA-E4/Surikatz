@@ -40,6 +40,14 @@ class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
     """
+    def __init__(self, target) -> None:
+        try:    
+            self.nikto = subprocess.run(
+                ["nikto","-output","/tmp/nikto.txt","-h",target],
+                stdout=subprocess.PIPE,
+            )
+        except OSError:
+            raise AppNotInstalled("Please install nikto on your device or use a Kali Linux.")
 
 class Wafwoof:
     """

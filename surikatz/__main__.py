@@ -198,6 +198,19 @@ def discret_mode(target):
     with open("/tmp/scan","r") as file:
         console.print(file.read())
 
+    if 80 in surikatz_dict["ports"] or 443 in surikatz_dict["ports"]:
+        console.rule("[bold]WafW00F")
+        if 443 in surikatz_dict["ports"]:
+            if "https" not in target : 
+                scan.Wafwoof(f"https://{target}")
+            else :
+                scan.Wafwoof(target)
+        else : 
+            if "http" not in target :
+                scan.Wafwoof(f"https://{target}")
+
+        Display.display_wafwoof()
+
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)
 

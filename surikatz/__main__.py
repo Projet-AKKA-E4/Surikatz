@@ -199,7 +199,12 @@ def discret_mode(target):
         console.print(file.read())
 
     if 80 in surikatz_dict["ports"] or 443 in surikatz_dict["ports"]:
-        console.rule("[bold]WafW00F")
+        console.rule("[bold]Nikto")
+        scan.Nikto(target)
+        Display.display_nikto()
+
+
+        console.rule("[bold]WafW00f")
         if 443 in surikatz_dict["ports"]:
             if "https" not in target : 
                 scan.Wafwoof(f"https://{target}")

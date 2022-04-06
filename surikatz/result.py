@@ -220,3 +220,8 @@ class Display:
     def display_wafwoof():
         with open("/tmp/wafwoof.json") as file:
             console.print(json.loads(file.read()))
+
+    @staticmethod
+    def display_nikto():
+        with open("/tmp/nikto.txt","r") as file:
+            console.print(file.read())

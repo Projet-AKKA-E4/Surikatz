@@ -215,3 +215,8 @@ class Display:
         console.print("ips: ", lens[0], theHarvesterDATA["ips"], style="bold")
         console.print("emails:", lens[1], theHarvesterDATA["emails"], style="bold")
         console.print("fqdns:", lens[2], theHarvesterDATA["fqdns"], style="bold red")
+
+    @staticmethod
+    def display_wafwoof():
+        with open("/tmp/wafwoof.json") as file:
+            console.print(json.loads(file.read()))

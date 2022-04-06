@@ -3,8 +3,8 @@
 """
 
 import nmap
-import asyncio
-
+from surikatz.error import AppNotInstalled
+import subprocess
 
 class Nmap:
     """
@@ -40,3 +40,16 @@ class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
     """
+
+class Wafwoof:
+    """
+    Class allowing the manipulation of WafW00f and the parsing of its output
+    """
+    def __init__(self, target) -> None:
+        try:    
+            self.wafwoof = subprocess.run(
+                ["wafw00f","-a","-o","/tmp/wafwoof.json",target],
+                stdout=subprocess.PIPE,
+            )
+        except OSError:
+            raise AppNotInstalled("Please install wafw00f on your device or use a Kali Linux.")

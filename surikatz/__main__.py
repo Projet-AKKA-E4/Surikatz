@@ -144,8 +144,8 @@ def passive_mode(target):
     console.rule("[bold]dirsearch information")
     console.print("")
     dirsearch = enumeration.DirSearch(whoisData["domain_name"])
-    dirSearchDATA = dirsearch.get_data_dirsearch()
-    console.print(dirSearchDATA)
+    dirSearchDATA = dirsearch.get_data()
+    Analyze.get_clean_data_dirsearch(dirSearchDATA)
 
     # CVSS Management
     for cve in cves:

@@ -12,35 +12,41 @@ class DirSearch:
     def __init__(self, domain):
             """Init the DirSearch object.
 
-            Retrieves rows pertaining to the given keys from the Table instance
-            represented by table_handle.  String keys will be UTF-8 encoded.
-
             Args:
                 self: DirSearch object.
                 domain: domain name. For example : blabla.fr
             """
             self.domain = domain
-    def get_data_dirsearch(self):
-        # try:
-        #     dirsearch = subprocess.run(
-        #         ["dirsearch", "-u", self.domain, "--format", "json", "-o", "/tmp/dirsearch.json","--skip-on-status", "401,402,403,404"],
-        #         stdout=subprocess.PIPE,
+    def get_data(self):
+        """Returns data found by DirSearch
 
-        #     )  # Launch dirsearch from the user's computer
-        # except OSError:
-        #     raise AppNotInstalled(
-        #         "Please install theHarvester on your device or use a Kali Linux."
-        #     )
-        new_data= []
-        with open('/tmp/dirsearch.json') as json_file:
-            dirsearch_data = json.load(json_file)
-            test_data = list(dirsearch_data['results'][0].values())[0]
-            www = str(list(dirsearch_data['results'][0].keys())[0])
-            for i,element in enumerate(test_data):
-                new_data.append(www.rstrip(www[-1]) +element['path'])
-            #     #new_data.append({"Module":element['path']})
-            
-            return new_data
+        Args:
+            self: DirSearch object.
+
+        Returns:
+            A list of urls. For example :
+
+            ['http://blabla.fr:80/admin',
+            'http://blabla.fr:80/admin/passwd.txt',
+            'http://blabla.fr:80/js/app.js',
+            'http://blabla.fr:80/index.html']
+
+        Raises:
+            AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
+        """
+        try:
+            dirsearch = subprocess.run(
+                ["dirsearch", "-u", self.domain, "--format", "json", "-o", "/tmp/dirsearch.json","--skip-on-status", "401,402,403,404"],
+                stdout=subprocess.PIPE,
+            )  # Launch dirsearch from the user's computer
+        except OSError:
+            raise AppNotInstalled(
+                "Please install theHarvester on your device or use a Kali Linux."
+            )
+        with open('/tmp/dirsearch.json') as jsonFile:
+            dirsearchData = json.load(jsonFile)
+
+            return dirsearchData
 
 
 class Kerbrut:

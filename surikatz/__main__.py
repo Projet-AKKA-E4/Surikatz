@@ -125,27 +125,21 @@ def passive_mode(target):
     console.print("")
     theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
     harvesterDATA = theHarvesterAPI.get_data()
-    Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
-    console.print("\n")
-    surikatz_dict.update({**harvesterDATA})
+    if harvesterDATA:
+        Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
+        console.print("\n")
+        surikatz_dict.update({**harvesterDATA})
 
     console.rule("[bold]Shodan information")
     console.print("")
     shodanApi = osint.ShodanUtils(conf.getShodan())
     shodanData = shodanApi.get_data(whoisData["ip_address"])
 
-    
     cves = shodanData.pop("vulns")
 
     console.print(shodanData)
     console.print("\n")
     surikatz_dict.update({**shodanData})
-
-    console.rule("[bold]dirsearch information")
-    console.print("")
-    dirsearch = enumeration.DirSearch(whoisData["domain_name"])
-    dirSearchDATA = dirsearch.get_data()
-    Analyze.get_clean_data_dirsearch(dirSearchDATA)
 
     # CVSS Management
     for cve in cves:
@@ -222,6 +216,13 @@ def discret_mode(target):
                 scan.Wafwoof(f"https://{target}")
 
         Display.display_wafwoof()
+
+# def aggressive_mode(target):
+#     console.rule("[bold]dirsearch information")
+#     console.print("")
+#     dirsearch = enumeration.DirSearch(whoisData["ip_address"])
+#     dirSearchDATA = dirsearch.get_data()
+#     Analyze.get_clean_data_dirsearch(dirSearchDATA)
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)

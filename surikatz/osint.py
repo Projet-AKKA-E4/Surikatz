@@ -111,15 +111,15 @@ class TheHarvester:
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
-        try:
-            harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
-                stdout=subprocess.PIPE,
-            )  # Launch theHarvester from the user's computer
-        except OSError:
-            raise AppNotInstalled(
-                "Please install theHarvester on your device or use a Kali Linux."
-            )
+        # try:
+        #     harvester = subprocess.run(
+        #         ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
+        #         stdout=subprocess.PIPE,
+        #     )  # Launch theHarvester from the user's computer
+        # except OSError:
+        #     raise AppNotInstalled(
+        #         "Please install theHarvester on your device or use a Kali Linux."
+        #     )
 
         emails, ips, fqdns = self._parse_xml()
 
@@ -292,7 +292,7 @@ class ShodanUtils:
 
         new_data= []
         for i,element in enumerate(shodan_data['data']):
-            new_data.append({"Module":element['_shodan']['module'],"FQDN":element['hostnames'],"Port":element['port'],"Product": element['product'] if 'product' in element else "Undefined","Version": element['version'] if 'version' in element else "Undefined"})
+            new_data.append({"service": element['_shodan']['module'], "fqdn": element['hostnames'], "port": element['port'], "product": element['product'] if 'product' in element else "Undefined", "version": element['version'] if 'version' in element else "Undefined"})
     
         shodan_data['data'] = new_data
         return shodan_data
@@ -354,17 +354,25 @@ class Wappalyser:
                     "cms",
                     "web-servers",
                     "programming-languages",
-                    "wordpress-plugins",
-                    "wordpress-themes",
                     "security",
                 ]
                 for slug in slugs
             ):
                 del techno["trafficRank"], techno["confirmedAt"]
-                if techno["categories"]["slug"] == "wordpress-plugins":
-                    data["wp-plugins"].append(techno)
-                elif techno["categories"]["slug"] == "wordpress-themes":
-                    data["wp-themes"].append(techno)
-                else:
-                    data["technologies"].append(techno)
+                data["technologies"].append(techno)
+            if any( slug in [
+                    "wordpress-plugins",
+                ]
+                for slug in slugs
+            ):
+                del techno["trafficRank"], techno["confirmedAt"]
+                data["wp-plugins"].append(techno)
+            if any( slug in [
+                    "wordpress-themes",
+                ]
+                for slug in slugs
+            ):
+                del techno["trafficRank"], techno["confirmedAt"]
+                data["wp-themes"].append(techno)
+
         return data

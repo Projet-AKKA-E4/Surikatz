@@ -127,28 +127,34 @@ def passive_mode(target):
     console.print("\n")
     surikatz_dict.update({**harvesterDATA})
 
-    console.rule("[bold]Shodan information")
-    console.print("")
-    shodanApi = osint.ShodanUtils(conf.getShodan())
-    shodanData = shodanApi.get_data(whoisData["ip_address"])
+    # console.rule("[bold]Shodan information")
+    # console.print("")
+    # shodanApi = osint.ShodanUtils(conf.getShodan())
+    # shodanData = shodanApi.get_data(whoisData["ip_address"])
 
     
-    cves = shodanData.pop("vulns")
+    # cves = shodanData.pop("vulns")
 
-    console.print(shodanData)
-    console.print("\n")
-    surikatz_dict.update({**shodanData})
+    # console.print(shodanData)
+    # console.print("\n")
+    # surikatz_dict.update({**shodanData})
 
-    # CVSS Management
-    for cve in cves:
-        Analyze.get_cvss(cve)
-        print("")
+    # # CVSS Management
+    # for cve in cves:
+    #     Analyze.get_cvss(cve)
+    #     print("")
 
     if conf.getWappalyzer():
         console.rule("[bold]Wappalizer information")
         console.print("")
         wappalizerApi = osint.Wappalyser(conf.getWappalyzer())
-        for fqdn in shodanData["hostnames"]:
+        
+        fqdns = ["3.91.35.224"]
+        # for service in shodanData["data"]:
+        #     if service["service"] in ["http", "https"] and service["fqdn"]:
+        #         fqdns += service["fqdn"]
+
+        for fqdn in fqdns:
             wappalizerData = wappalizerApi.lookup(fqdn)
             console.print(wappalizerData)
             surikatz_dict.update({**wappalizerData})

@@ -10,6 +10,7 @@ import pandas as pd
 from pathlib import Path
 
 console = Console()
+
 class Analyze:
     """
     Class for analysing the JSON, compare and eliminate obsolete data
@@ -144,6 +145,12 @@ class Analyze:
 
     @staticmethod
     def get_clean_data_theHarvester(theHarvesterDATA):
+        """Get clean data for TheHarvester and Display them.
+
+        Args:
+            parsed_data: TheHarvester parsed data.
+
+        """
         interresting = [
             "test",
             "admin",
@@ -156,36 +163,94 @@ class Analyze:
             "backup",
             "contact",
             "internship",
-            "stage",
             "apply",
             "recrut",
-            "recrutement",
             "ftp",
             "info",
             "smtp",
             "imaps",
             "pop3",
-            "administrateur",
-            "administrator",
             "file",
-            "secretariat",
-            "secretary",
-            "hr",
-            "rh",
-            "it",
-            "drh",
+            "secret",
+            "prod"
         ]
+        # Gather lists length informations 
         lens = [
             len(theHarvesterDATA["ips"]),
             len(theHarvesterDATA["emails"]),
             len(theHarvesterDATA["fqdns"]),
         ]
+        # Get 10 first emails
         theHarvesterDATA["emails"] = theHarvesterDATA["emails"][:10]
-        theHarvesterDATA["fqdns"] = [
-            elt for elt in theHarvesterDATA["fqdns"] if elt.split(".")[0] in interresting
-        ]
+        clean_fqdn = list()
+        # For each fqdn try to see if one of the interresting string is in it
+        # If so append it to clean_fqdn
+        for fqdn in theHarvesterDATA["fqdns"]:
+            tmp_fqdn = next((fqdn for e in interresting if (e in fqdn.split(".")[0])),None)
+            if tmp_fqdn:
+                clean_fqdn.append(tmp_fqdn)
+        # Get 10 first cleaned fqdn
+        theHarvesterDATA["fqdns"] = clean_fqdn[:10]
+        # Get 10 first IP address
         theHarvesterDATA["ips"] = theHarvesterDATA["ips"][:10]
+        # Display all informations
         Display.display_TheHarvester_data(theHarvesterDATA, lens)
+
+    @staticmethod
+    def parse_nmap(scan_result):
+        if scan_result["nmap"]["scanstats"]["downhosts"]==scan_result["nmap"]["scanstats"]["totalhosts"]:
+            return None
+
+        dictionnary = {
+            "scan":{}
+        }
+
+        for host in scan_result["scan"]:
+            for port in scan_result["scan"][host]["tcp"]:
+                dictionnary["scan"][port] = {
+                    "state"  : scan_result["scan"][host]["tcp"][port]["state"],
+                    "produit": scan_result["scan"][host]["tcp"][port]["product"],
+                    "version": scan_result["scan"][host]["tcp"][port]["version"],
+                    "cpe"    : scan_result["scan"][host]["tcp"][port]["cpe"],
+                    "protocol": scan_result["scan"][host]["tcp"][port]["extrainfo"]
+                }
+        return dictionnary
+
+    @staticmethod
+    def get_clean_data_dirsearch(parsed_data):
+        """Get clean data for DirSearch and Display them.
+
+        Args:
+            parsed_data: DirSearch parsed data.
+
+        """
+        interresting = [
+            "test",
+            "admin",
+            "vpn",
+            "login",
+            "dev",
+            "data",
+            "backup",
+            ".txt",
+            "passwd",
+            "form",
+            "api",
+            ".log",
+            "prod",
+            "index"
+        ]
+        clean_data = list()
+        # For each url try to see if one of the interresting string is in it
+        # And don't have '/.ht' in it (because if maybe a false positive)
+        # If so append it to clean_data
+        for url in parsed_data:
+            tmp_url = next((url for e in interresting if (e in url and not("/.ht" in url))),None)
+            if tmp_url:
+                clean_data.append(tmp_url)
+        # Display only the first 10 elements
+        Display.display_Dirsearch_data(clean_data[:10])
+
 
 class Display:
     """
@@ -212,9 +277,19 @@ class Display:
 
     @staticmethod
     def display_TheHarvester_data(theHarvesterDATA, lens):
+        """Display DirSearch cleaned data.
+
+        Args:
+            theHarvesterDATA: TheHarvester cleaned data.
+            lens : Length of of each list [len(ips), len(emails), len(fqdns)]
+        """
         console.print("ips: ", lens[0], theHarvesterDATA["ips"], style="bold")
         console.print("emails:", lens[1], theHarvesterDATA["emails"], style="bold")
-        console.print("fqdns:", lens[2], theHarvesterDATA["fqdns"], style="bold red")
+        console.print("fqdns:", lens[2], style="bold red")
+        for fqdn in theHarvesterDATA["fqdns"]:
+            console.print(" - "+str(fqdn), style="red")
+        if(lens[2]>10):
+            console.print(" ... ", style="red")
 
     @staticmethod
     def display_wafwoof():
@@ -225,3 +300,14 @@ class Display:
     def display_nikto():
         with open("/tmp/nikto.txt","r") as file:
             console.print(file.read())
+    def display_Dirsearch_data(dirsearchDATA):
+        """Display DirSearch cleaned data.
+
+        Args:
+            dirsearchDATA: DirSearch cleaned data.
+
+        """
+        console.print("Interesting URLs : ", style="bold red")
+        for url in dirsearchDATA:
+            console.print(" - "+str(url), style="red")
+        

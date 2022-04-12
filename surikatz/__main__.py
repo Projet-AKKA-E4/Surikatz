@@ -195,29 +195,27 @@ def discret_mode(target):
     else :
         frag = ""
     
-    nm.start_nmap(target, f"{frag} -D {leures} -sV -sC -oN /tmp/scan --source-port {port}", 1000)
-    surikatz_dict.update({**nm.scan_result})
+    nm.start_nmap(target, f"{frag} -D {leures} -sV -oN /tmp/nmap --source-port {port}", 1000)
+    nmap_analyse = Analyze.analyse_nmap(nm.scan_result)
+    surikatz_dict.update({**nmap_analyse})
     console.rule("[bold]NMAP SCAN")
-    with open("/tmp/scan","r") as file:
-        console.print(file.read())
+    Display.display_nmap()
 
-    if 80 in surikatz_dict["ports"] or 443 in surikatz_dict["ports"]:
-        console.rule("[bold]Nikto")
-        scan.Nikto(target)
-        Display.display_nikto()
+    for port in surikatz_dict["nmap"]:
+        if "http" in surikatz_dict["nmap"][port]["name"]:
+            console.rule(f"[bold]Nikto for port {port}")
+            scan.Nikto(target, port)
+            Display.display_nikto()
 
-
-        console.rule("[bold]WafW00f")
-        if 443 in surikatz_dict["ports"]:
+        
+    console.rule(f"[bold]WafW00f")
+    for port in surikatz_dict["nmap"]:
+        if port == 443 and "http" in surikatz_dict["nmap"][port]["name"]:
             if "https" not in target : 
                 scan.Wafwoof(f"https://{target}")
             else :
                 scan.Wafwoof(target)
-        else : 
-            if "http" not in target :
-                scan.Wafwoof(f"https://{target}")
-
-        Display.display_wafwoof()
+            Display.display_wafwoof()
 
 def aggressive_mode(target):
     passive_mode(target)

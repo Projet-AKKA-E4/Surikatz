@@ -251,6 +251,21 @@ class Analyze:
         # Display only the first 10 elements
         Display.display_Dirsearch_data(clean_data[:10])
 
+    @staticmethod
+    def analyse_nmap(result):
+        dic = {'nmap':{}}
+        for host in result['scan']:
+            for port in result["scan"][host]["tcp"]:
+                dic['nmap'].update({
+                    port: {"name": result['scan'][host]['tcp'][port]['name'],
+                            "product": result['scan'][host]['tcp'][port]['product'],
+                            "version": result['scan'][host]['tcp'][port]['version'],
+                            "extrainfo": result['scan'][host]['tcp'][port]['extrainfo'],
+                            "conf": result['scan'][host]['tcp'][port]['conf'],
+                            "cpe": result['scan'][host]['tcp'][port]['cpe']
+                }})   
+        return dic 
+
 
 class Display:
     """
@@ -300,6 +315,12 @@ class Display:
     def display_nikto():
         with open("/tmp/nikto.txt","r") as file:
             console.print(file.read())
+
+    @staticmethod
+    def display_nmap():
+        with open("/tmp/nmap") as file:
+            console.print(file.read())
+
     def display_Dirsearch_data(dirsearchDATA):
         """Display DirSearch cleaned data.
 

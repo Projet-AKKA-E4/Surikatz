@@ -92,6 +92,7 @@ def launch(target, level):
     if level == ScanMode.AGRESSIVE:
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
+        aggressive_mode(target)
 
 
 def motd(version):
@@ -121,14 +122,15 @@ def passive_mode(target):
     console.print("\n")
     surikatz_dict.update({**whoisData})
 
-    console.rule("[bold]TheHarvester information")
-    console.print("")
-    theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
-    harvesterDATA = theHarvesterAPI.get_data()
-    if harvesterDATA:
-        Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
-        console.print("\n")
-        surikatz_dict.update({**harvesterDATA})
+    if whoisData["domain_name"]:
+        console.rule("[bold]TheHarvester information")
+        console.print("")
+        theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
+        harvesterDATA = theHarvesterAPI.get_data()
+        if harvesterDATA:
+            Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
+            console.print("\n")
+            surikatz_dict.update({**harvesterDATA})
 
     console.rule("[bold]Shodan information")
     console.print("")
@@ -159,18 +161,18 @@ def passive_mode(target):
                 surikatz_dict.update({**wappalizerData})
         console.print("\n")
 
-    clean_surikatz_dict = Analyze.clean_dict(surikatz_dict)
+    surikatz_dict = Analyze.clean_dict(surikatz_dict)
 
     console.rule("[bold]GLOBAL INFORMATION")
-    console.print(clean_surikatz_dict)
+    console.print(surikatz_dict)
     console.print("\n")
 
     
 
-    Analyze.save_to_csv(clean_surikatz_dict)
+    Analyze.save_to_csv(surikatz_dict)
 
     #Dict concat
-    clean_surikatz_dict = {**whoisData, **shodanData}
+    ## surikatz_dict = {**whoisData, **shodanData}
 
 
 def discret_mode(target):
@@ -217,12 +219,14 @@ def discret_mode(target):
 
         Display.display_wafwoof()
 
-# def aggressive_mode(target):
-#     console.rule("[bold]dirsearch information")
-#     console.print("")
-#     dirsearch = enumeration.DirSearch(whoisData["ip_address"])
-#     dirSearchDATA = dirsearch.get_data()
-#     Analyze.get_clean_data_dirsearch(dirSearchDATA)
+def aggressive_mode(target):
+    passive_mode(target)
+    console.rule("[bold]dirsearch information")
+    console.print("")
+    print(surikatz_dict)
+    dirsearch = enumeration.DirSearch(surikatz_dict["ip_address"])
+    dirSearchDATA = dirsearch.get_data()
+    Analyze.get_clean_data_dirsearch(dirSearchDATA)
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)

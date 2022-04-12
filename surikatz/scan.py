@@ -40,10 +40,10 @@ class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
     """
-    def __init__(self, target) -> None:
+    def __init__(self, target: str, port: int) -> None:
         try:    
             self.nikto = subprocess.run(
-                ["nikto","-output","/tmp/nikto.txt","-h",target],
+                ["nikto","-output","/tmp/nikto.txt","-h",target,"-port",str(port)],
                 stdout=subprocess.PIPE,
             )
         except OSError:

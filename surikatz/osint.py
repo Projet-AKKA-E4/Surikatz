@@ -111,15 +111,17 @@ class TheHarvester:
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
-        try:
-            harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
-                stdout=subprocess.PIPE,
-            )  # Launch theHarvester from the user's computer
-        except OSError:
-            raise AppNotInstalled(
-                "Please install theHarvester on your device or use a Kali Linux."
-            )
+        # try:
+        # TODO: uncomment this part
+        # harvester = subprocess.run(
+        #     ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
+        #     stdout=subprocess.PIPE,
+        # )  # Launch theHarvester from the user's computer
+
+        # except subprocess.CalledProcessError as e:
+        #     raise AppNotInstalled(
+        #         "Please install theHarvester on your device or use a Kali Linux."
+        #     ) from e
 
         emails, ips, fqdns = self._parse_xml()
 
@@ -234,7 +236,11 @@ class ShodanUtils:
         if not self.shodan.api_key:
             print("No Shodan key has been provided. Only InternetDB data will be used")
             return (self.internetdb.request(target), None)
-        return (self.internetdb.request(target), self.shodan.host(target))
+        try :
+            return (self.internetdb.request(target), self.shodan.host(target))
+        except shodan.exception.APIError :
+            return None
+
 
     def _cpe_to_cpe23(self, cpes: dict) -> dict:
         """
@@ -258,7 +264,11 @@ class ShodanUtils:
         Returns:
             A dictionnary with all revelant information
         """
-        intdb_data, shodan_data = self._request_data(target)
+        try :
+            intdb_data, shodan_data = self._request_data(target)
+        except TypeError:
+            console.print("internetDB does not have any informations")
+            return
 
         if not shodan_data:
             return intdb_data
@@ -343,28 +353,40 @@ class Wappalyser:
         Returns:
             data: Dict of technology stack of the target
         """
-        rq = self.api.request(
+        rqs, rqu = self.api.request(
             "/lookup",
-            params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
-        )[0]
+            params={"urls": f"https://{target},http://{target}", "set": "all", "recursive": "false"},
+        )
+        if rqs["errors"] :
+            rq = rqu
+        else:
+            rq = rqs
         data = {"url": rq["url"], "technologies": [], "wp-plugins": [], "wp-themes": []}
         for techno in rq["technologies"]:
             slugs = [categorie["slug"] for categorie in techno["categories"]]
             if any( slug in [
-                    "cms",
-                    "web-servers",
-                    "programming-languages",
-                    "wordpress-plugins",
-                    "wordpress-themes",
-                    "security",
-                ]
-                for slug in slugs
-            ):
+                "cms",
+                "web-servers",
+                "programming-languages",
+                "security",
+            ]
+                    for slug in slugs
+                    ):
                 del techno["trafficRank"], techno["confirmedAt"]
-                if techno["categories"]["slug"] == "wordpress-plugins":
-                    data["wp-plugins"].append(techno)
-                elif techno["categories"]["slug"] == "wordpress-themes":
-                    data["wp-themes"].append(techno)
-                else:
-                    data["technologies"].append(techno)
+                data["technologies"].append(techno)
+            if any( slug in [
+                "wordpress-plugins",
+            ]
+                    for slug in slugs
+                    ):
+                del techno["trafficRank"], techno["confirmedAt"]
+                data["wp-plugins"].append(techno)
+            if any( slug in [
+                "wordpress-themes",
+            ]
+                    for slug in slugs
+                    ):
+                del techno["trafficRank"], techno["confirmedAt"]
+                data["wp-themes"].append(techno)
+
         return data

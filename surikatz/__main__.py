@@ -4,7 +4,6 @@ from distutils.version import Version
 from enum import Enum
 import click
 from surikatz import osint, utils, scan
-from importlib_metadata import version
 from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
@@ -132,23 +131,24 @@ def passive_mode(target):
     shodanApi = osint.ShodanUtils(conf.getShodan())
     shodanData = shodanApi.get_data(whoisData["ip_address"])
 
-    
-    cves = shodanData.pop("vulns")
 
-    console.print(shodanData)
-    console.print("\n")
-    surikatz_dict.update({**shodanData})
+    if shodanData is not None:
+        cves = shodanData.pop("vulns")
+        console.print(shodanData)
+        console.print("\n")
+        surikatz_dict.update({**shodanData})
 
-    # CVSS Management
-    for cve in cves:
-        Analyze.get_cvss(cve)
-        print("")
+        # CVSS Management
+        for cve in cves:
+            Analyze.get_cvss(cve)
+            print("")
 
     if conf.getWappalyzer():
         console.rule("[bold]Wappalizer information")
         console.print("")
         wappalizerApi = osint.Wappalyser(conf.getWappalyzer())
-        for fqdn in shodanData["hostnames"]:
+        fqdns = shodanData["hostname"] if shodanData else [whoisData["ip_address"]]
+        for fqdn in fqdns:
             wappalizerData = wappalizerApi.lookup(fqdn)
             console.print(wappalizerData)
             surikatz_dict.update({**wappalizerData})

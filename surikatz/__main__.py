@@ -131,7 +131,6 @@ def passive_mode(target):
     shodanApi = osint.ShodanUtils(conf.getShodan())
     shodanData = shodanApi.get_data(whoisData["ip_address"])
 
-
     if shodanData is not None:
         cves = shodanData.pop("vulns")
         console.print(shodanData)
@@ -143,11 +142,17 @@ def passive_mode(target):
             Analyze.get_cvss(cve)
             print("")
 
-    if conf.getWappalyzer():
+    if conf.getWappalyzer():# and shodanData:
         console.rule("[bold]Wappalizer information")
         console.print("")
         wappalizerApi = osint.Wappalyser(conf.getWappalyzer())
-        fqdns = shodanData["hostname"] if shodanData else [whoisData["ip_address"]]
+
+        fqdns = ["67.202.60.130"]
+
+        # for service in shodanData["data"]:
+        #     if service["service"] in ["http", "https"] and service["fqdn"]:
+        #         fqdns += service["fqdn"] if service["fqdn"] else service["ip"]
+
         for fqdn in fqdns:
             wappalizerData = wappalizerApi.lookup(fqdn)
             console.print(wappalizerData)
@@ -156,16 +161,11 @@ def passive_mode(target):
 
     clean_surikatz_dict = Analyze.clean_dict(surikatz_dict)
 
-    console.rule("[bold]GLOBAL INFORMATION")
-    console.print(clean_surikatz_dict)
-    console.print("\n")
-
-    
+    # console.rule("[bold]GLOBAL INFORMATION")
+    # console.print(clean_surikatz_dict)
+    # console.print("\n")
 
     Analyze.save_to_csv(clean_surikatz_dict)
-
-    #Dict concat
-    clean_surikatz_dict = {**whoisData, **shodanData}
 
 
 def discret_mode(target):
@@ -179,6 +179,3 @@ def discret_mode(target):
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)
-
-if __name__ == "__main__":
-    launch()

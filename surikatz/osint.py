@@ -121,7 +121,7 @@ class TheHarvester:
         # except subprocess.CalledProcessError as e:
         #     raise AppNotInstalled(
         #         "Please install theHarvester on your device or use a Kali Linux."
-        #     ) from e
+        #     )
 
         emails, ips, fqdns = self._parse_xml()
 
@@ -302,7 +302,7 @@ class ShodanUtils:
 
         new_data= []
         for i,element in enumerate(shodan_data['data']):
-            new_data.append({"Module":element['_shodan']['module'],"FQDN":element['hostnames'],"Port":element['port'],"Product": element['product'] if 'product' in element else "Undefined","Version": element['version'] if 'version' in element else "Undefined"})
+            new_data.append({"service": element['_shodan']['module'], "fqdn": element['hostnames'], "port": element['port'], "product": element['product'] if 'product' in element else "Undefined", "version": element['version'] if 'version' in element else "Undefined"})
     
         shodan_data['data'] = new_data
         return shodan_data
@@ -353,39 +353,44 @@ class Wappalyser:
         Returns:
             data: Dict of technology stack of the target
         """
-        rqs, rqu = self.api.request(
+        secured_rq = self.api.request(
             "/lookup",
-            params={"urls": f"https://{target},http://{target}", "set": "all", "recursive": "false"},
-        )
-        if rqs["errors"] :
-            rq = rqu
+            params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
+        )[0]
+        unsecured_rq = self.api.request(
+            "/lookup",
+            params={"urls": f"http://{target}", "set": "all", "recursive": "false"},
+        )[0]
+
+        if "errors" in secured_rq:
+            rq = unsecured_rq
         else:
-            rq = rqs
+            rq = secured_rq
         data = {"url": rq["url"], "technologies": [], "wp-plugins": [], "wp-themes": []}
         for techno in rq["technologies"]:
             slugs = [categorie["slug"] for categorie in techno["categories"]]
             if any( slug in [
-                "cms",
-                "web-servers",
-                "programming-languages",
-                "security",
-            ]
-                    for slug in slugs
-                    ):
+                    "cms",
+                    "web-servers",
+                    "programming-languages",
+                    "security",
+                ]
+                for slug in slugs
+            ):
                 del techno["trafficRank"], techno["confirmedAt"]
                 data["technologies"].append(techno)
             if any( slug in [
-                "wordpress-plugins",
-            ]
-                    for slug in slugs
-                    ):
+                    "wordpress-plugins",
+                ]
+                for slug in slugs
+            ):
                 del techno["trafficRank"], techno["confirmedAt"]
                 data["wp-plugins"].append(techno)
             if any( slug in [
-                "wordpress-themes",
-            ]
-                    for slug in slugs
-                    ):
+                    "wordpress-themes",
+                ]
+                for slug in slugs
+            ):
                 del techno["trafficRank"], techno["confirmedAt"]
                 data["wp-themes"].append(techno)
 

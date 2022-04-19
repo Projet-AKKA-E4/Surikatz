@@ -3,6 +3,7 @@
 """
 
 import nmap
+from rich import Console
 from surikatz.error import AppNotInstalled
 import subprocess
 
@@ -22,6 +23,18 @@ class HTTrak:
     """
     Class allowing the manipulation of HTTrack and the parsing of its output
     """
+    def __init__(self, target, path):
+        try :
+            subprocess.run(
+                ["httrack",target,"-o", path],
+                stdout=subprocess.PIPE
+            )
+            Console.print(f"HTTrack finished, saved to {path}")
+        except OSError:
+            raise AppNotInstalled(
+                "Please install httrack on your device."
+            )
+
 
 
 class OpenVAS:

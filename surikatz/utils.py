@@ -18,7 +18,7 @@ class ConfManager:
         self.confExists()
         load_dotenv(Path.home() / ".config/surikatz/.env")
 
-    def confExists(self):
+    def confExists(self) -> None:
         if not Path(Path.home() / ".config/surikatz/.env").exists():
             Path.mkdir(Path.home() / ".config/surikatz", parents=True, exist_ok=True)
             with importlib.resources.open_text(
@@ -32,7 +32,7 @@ class ConfManager:
         else:
             console.print(f"Your .env file is located in {Path.home() / '.config/surikatz/.env'}\n", style="bold red",)
 
-    def _getApiKey(self, api):
+    def _getApiKey(self, api: str) -> str:
         try:
             key = os.getenv(api)
             if key == "":
@@ -46,13 +46,13 @@ class ConfManager:
 
         return key
 
-    def getShodan(self):
+    def getShodan(self) -> str:
         return self._getApiKey("SHODAN_API")
 
-    def getRapid(self):
+    def getRapid(self) -> str:
         return self._getApiKey("RAPID_API")
 
-    def getWappalyzer(self):
+    def getWappalyzer(self) -> str:
         return self._getApiKey("WAPPALYZER_API")
 
 
@@ -99,7 +99,7 @@ class Checker:
             return False
 
     @staticmethod
-    def checkIPPublic():
+    def checkIPPublic() -> None:
         """
             A function that will check and return our public IP address through the Ipify's
         """
@@ -108,7 +108,7 @@ class Checker:
         console.print(f'My public IP address is: {ip["ip"]}', style="bold red",)
 
     @staticmethod
-    def checkTime():
+    def checkTime() -> None:
         """
             A function that will check and return the date and the time when we run our program
         """
@@ -117,7 +117,7 @@ class Checker:
         console.print(f'Date: {datenow}', style="bold red",)
    
     @staticmethod
-    def checkKali():
+    def checkKali() -> None:
         """
             A function that will check if the OS used is a Kali Linux distribution
 
@@ -147,11 +147,11 @@ class APIClient:
         if key:
             self._session.headers.update(key)
 
-    def makeUrlParams(self, params):
+    def makeUrlParams(self, params:dict) -> str:
         """A function that create a string that will return an URL link for accesssing any API
 
-        Arguments:
-            result  -- a dictionnary that will contain the parameters that we must add to the URL in order to access the ressources
+        Args:
+            result: a dictionnary that will contain the parameters that we must add to the URL in order to access the ressources
 
         Returns:
             A string character that will represent an URL link for accesssing the ressources of an API
@@ -163,13 +163,12 @@ class APIClient:
                 urlParams += "&" + f"{key}={params[key]}"
         return urlParams
 
-    def request(self, target, params=None):
+    def request(self, target:str, params=None) -> dict:
         """General-purpose function to create web requests to any API.
 
-        Arguments:
-            function  -- name of the function you want to execute
-            target    -- The endpoint for accessing the ressources we aim for.
-            params    -- dictionary of parameters for the function
+        Args:
+            target: The endpoint for accessing the ressources we aim for.
+            params: dictionary of parameters for the function
 
         Returns
             A dictionary containing the function's results.

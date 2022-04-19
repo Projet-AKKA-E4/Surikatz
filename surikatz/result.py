@@ -17,7 +17,7 @@ class Analyze:
     """
 
     @staticmethod
-    def clean_dict(global_dict)->dict:
+    def clean_dict(global_dict: dict) -> dict:
         """Clean dict data
         Args:
             global_dict: All concatenated data in python dict form
@@ -37,7 +37,7 @@ class Analyze:
         return global_dict
 
     @staticmethod
-    def save_to_csv(dict_to_save):
+    def save_to_csv(dict_to_save: dict) -> None:
         """Transform dict data to a csv file
         Args:
             dict_to_save: All concatenated data in python dict form
@@ -66,7 +66,7 @@ class Analyze:
         console.print("Writing all data in final_data.csv", style="bold #008000")
 
     @staticmethod
-    def save_to_json(dict_to_save):
+    def save_to_json(dict_to_save: dict) -> None:
         """Transform dict data to a json file
         Args:
             dict_to_save: All concatenated data in python dict form
@@ -76,7 +76,7 @@ class Analyze:
             console.print("Writing all data in final_data.json", style="bold #008000")
 
     @staticmethod
-    def get_cvss(cve):
+    def get_cvss(cve: str) -> dict:
         """Retrieves information of a CVE
         Args:
             cve: CVE ID
@@ -97,7 +97,7 @@ class Analyze:
         return result
 
     @staticmethod
-    def get_clean_data_theHarvester(theHarvesterDATA):
+    def get_clean_data_theHarvester(theHarvesterDATA: dict):
         """Get clean data for TheHarvester and Display them.
 
         Args:
@@ -150,7 +150,7 @@ class Analyze:
         Display.display_TheHarvester_data(theHarvesterDATA, lens)
 
     @staticmethod
-    def get_clean_data_dirsearch(parsed_data):
+    def get_clean_data_dirsearch(parsed_data: list):
         """Get clean data for DirSearch and Display them.
 
         Args:
@@ -185,7 +185,7 @@ class Analyze:
         Display.display_Dirsearch_data(clean_data[:10])
 
     @staticmethod
-    def analyse_nmap(result):
+    def analyse_nmap(result: dict) -> dict:
         """Parse nmap result in order to extract 
             Args:
                 result: raw result of nmap scan 
@@ -213,7 +213,7 @@ class Display:
     """
 
     @staticmethod
-    def display_CVSS(cve):
+    def display_CVSS(cve: str) -> None:
         """Display a CVE ID, CVSS score and type.
 
         Args:
@@ -235,7 +235,7 @@ class Display:
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
 
     @staticmethod
-    def display_TheHarvester_data(theHarvesterDATA, lens):
+    def display_TheHarvester_data(theHarvesterDATA: dict, lens: list) -> None:
         """Display DirSearch cleaned data.
 
         Args:
@@ -251,7 +251,7 @@ class Display:
             console.print(" ... ", style="red")
 
     @staticmethod
-    def display_txt(path):
+    def display_txt(path: str) -> None:
         """Display txt file
             
             Args:
@@ -261,7 +261,7 @@ class Display:
             console.print(file.read())
 
     @staticmethod
-    def display_json(path):
+    def display_json(path: str) -> None:
         """Display json file
             
             Args:
@@ -271,7 +271,7 @@ class Display:
             console.print(json.loads(file.read()))
 
     @staticmethod
-    def display_Dirsearch_data(dirsearchDATA):
+    def display_Dirsearch_data(dirsearchDATA: list) -> None:
         """Display DirSearch cleaned data.
 
         Args:

@@ -21,7 +21,7 @@ class TheHarvester:
     Class allowing the manipulation of The Harvester tool and the parsing of its output
     """
 
-    def __init__(self, domain):
+    def __init__(self, domain: str):
         """Init the theHarvester object.
 
         Args:
@@ -30,7 +30,7 @@ class TheHarvester:
         """
         self.domain = domain
 
-    def _parse_xml(self):
+    def _parse_xml(self) -> list:
         """Parse the xml file output of theHarvester.
 
         Args:
@@ -85,7 +85,7 @@ class TheHarvester:
                     fqdns.add(host.cdata)
         return emails, ips, fqdns
 
-    def get_data(self):
+    def get_data(self) -> dict:
         """Returns data found by TheHarvester
 
         Args:

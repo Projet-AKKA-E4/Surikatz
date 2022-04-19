@@ -16,7 +16,7 @@ class Nmap:
         self.scanner = nmap.PortScanner()
         self.scan_result = {}
 
-    def start_nmap(self, target, args, timeout):
+    def start_nmap(self, target: str, args: str, timeout: int) -> None:
         self.scan_result = self.scanner.scan(hosts=target, arguments=args, timeout=timeout)        
         
 class HTTrak:
@@ -66,7 +66,7 @@ class Wafwoof:
     """
     Class allowing the manipulation of WafW00f and the parsing of its output
     """
-    def __init__(self, target) -> None:
+    def __init__(self, target: str) -> None:
         try:    
             self.wafwoof = subprocess.run(
                 ["wafw00f","-a","-o","/tmp/wafwoof.json",target],

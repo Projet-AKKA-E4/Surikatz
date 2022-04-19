@@ -77,6 +77,13 @@ class Analyze:
 
     @staticmethod
     def get_cvss(cve):
+        """Retrieves information of a CVE
+        Args:
+            cve: CVE ID
+        
+        Returns:
+            Return a dictionnary with for one CVE, its ID, its CVSS score and its type
+        """
         client = APIClient("https://cve.circl.lu/api/cve/")
         r = client.request(cve)
         try:
@@ -87,61 +94,7 @@ class Analyze:
             }
         except:
             result = None
-
-    @staticmethod
-    def save_to_csv(dict_to_save):
-        """Transform dict data to a csv file
-        Args:
-            dict_to_save: All concatenated data in python dict form
-        """
-        df = pd.DataFrame(
-            dict(
-                [
-                    (k, pd.Series(v, dtype=pd.StringDtype()))
-                    for k, v in dict_to_save.items()
-                ]
-            )
-        )
-        filename = "final_data.csv"
-        tmp_dest = Path("/tmp/surikatz")
-        if not tmp_dest.exists():
-            Path.mkdir(tmp_dest, parents=True, exist_ok=True)
-        df.to_csv(tmp_dest / filename, index=False, header=True)
-        try:
-            dest = Path().cwd() / filename
-            dest.write_text(tmp_dest.joinpath(filename).read_text())
-        except OSError:
-            print(
-                "You don't have writing permission on current directory."
-                f"The output file is written at {tmp_dest / filename}"
-            )
-        console.print("Writing all data in final_data.csv", style="bold #008000")
-
-    @staticmethod
-    def save_to_json(dict_to_save):
-        """Transform dict data to a json file
-        Args:
-            dict_to_save: All concatenated data in python dict form
-        """
-        with open(Path.home() / "surikatz/final_data.json", "w") as fp:
-            json.dump(dict_to_save, fp)
-            console.print("Writing all data in final_data.json", style="bold #008000")
-
-    @staticmethod
-    def get_cvss(cve):
-        client = APIClient("https://cve.circl.lu/api/cve/")
-        r = client.request(cve)
-        try:
-            result = {
-                "cve": cve,
-                "cvss": r["cvss"],
-                "Type": r["capec"][0]["name"] if r["capec"] else "Undefined",
-            }
-        except:
-            result = None
-
-        colors = Display.display_CVSS(result)
-        return colors
+        return result
 
     @staticmethod
     def get_clean_data_theHarvester(theHarvesterDATA):
@@ -197,26 +150,6 @@ class Analyze:
         Display.display_TheHarvester_data(theHarvesterDATA, lens)
 
     @staticmethod
-    def parse_nmap(scan_result):
-        if scan_result["nmap"]["scanstats"]["downhosts"]==scan_result["nmap"]["scanstats"]["totalhosts"]:
-            return None
-
-        dictionnary = {
-            "scan":{}
-        }
-
-        for host in scan_result["scan"]:
-            for port in scan_result["scan"][host]["tcp"]:
-                dictionnary["scan"][port] = {
-                    "state"  : scan_result["scan"][host]["tcp"][port]["state"],
-                    "produit": scan_result["scan"][host]["tcp"][port]["product"],
-                    "version": scan_result["scan"][host]["tcp"][port]["version"],
-                    "cpe"    : scan_result["scan"][host]["tcp"][port]["cpe"],
-                    "protocol": scan_result["scan"][host]["tcp"][port]["extrainfo"]
-                }
-        return dictionnary
-
-    @staticmethod
     def get_clean_data_dirsearch(parsed_data):
         """Get clean data for DirSearch and Display them.
 
@@ -253,6 +186,13 @@ class Analyze:
 
     @staticmethod
     def analyse_nmap(result):
+        """Parse nmap result in order to extract 
+            Args:
+                result: raw result of nmap scan 
+
+            Returns:
+                Return a dictionnary containing for each host port its state, name of the product, version, cpe and protocol
+        """
         dic = {'nmap':{}}
         for host in result['scan']:
             for port in result["scan"][host]["tcp"]:
@@ -274,7 +214,11 @@ class Display:
 
     @staticmethod
     def display_CVSS(cve):
+        """Display a CVE ID, CVSS score and type.
 
+        Args:
+            cve: Information of a CVE
+        """
         if not cve:
             print("Error while getting this CVE information \n")
             return
@@ -307,20 +251,26 @@ class Display:
             console.print(" ... ", style="red")
 
     @staticmethod
-    def display_wafwoof():
-        with open("/tmp/wafwoof.json") as file:
+    def display_txt(path):
+        """Display txt file
+            
+            Args:
+                path: path of the text file to be diplayed
+        """
+        with open(path) as file:
+            console.print(file.read())
+
+    @staticmethod
+    def display_json(path):
+        """Display json file
+            
+            Args:
+                path: path of the json file to be diplayed
+        """
+        with open(path) as file:
             console.print(json.loads(file.read()))
 
     @staticmethod
-    def display_nikto():
-        with open("/tmp/nikto.txt","r") as file:
-            console.print(file.read())
-
-    @staticmethod
-    def display_nmap():
-        with open("/tmp/nmap") as file:
-            console.print(file.read())
-
     def display_Dirsearch_data(dirsearchDATA):
         """Display DirSearch cleaned data.
 

@@ -1,18 +1,18 @@
 """
     Module for using OSINT tools and databases to perform passives scans
 """
-from surikatz.error import AppNotInstalled
+from surikatz.error import APIError, AppNotInstalled
 from surikatz.utils import Checker, APIClient
 import re
 import whois
 import socket
 import subprocess
 import untangle
-import csv
 from rich import print
 from rich.console import Console
 import shodan
-
+from rich.traceback import install
+install(width=0)
 console = Console()
 
 
@@ -24,29 +24,14 @@ class TheHarvester:
     def __init__(self, domain):
         """Init the theHarvester object.
 
-        Retrieves rows pertaining to the given keys from the Table instance
-        represented by table_handle.  String keys will be UTF-8 encoded.
-
         Args:
             self: TheHarvester object.
             domain: domain name. For example : blabla.fr
-
-        Returns:
-            Three sets of emails, ips and FQDNs. For
-            example:
-
-            {admissions@blabla.fr, admin@blabla.fr, jean.dupond@blabla.fr},
-            {6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1},
-            {vpn.blabla.fr, test200.blabla.fr, www.blabla.fr}
-
         """
         self.domain = domain
 
     def _parse_xml(self):
         """Parse the xml file output of theHarvester.
-
-        Retrieves rows pertaining to the given keys from the Table instance
-        represented by table_handle.  String keys will be UTF-8 encoded.
 
         Args:
             self: TheHarvester object.
@@ -62,9 +47,14 @@ class TheHarvester:
         """
         # Regex matching IPv4 IP address
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
-
         # parse the xml
-        harvester_obj = untangle.parse("/tmp/output.xml")
+        try:
+            harvester_obj = untangle.parse("/tmp/output.xml")
+        except TypeError:
+            console.print("The XML file is probably empty",style="bold red")
+            console.print_exception()
+           
+
 
         # create sets for the data
         emails = set()
@@ -234,13 +224,13 @@ class ShodanUtils:
              - the second contain Shodan data
         """
         if not self.shodan.api_key:
-            print("No Shodan key has been provided. Only InternetDB data will be used")
+            console.print("No Shodan key has been provided. Only InternetDB data will be used")
             return (self.internetdb.request(target), None)
-        try :
+            
+        try : 
             return (self.internetdb.request(target), self.shodan.host(target))
-        except shodan.exception.APIError :
-            return None
-
+        except APIError:
+            return (self.internetdb.request(target), None)
 
     def _cpe_to_cpe23(self, cpes: dict) -> dict:
         """

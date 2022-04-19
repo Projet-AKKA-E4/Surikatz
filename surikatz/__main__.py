@@ -3,11 +3,13 @@
 from distutils.version import Version
 from enum import Enum
 import click
-from surikatz import osint, utils, scan
+from surikatz import osint, utils, scan, enumeration
 from surikatz.utils import ConfManager
 from rich.console import Console
 from rich.markdown import Markdown
 from surikatz.result import Analyze, Display
+import os
+
 
 console = Console()  # Console configuration for rich package allowing beautiful print
 conf = ConfManager()
@@ -89,6 +91,7 @@ def launch(target, level):
     if level == ScanMode.AGRESSIVE:
         console.print(Markdown("# Agressive mode", style="white"), style="bold red")
         print("")
+        aggressive_mode(target)
 
 
 def motd(version):
@@ -118,13 +121,15 @@ def passive_mode(target):
     console.print("\n")
     surikatz_dict.update({**whoisData})
 
-    console.rule("[bold]TheHarvester information")
-    console.print("")
-    theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
-    harvesterDATA = theHarvesterAPI.get_data()
-    Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
-    console.print("\n")
-    surikatz_dict.update({**harvesterDATA})
+    if whoisData["domain_name"]:
+        console.rule("[bold]TheHarvester information")
+        console.print("")
+        theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
+        harvesterDATA = theHarvesterAPI.get_data()
+        if harvesterDATA:
+            Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
+            console.print("\n")
+            surikatz_dict.update({**harvesterDATA})
 
     console.rule("[bold]Shodan information")
     console.print("")
@@ -155,27 +160,72 @@ def passive_mode(target):
 
         for fqdn in fqdns:
             wappalizerData = wappalizerApi.lookup(fqdn)
-            console.print(wappalizerData)
-            surikatz_dict.update({**wappalizerData})
+            if wappalizerData==None:
+                console.print("API Key is no longer valid : Error 403")
+            else : 
+                console.print(wappalizerData)
+                surikatz_dict.update({**wappalizerData})
         console.print("\n")
 
-    clean_surikatz_dict = Analyze.clean_dict(surikatz_dict)
+    surikatz_dict = Analyze.clean_dict(surikatz_dict)
 
     # console.rule("[bold]GLOBAL INFORMATION")
     # console.print(clean_surikatz_dict)
     # console.print("\n")
 
-    Analyze.save_to_csv(clean_surikatz_dict)
+    Analyze.save_to_csv(surikatz_dict)
 
 
 def discret_mode(target):
     passive_mode(target)
     nm = scan.Nmap()
-    nm.start_nmap(target, "-sV -sC -oN /tmp/scan", 1000)
-    surikatz_dict.update({**nm.scan_result})
+    
+    try:
+
+        leures = f"{surikatz_dict['ips'][0]},{surikatz_dict['ips'][1]}"
+    except:
+        leures = surikatz_dict['ip_address']
+
+    try:
+        port = surikatz_dict["ports"][0]
+    except:
+        port = 45678
+
+    if os.geteuid() == 0:
+        frag = "-f"
+    else :
+        frag = ""
+    
+    nm.start_nmap(target, f"{frag} -D {leures} -sV -oN /tmp/nmap --source-port {port}", 1000)
+    nmap_analyse = Analyze.analyse_nmap(nm.scan_result)
+    surikatz_dict.update({**nmap_analyse})
     console.rule("[bold]NMAP SCAN")
-    with open("/tmp/scan","r") as file:
-        console.print(file.read())
+    Display.display_nmap()
+
+    for port in surikatz_dict["nmap"]:
+        if "http" in surikatz_dict["nmap"][port]["name"]:
+            console.rule(f"[bold]Nikto for port {port}")
+            scan.Nikto(target, port)
+            Display.display_nikto()
+
+        
+    console.rule(f"[bold]WafW00f")
+    for port in surikatz_dict["nmap"]:
+        if port == 443 and "http" in surikatz_dict["nmap"][port]["name"]:
+            if "https" not in target : 
+                scan.Wafwoof(f"https://{target}")
+            else :
+                scan.Wafwoof(target)
+            Display.display_wafwoof()
+
+def aggressive_mode(target):
+    passive_mode(target)
+    console.rule("[bold]dirsearch information")
+    console.print("")
+    print(surikatz_dict)
+    dirsearch = enumeration.DirSearch(surikatz_dict["ip_address"])
+    dirSearchDATA = dirsearch.get_data()
+    Analyze.get_clean_data_dirsearch(dirSearchDATA)
 
 def json_output(dict_to_store):
     Analyze.save_to_json(dict_to_store)

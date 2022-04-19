@@ -9,9 +9,8 @@ import json
 import subprocess
 
 import nmap
-import asyncio
-
-#console = Console()
+from surikatz.error import AppNotInstalled
+import subprocess
 
 class Nmap:
     """
@@ -89,3 +88,24 @@ class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
     """
+    def __init__(self, target: str, port: int) -> None:
+        try:    
+            self.nikto = subprocess.run(
+                ["nikto","-output","/tmp/nikto.txt","-h",target,"-port",str(port)],
+                stdout=subprocess.PIPE,
+            )
+        except OSError:
+            raise AppNotInstalled("Please install nikto on your device or use a Kali Linux.")
+
+class Wafwoof:
+    """
+    Class allowing the manipulation of WafW00f and the parsing of its output
+    """
+    def __init__(self, target) -> None:
+        try:    
+            self.wafwoof = subprocess.run(
+                ["wafw00f","-a","-o","/tmp/wafwoof.json",target],
+                stdout=subprocess.PIPE,
+            )
+        except OSError:
+            raise AppNotInstalled("Please install wafw00f on your device or use a Kali Linux.")

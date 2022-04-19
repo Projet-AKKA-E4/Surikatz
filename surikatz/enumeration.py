@@ -16,7 +16,7 @@ class DirSearch:
     """
     Class allowing the manipulation of DirBuster for Website enumeration and the parsing of its output
     """
-    def __init__(self, ip):
+    def __init__(self, ip: str):
             """Init the DirSearch object.
 
             Args:
@@ -25,7 +25,7 @@ class DirSearch:
             """
             self.ip = ip
             
-    def get_data(self):
+    def get_data(self) -> list:
         """Returns data found by DirSearch
 
         Args:

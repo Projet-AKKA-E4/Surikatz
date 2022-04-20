@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from surikatz.error import APIError, ReadError
+from surikatz import SURIKATZ_PATH,SCAN_DATE
 import importlib.resources
 from dotenv import load_dotenv
 import os
@@ -16,7 +17,14 @@ console = Console()
 class ConfManager:
     def __init__(self):
         self.confExists()
+        self.tmpExists()
         load_dotenv(Path.home() / ".config/surikatz/.env")
+
+    def tmpExists(self):
+        if not Path(SURIKATZ_PATH).exists():
+            Path.mkdir(Path("/tmp/surikatz") / SCAN_DATE, parents=True, exist_ok=True)
+        else :
+            console.print(f"Your result temporary files are located in {Path('/tmp/surikatz') / SCAN_DATE}\n", style="bold red")
 
     def confExists(self):
         if not Path(Path.home() / ".config/surikatz/.env").exists():
@@ -163,12 +171,12 @@ class APIClient:
                 urlParams += "&" + f"{key}={params[key]}"
         return urlParams
 
-    def request(self, target, params=None):
+    def request(self, target, params=None)->dict:
         """General-purpose function to create web requests to any API.
 
-        Arguments:
+        Args:
             function  -- name of the function you want to execute
-            target    -- The endpoint for accessing the ressources we aim for.
+            target    -- The endpoint for accessing the resources we aim for.
             params    -- dictionary of parameters for the function
 
         Returns

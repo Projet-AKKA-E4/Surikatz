@@ -8,10 +8,12 @@ import os
 from pathlib import Path
 import re
 import requests
-from rich.console import Console
+from urllib.parse import urlparse
 from datetime import datetime
+from rich import console, traceback
 
-console = Console()
+traceback.install(show_locals=True)
+console = console.Console()
 
 
 class ConfManager:
@@ -44,15 +46,12 @@ class ConfManager:
         try:
             key = os.getenv(api)
             if key == "":
-                raise ReadError(
-                    "Impossible to read API key value. Make sure you fill it in .env file"
-                )
+                return None
+            return key
 
         except:
             print(f"Error, no {api} API key fond in .env file")
-            key = None
-
-        return key
+            return None
 
     def getShodan(self):
         return self._getApiKey("SHODAN_API")
@@ -60,7 +59,7 @@ class ConfManager:
     def getRapid(self):
         return self._getApiKey("RAPID_API")
 
-    def getWappalyzer(self):
+    def getWappalyzerKey(self):
         return self._getApiKey("WAPPALYZER_API")
 
 
@@ -105,6 +104,21 @@ class Checker:
 
         else:
             return False
+    
+    @staticmethod
+    def getTarget(target: str) -> str:
+        if Checker.checkIpAddress(urlparse(target).path):
+            return urlparse(target).path
+        
+        if not urlparse(target).scheme:
+            domain = urlparse(target).path
+        else:
+            domain = urlparse(target).netloc
+        # à corriger car va dans path si pas de scheme
+        if Checker.checkDomain(domain):
+            return domain
+        else:
+            return None
 
     @staticmethod
     def checkIPPublic():
@@ -140,6 +154,20 @@ class Checker:
             else:
                 f.close()
                 raise OSError("You don't have a kali Distibution")
+    
+    @staticmethod
+    def serviceExists(name :str, data :dict) -> bool:
+
+        if "nmap" in data:
+            for service in data["nmap"]:
+                if name in service["type"]:
+                    return True
+        
+        elif "shodan" in data:
+            for service in data["shodan"]["services"]:
+                if name in service["type"]:
+                    return True
+        return False       
 
 
 class APIClient:

@@ -2,30 +2,28 @@
     Module for perform some kind of enumeration on an information system
 """
 import subprocess
-
-import rich
 from surikatz.error import AppNotInstalled
 import json
-from rich.console import Console
-from rich.traceback import install
-install(width=0)
-console = Console()
+from rich import console, traceback
+
+traceback.install(show_locals=True)
+console = console.Console()
 
 
 class DirSearch:
     """
     Class allowing the manipulation of DirBuster for Website enumeration and the parsing of its output
+
+    Attributes:
+        self: DirSearch object.
+        ip: ip adress. For example : 10.10.0.1
     """
     def __init__(self, ip):
             """Init the DirSearch object.
-
-            Args:
-                self: DirSearch object.
-                ip: ip adress. For example : 10.10.0.1
             """
             self.ip = ip
             
-    def get_data(self):
+    def get_data(self, path):
         """Returns data found by DirSearch
 
         Args:
@@ -44,7 +42,7 @@ class DirSearch:
         """
         try:
             dirsearch = subprocess.run(
-                ["dirsearch", "-u", self.ip, "--format", "json", "-o", "/tmp/dirsearch.json","--skip-on-status", "401,402,404","-r","-t","60"],
+                ["dirsearch", "-u", self.ip, "--format", "json", "-o", path,"--skip-on-status", "401,402,404","-r","-t","60"],
                 stderr=subprocess.STDOUT, stdout=subprocess.PIPE
             )  # Launch dirsearch from the user's computer
         except OSError:
@@ -53,13 +51,13 @@ class DirSearch:
             )
         # try to open dirsearch output and parsed the data
         try:
-            with open('/tmp/dirsearch.json') as jsonFile:
-                dirsearchData = json.load(jsonFile)
+            with open(path) as json_file:
+                dirsearch_data = json.load(json_file)
                 parsed_data = list()
                 # Get all the informations on the urls founded
-                urls = list(dirsearchData['results'][0].values())[0]
+                urls = list(dirsearch_data['results'][0].values())[0]
                 # Get the fqdn -> example : http://blabla.fr:80/
-                fqdn = list(dirsearchData['results'][0].keys())[0]
+                fqdn = list(dirsearch_data['results'][0].keys())[0]
                 # Remove the last '/' of the fqdn in order to not get '//'
                 # And append the result to parsed_data
                 for url in urls:

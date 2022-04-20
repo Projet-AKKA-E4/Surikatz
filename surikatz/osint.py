@@ -1,19 +1,19 @@
 """
     Module for using OSINT tools and databases to perform passives scans
 """
-from surikatz.error import APIError, AppNotInstalled
+import surikatz.error
 from surikatz.utils import Checker, APIClient
+from urllib.parse import urlparse
 import re
 import whois
 import socket
 import subprocess
 import untangle
-from rich import print
-from rich.console import Console
 import shodan
-from rich.traceback import install
-install(width=0)
-console = Console()
+from rich import print, console, traceback
+
+traceback.install(show_locals=True)
+console = console.Console()
 
 
 class TheHarvester:
@@ -108,7 +108,7 @@ class TheHarvester:
         #     stdout=subprocess.PIPE,
         # )  # Launch theHarvester from the user's computer
 
-        # except subprocess.CalledProcessError as e:
+        # except OSError:
         #     raise AppNotInstalled(
         #         "Please install theHarvester on your device or use a Kali Linux."
         #     )
@@ -139,6 +139,8 @@ class Whois:
         Return:
             A dictionnary of Whois information
         """
+
+        target = Checker.getTarget(target)
 
         if Checker.checkIpAddress(target):  # For an ip Address
             # print("Valid Ip address: ", target)
@@ -225,12 +227,38 @@ class ShodanUtils:
         """
         if not self.shodan.api_key:
             console.print("No Shodan key has been provided. Only InternetDB data will be used")
-            return (self.internetdb.request(target), None)
+            try:
+                rq = self.internetdb.request(target)
+            except surikatz.error.APIError:
+                print(rq["error"])
+                rq = None
+            finally:
+                return (rq, None)
             
-        try : 
-            return (self.internetdb.request(target), self.shodan.host(target))
-        except APIError:
-            return (self.internetdb.request(target), None)
+        # try: 
+        #     intdb_rq = self.internetdb.request(target)
+        #     shodan_rq = self.shodan.host(target)
+        # except APIError:
+        #     if "error" in intdb_rq:
+        #         print("InternetDB : ", intdb_rq["error"])  
+        #     if "error" in shodan_rq:
+        #         print("Shodan : ", shodan_rq["error"])
+        #     intdb_rq = None
+        #     shodan_rq = None
+        # finally:
+        #     return (intdb_rq, shodan_rq)
+
+        try:
+            intdb_rq = self.internetdb.request(target)
+        except surikatz.error.APIError:
+            intdb_rq = None
+        
+        try:
+            shodan_rq = self.shodan.host(target)
+        except shodan.APIError:
+            shodan_rq = None
+        
+        return (intdb_rq, shodan_rq)
 
     def _cpe_to_cpe23(self, cpes: dict) -> dict:
         """
@@ -257,7 +285,7 @@ class ShodanUtils:
         try :
             intdb_data, shodan_data = self._request_data(target)
         except TypeError:
-            console.print("internetDB does not have any informations")
+            console.print(f"InternetDB does not have any information for {target}")
             return
 
         if not shodan_data:
@@ -279,7 +307,7 @@ class ShodanUtils:
             if "cpe23" in service:
                 shodan_data["cpes"] += service["cpe23"]
 
-        for unless_data in [
+        for useless_data in [
             "city",
             "region_code",
             "latitude",
@@ -287,14 +315,18 @@ class ShodanUtils:
             "isp",
             "asn",
             "area_code",
+            "country_code",
+            
         ]:
-            del shodan_data[unless_data]
+            del shodan_data[useless_data]
 
-        new_data= []
+        services = []
         for i,element in enumerate(shodan_data['data']):
-            new_data.append({"service": element['_shodan']['module'], "fqdn": element['hostnames'], "port": element['port'], "product": element['product'] if 'product' in element else "Undefined", "version": element['version'] if 'version' in element else "Undefined"})
+            services.append({"type": element['_shodan']['module'], "fqdn": element['hostnames'], "port": element['port'], "product": element['product'] if 'product' in element else "Undefined", "version": element['version'] if 'version' in element else "Undefined"})
     
-        shodan_data['data'] = new_data
+        shodan_data["services"] = services
+        del shodan_data["data"]
+
         return shodan_data
 
 
@@ -343,14 +375,17 @@ class Wappalyser:
         Returns:
             data: Dict of technology stack of the target
         """
-        secured_rq = self.api.request(
-            "/lookup",
-            params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
-        )[0]
-        unsecured_rq = self.api.request(
-            "/lookup",
-            params={"urls": f"http://{target}", "set": "all", "recursive": "false"},
-        )[0]
+        try:
+            secured_rq = self.api.request(
+                "/lookup",
+                params={"urls": f"https://{target}", "set": "all", "recursive": "false"},
+            )[0]
+            unsecured_rq = self.api.request(
+                "/lookup",
+                params={"urls": f"http://{target}", "set": "all", "recursive": "false"},
+            )[0]
+        except surikatz.error.APIError:
+            return None
 
         if "errors" in secured_rq:
             rq = unsecured_rq
@@ -367,21 +402,24 @@ class Wappalyser:
                 ]
                 for slug in slugs
             ):
-                del techno["trafficRank"], techno["confirmedAt"]
+                if "trafficRank" in techno: del techno["trafficRank"]
+                if "confirmedAt" in techno: del techno["confirmedAt"]
                 data["technologies"].append(techno)
             if any( slug in [
                     "wordpress-plugins",
                 ]
                 for slug in slugs
             ):
-                del techno["trafficRank"], techno["confirmedAt"]
+                if "trafficRank" in techno: del techno["trafficRank"]
+                if "confirmedAt" in techno: del techno["confirmedAt"]
                 data["wp-plugins"].append(techno)
             if any( slug in [
                     "wordpress-themes",
                 ]
                 for slug in slugs
             ):
-                del techno["trafficRank"], techno["confirmedAt"]
+                if "trafficRank" in techno: del techno["trafficRank"]
+                if "confirmedAt" in techno: del techno["confirmedAt"]
                 data["wp-themes"].append(techno)
 
         return data

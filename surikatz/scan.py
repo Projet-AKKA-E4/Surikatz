@@ -8,16 +8,14 @@ from surikatz.utils import APIClient
 from rich import print
 from rich.console import Console
 import json
-from os.path import exists
-import os
-
 import subprocess
-
 import nmap
 from surikatz.error import AppNotInstalled
+import subprocess
+from rich import console, traceback
 
-console = Console()
-
+traceback.install(show_locals=True)
+console = console.Console()
 
 class Nmap:
     """
@@ -178,10 +176,10 @@ class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
     """
-    def __init__(self, target: str, port: int) -> None:
+    def __init__(self, target: str) -> None:
         try:    
             self.nikto = subprocess.run(
-                ["nikto","-output","/tmp/nikto.txt","-h",target,"-port",str(port)],
+                ["nikto","-output",f"/tmp/{target}_nikto.txt","-h",target],
                 stdout=subprocess.PIPE,
             )
         except OSError:
@@ -191,10 +189,10 @@ class Wafwoof:
     """
     Class allowing the manipulation of WafW00f and the parsing of its output
     """
-    def __init__(self, target) -> None:
+    def __init__(self, target, path) -> None:
         try:    
             self.wafwoof = subprocess.run(
-                ["wafw00f","-a","-o","/tmp/wafwoof.json",target],
+                ["wafw00f", "-a", "-o", path, target],
                 stdout=subprocess.PIPE,
             )
         except OSError:

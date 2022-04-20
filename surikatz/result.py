@@ -2,14 +2,14 @@
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
 
-from click import style
-from rich.console import Console
 from surikatz.utils import APIClient
 import json
 import pandas as pd
 from pathlib import Path
+from rich import console, traceback
 
-console = Console()
+traceback.install(show_locals=True)
+console = console.Console()
 
 class Analyze:
     """
@@ -97,7 +97,11 @@ class Analyze:
         return result
 
     @staticmethod
+<<<<<<< HEAD
     def get_clean_data_theHarvester(theHarvesterDATA: dict):
+=======
+    def get_clean_data_theHarvester(theharvester_data):
+>>>>>>> wordpress_scan
         """Get clean data for TheHarvester and Display them.
 
         Args:
@@ -129,25 +133,25 @@ class Analyze:
         ]
         # Gather lists length informations 
         lens = [
-            len(theHarvesterDATA["ips"]),
-            len(theHarvesterDATA["emails"]),
-            len(theHarvesterDATA["fqdns"]),
+            len(theharvester_data["ips"]),
+            len(theharvester_data["emails"]),
+            len(theharvester_data["fqdns"]),
         ]
         # Get 10 first emails
-        theHarvesterDATA["emails"] = theHarvesterDATA["emails"][:10]
+        theharvester_data["emails"] = theharvester_data["emails"][:10]
         clean_fqdn = list()
         # For each fqdn try to see if one of the interresting string is in it
         # If so append it to clean_fqdn
-        for fqdn in theHarvesterDATA["fqdns"]:
+        for fqdn in theharvester_data["fqdns"]:
             tmp_fqdn = next((fqdn for e in interresting if (e in fqdn.split(".")[0])),None)
             if tmp_fqdn:
                 clean_fqdn.append(tmp_fqdn)
         # Get 10 first cleaned fqdn
-        theHarvesterDATA["fqdns"] = clean_fqdn[:10]
+        theharvester_data["fqdns"] = clean_fqdn[:10]
         # Get 10 first IP address
-        theHarvesterDATA["ips"] = theHarvesterDATA["ips"][:10]
+        theharvester_data["ips"] = theharvester_data["ips"][:10]
         # Display all informations
-        Display.display_TheHarvester_data(theHarvesterDATA, lens)
+        Display.display_theharvester_data(theharvester_data, lens)
 
     @staticmethod
     def get_clean_data_dirsearch(parsed_data: list):
@@ -193,17 +197,20 @@ class Analyze:
             Returns:
                 Return a dictionnary containing for each host port its state, name of the product, version, cpe and protocol
         """
-        dic = {'nmap':{}}
+        dic = {'nmap':[]}
         for host in result['scan']:
             for port in result["scan"][host]["tcp"]:
-                dic['nmap'].update({
-                    port: {"name": result['scan'][host]['tcp'][port]['name'],
-                            "product": result['scan'][host]['tcp'][port]['product'],
-                            "version": result['scan'][host]['tcp'][port]['version'],
-                            "extrainfo": result['scan'][host]['tcp'][port]['extrainfo'],
-                            "conf": result['scan'][host]['tcp'][port]['conf'],
-                            "cpe": result['scan'][host]['tcp'][port]['cpe']
-                }})   
+                dic['nmap'].append(
+                    {
+                        "type": result['scan'][host]['tcp'][port]['name'],
+                        "port": port,
+                        "product": result['scan'][host]['tcp'][port]['product'],
+                        "version": result['scan'][host]['tcp'][port]['version'],
+                        "extrainfo": result['scan'][host]['tcp'][port]['extrainfo'],
+                        "conf": result['scan'][host]['tcp'][port]['conf'],
+                        "cpe": result['scan'][host]['tcp'][port]['cpe']
+                    }
+                )   
         return dic 
 
 
@@ -235,7 +242,11 @@ class Display:
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
 
     @staticmethod
+<<<<<<< HEAD
     def display_TheHarvester_data(theHarvesterDATA: dict, lens: list) -> None:
+=======
+    def display_theharvester_data(theHarvesterDATA, lens):
+>>>>>>> wordpress_scan
         """Display DirSearch cleaned data.
 
         Args:

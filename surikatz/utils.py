@@ -1,24 +1,34 @@
 #!/usr/bin/env python3
 
 from surikatz.error import APIError, ReadError
+from surikatz import SURIKATZ_PATH,SCAN_DATE
 import importlib.resources
 from dotenv import load_dotenv
 import os
 from pathlib import Path
 import re
 import requests
-from rich.console import Console
+from urllib.parse import urlparse
 from datetime import datetime
+from rich import console, traceback
 
-console = Console()
+traceback.install(show_locals=True)
+console = console.Console()
 
 
 class ConfManager:
     def __init__(self):
         self.confExists()
+        self.tmpExists()
         load_dotenv(Path.home() / ".config/surikatz/.env")
 
-    def confExists(self) -> None:
+    def tmpExists(self):
+        if not Path(SURIKATZ_PATH).exists():
+            Path.mkdir(Path("/tmp/surikatz") / SCAN_DATE, parents=True, exist_ok=True)
+        else :
+            console.print(f"Your result temporary files are located in {Path('/tmp/surikatz') / SCAN_DATE}\n", style="bold red")
+
+    def confExists(self):
         if not Path(Path.home() / ".config/surikatz/.env").exists():
             Path.mkdir(Path.home() / ".config/surikatz", parents=True, exist_ok=True)
             with importlib.resources.open_text(
@@ -36,15 +46,12 @@ class ConfManager:
         try:
             key = os.getenv(api)
             if key == "":
-                raise ReadError(
-                    "Impossible to read API key value. Make sure you fill it in .env file"
-                )
+                return None
+            return key
 
         except:
             print(f"Error, no {api} API key fond in .env file")
-            key = None
-
-        return key
+            return None
 
     def getShodan(self) -> str:
         return self._getApiKey("SHODAN_API")
@@ -52,7 +59,7 @@ class ConfManager:
     def getRapid(self) -> str:
         return self._getApiKey("RAPID_API")
 
-    def getWappalyzer(self) -> str:
+    def getWappalyzerKey(self):
         return self._getApiKey("WAPPALYZER_API")
 
 
@@ -97,6 +104,21 @@ class Checker:
 
         else:
             return False
+    
+    @staticmethod
+    def getTarget(target: str) -> str:
+        if Checker.checkIpAddress(urlparse(target).path):
+            return urlparse(target).path
+        
+        if not urlparse(target).scheme:
+            domain = urlparse(target).path
+        else:
+            domain = urlparse(target).netloc
+        # à corriger car va dans path si pas de scheme
+        if Checker.checkDomain(domain):
+            return domain
+        else:
+            return None
 
     @staticmethod
     def checkIPPublic() -> None:
@@ -132,6 +154,20 @@ class Checker:
             else:
                 f.close()
                 raise OSError("You don't have a kali Distibution")
+    
+    @staticmethod
+    def serviceExists(name :str, data :dict) -> bool:
+
+        if "nmap" in data:
+            for service in data["nmap"]:
+                if name in service["type"]:
+                    return True
+        
+        elif "shodan" in data:
+            for service in data["shodan"]["services"]:
+                if name in service["type"]:
+                    return True
+        return False       
 
 
 class APIClient:

@@ -23,6 +23,7 @@ python-dotenv = "^0.19.2"
 pandas = "^1.4.1"
 python-nmap = "^0.7.1"
 dirsearch = "^0.4.2"
+wpscan-out-parse = "^1.9.3"
 
 
 [tool.poetry.dev-dependencies]

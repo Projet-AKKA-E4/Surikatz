@@ -12,6 +12,8 @@ import subprocess
 import nmap
 from surikatz.error import AppNotInstalled
 import subprocess
+from os.path import exists
+import os
 from rich import console, traceback
 
 traceback.install(show_locals=True)
@@ -64,7 +66,7 @@ class WpScan():
         self.key = key
         self.wapplayzer_dict = wapplayzer_dict
 
-    def passive_wp_scan(self) -> dict | None:
+    def passive_wp_scan(self) -> dict:
         """
         Passive WpScan analyze wich call WpScan API for every Wordpress plugins and themes contained in wappalyzer dict
 
@@ -146,7 +148,7 @@ class WpScan():
             subprocess.run(["python3", "-m", "wpscan_out_parse", SURIKATZ_PATH / "wpscan.json", "--format", "json"],
                            stdout=fp)
 
-    def dict_concatenate(self) -> dict | None:
+    def dict_concatenate(self) -> dict:
         """
             Function wich concatenate passive and aggressive/discret dict
 

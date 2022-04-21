@@ -134,6 +134,12 @@ class Analyze:
             "prod"
         ]
         # Gather lists length informations 
+        if(not('ips' in theharvester_data)):
+            theharvester_data["ips"] = list()
+        if(not('emails' in theharvester_data)):
+            theharvester_data["emails"] = list()
+        if(not('fqdns' in theharvester_data)):
+            theharvester_data["fqdns"] = list()
         lens = [
             len(theharvester_data["ips"]),
             len(theharvester_data["emails"]),

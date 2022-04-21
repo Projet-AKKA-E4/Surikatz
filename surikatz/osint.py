@@ -47,19 +47,21 @@ class TheHarvester:
         """
         # Regex matching IPv4 IP address
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
-        # parse the xml
-        try:
-            harvester_obj = untangle.parse(SURIKATZ_PATH / "theharvester.xml")
-        except TypeError:
-            console.print("The XML file is probably empty",style="bold red")
-            console.print_exception()
-           
-
 
         # create sets for the data
         emails = set()
         fqdns = set()
         ips = set()
+
+        # parse the xml
+        try:
+            path = SURIKATZ_PATH / "theharvester.xml"
+            harvester_obj = untangle.parse(str(path))
+        except TypeError:
+            console.print("The XML file is probably empty",style="bold red")
+            console.print_exception()
+            return emails,ips,fqdns
+
 
         # Check if there is emails in the parsed object
         if "email" in dir(harvester_obj.theHarvester):
@@ -103,7 +105,7 @@ class TheHarvester:
         """
         try:
             harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", SURIKATZ_PATH / "theharvester"],
+                ["theHarvester", "-d", self.domain, "-b", "all", "-f", f"{SURIKATZ_PATH}/theharvester"],
                 stdout=subprocess.PIPE,
             )  # Launch theHarvester from the user's computer
         except OSError:

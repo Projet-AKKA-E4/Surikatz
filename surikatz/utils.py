@@ -193,7 +193,7 @@ class Checker:
                 raise OSError("You don't have a kali Distibution")
     
     @staticmethod
-    def service_exists(name :str, data :dict) -> bool:
+    def service_exists(name: str, data: dict) -> bool:
         """Check if service is in data
 
         Args: 
@@ -235,7 +235,7 @@ class APIClient:
         if key:
             self._session.headers.update(key)
 
-    def make_url_params(self, params:dict) -> str:
+    def make_url_params(self, params: dict) -> str:
         """A function that create a string that will return an URL link for accesssing any API
 
         Args:
@@ -251,7 +251,7 @@ class APIClient:
                 urlParams += "&" + f"{key}={params[key]}"
         return urlParams
 
-    def request(self, target:str, params=None) -> dict:
+    def request(self, target: str, params=None) -> dict:
         """General-purpose function to create web requests to any API.
 
         Args:

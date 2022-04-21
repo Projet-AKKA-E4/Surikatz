@@ -244,7 +244,7 @@ class Display:
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
 
     @staticmethod
-    def display_theharvester_data(theharvester_data :dict, lens :list):
+    def display_theharvester_data(theharvester_data: dict, lens: list):
         """Display DirSearch cleaned data.
 
         Args:

@@ -41,8 +41,12 @@ class Nmap:
 class HTTrak:
     """
     Class allowing the manipulation of HTTrack and the parsing of its output
+
+    Args: 
+        target: IP address or doamin name of the target
+        path: path where save result
     """
-    def __init__(self, target, path):
+    def __init__(self, target: str, path: str):
         """Init the HTTrack object with target."""
         try :
             subprocess.run(
@@ -76,7 +80,7 @@ class WpScan():
             A dict containing wpscan passive part and wpscan aggressive|discret part
     """
 
-    def __init__(self, domain, key, wapplayzer_dict):
+    def __init__(self, domain: str, key: str, wapplayzer_dict: dict):
         """ Init the WpScan object with domain name and API key"""
         self.domain = "http://" + domain
         self.key = key

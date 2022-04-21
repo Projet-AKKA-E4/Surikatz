@@ -217,10 +217,10 @@ def launch(target, level):
             ports = "-p-"
             scripts = "-sC"
         
-        #nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 1000)
-        #nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
-        #surikatz_dict.update({**nmap_analyse})
-        #result.Display.display_txt(SURIKATZ_PATH / "nmap" / target)
+        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 1000)
+        nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
+        surikatz_dict.update({**nmap_analyse})
+        result.Display.display_txt(SURIKATZ_PATH / "nmap" / target)
 
 
     #############################################################################
@@ -236,10 +236,10 @@ def launch(target, level):
                     if "http" in service["type"]:
                         targets += service["fqdn"] if service["fqdn"] else [f'{surikatz_dict["whois"]["ip_address"]}:{service["port"]}']
 
-        #if level.value >= ScanMode.DISCRET.value:
-        #     for service in surikatz_dict["nmap"]:
-        #        if service["type"] == "http":
-        #            targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
+        if level.value >= ScanMode.DISCRET.value:
+             for service in surikatz_dict["nmap"]:
+                if service["type"] == "http":
+                    targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
                         
         if not targets:
             print(f"No Web server exists for {target}")

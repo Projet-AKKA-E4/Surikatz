@@ -220,13 +220,25 @@ def launch(target, level):
             print(f"No Web server exists for {target}")
             
         targets = list(set(targets))
+
+        #############################################################################
+        ############################# HTTrack #######################################
+        #############################################################################
+        if level.value >= ScanMode.DISCRET.value:
+            console.rule("[bold]HTTrack")
+            
+            for tg in targets:
+                console.print(f"HTTrack for {tg}")
+                scan.HTTrak(tg, f"/tmp/{urlparse(tg).netloc}_httrack")
+                console.print(f"HTTrack finished. Output folder : /tmp/{urlparse(tg).netloc}_httrack")
+
     
         #############################################################################
         ########################## WAPPALYSER #######################################
         #############################################################################
         if level.value >= ScanMode.PASSIVE.value and conf.getWappalyzerKey():
             
-            console.rule("[bold]Wappalizer information")
+            console.rule("[bold]Wappalizer")
             console.print("")
             
             wappalizerApi = osint.Wappalyser(conf.getWappalyzerKey())

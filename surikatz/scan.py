@@ -6,11 +6,9 @@ from typing import Any
 from surikatz import SURIKATZ_PATH
 from surikatz.utils import APIClient
 from rich import print
-from rich.console import Console
 import json
 import subprocess
 import nmap
-from rich import Console
 from surikatz.error import AppNotInstalled
 import subprocess
 from os.path import exists
@@ -42,7 +40,6 @@ class HTTrak:
                 ["httrack",target,"-o", path],
                 stdout=subprocess.PIPE
             )
-            Console.print(f"HTTrack finished, saved to {path}")
         except OSError:
             raise AppNotInstalled(
                 "Please install httrack on your device."

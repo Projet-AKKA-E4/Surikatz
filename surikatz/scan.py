@@ -24,17 +24,30 @@ class Nmap:
     """
 
     def __init__(self):
+        """Init the nmap object."""
         self.scanner = nmap.PortScanner()
         self.scan_result = {}
 
-    def start_nmap(self, target: str, args: str, timeout: int) -> None:
+    def start_nmap(self, target: str, args: str, timeout: int):
+        """Launch the nmap command according to what has been put in parameter
+        
+        Args: 
+            target: domain nam or IP address of the target
+            args: parameter(s) we want to put in the nmap command
+            timeout: timeout parameter if we want use it for the nmap command
+        """
         self.scan_result = self.scanner.scan(hosts=target, arguments=args, timeout=timeout)        
         
 class HTTrak:
     """
     Class allowing the manipulation of HTTrack and the parsing of its output
+
+    Args: 
+        target: IP address or doamin name of the target
+        path: path where save result
     """
-    def __init__(self, target, path):
+    def __init__(self, target: str, path: str):
+        """Init the HTTrack object with target."""
         try :
             subprocess.run(
                 ["httrack",target,"-O", path],
@@ -67,10 +80,8 @@ class WpScan():
             A dict containing wpscan passive part and wpscan aggressive|discret part
     """
 
-    def __init__(self, domain, key, wapplayzer_dict):
-        """
-        Init the WpScan object.
-        """
+    def __init__(self, domain: str, key: str, wapplayzer_dict: dict):
+        """ Init the WpScan object with domain name and API key"""
         self.domain = "http://" + domain
         self.key = key
         self.wapplayzer_dict = wapplayzer_dict
@@ -78,7 +89,6 @@ class WpScan():
     def passive_wp_scan(self) -> dict:
         """
         Passive WpScan analyze wich call WpScan API for every Wordpress plugins and themes contained in wappalyzer dict
-
 
         Returns:
             wappalyzer_vuln: a dict containing WpScan API call from wappalyzer containing plugins and theme
@@ -186,8 +196,12 @@ class WpScan():
 class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
+
+    Args: 
+        target: domain name or IP address of the target   
     """
-    def __init__(self, target: str) -> None:
+    def __init__(self, target: str):
+        """Init the Nikto object with target."""
         try:    
             self.nikto = subprocess.run(
                 ["nikto","-output",f"/tmp/{target}_nikto.txt","-h",target],
@@ -199,8 +213,13 @@ class Nikto:
 class Wafwoof:
     """
     Class allowing the manipulation of WafW00f and the parsing of its output
+
+    Args: 
+        target: domain name or IP address of the target
+        path: path in which the file will be saved
     """
-    def __init__(self, target, path) -> None:
+    def __init__(self, target, path):
+        """Init the WafWoof object with target."""
         try:    
             self.wafwoof = subprocess.run(
                 ["wafw00f", "-a", "-o", path, target],

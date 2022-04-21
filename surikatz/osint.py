@@ -100,22 +100,31 @@ class TheHarvester:
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
-        try:
-            harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/surikatz/theharvester"],
-                stdout=subprocess.PIPE,
-            )  # Launch theHarvester from the user's computer
-        except OSError:
-            raise surikatz.error.AppNotInstalled(
-                "Please install theHarvester on your device or use a Kali Linux."
-            )
-        except TypeError:
-            console.print_exception()
-            return
+        # try:
+        #     harvester = subprocess.run(
+        #         ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/surikatz/theharvester"],
+        #         stdout=subprocess.PIPE,
+        #     )  # Launch theHarvester from the user's computer
+        # except OSError:
+        #     raise surikatz.error.AppNotInstalled(
+        #         "Please install theHarvester on your device or use a Kali Linux."
+        #     )
+        # except TypeError:
+        #     console.print_exception()
+        #     return
 
         emails, ips, fqdns = self._parse_xml()
 
-        return {"emails": list(emails), "ips": list(ips), "fqdns": list(fqdns)}
+        dic = {"emails": list(emails), "ips": list(ips), "fqdns": list(fqdns)}
+        
+        if dic["emails"] == list():
+            dic.pop("emails")
+        if dic["ips"] == list():
+            dic.pop("ips")
+        if dic["fqdns"] == list():
+            dic.pop("fqdns")
+        
+        return dic
 
 
 class IHaveBeenPawn:
@@ -207,9 +216,14 @@ class Whois:
 class ShodanUtils:
     """
     Class allowing the manipulation of Shodan API
+
+    Attributes:
+        self: Shodan object.
+        key: API key for Shodan.
     """
 
-    def __init__(self, key):
+    def __init__(self, key: str):
+        """Init the Shodan object with API key."""
         self.internetdb = APIClient("https://internetdb.shodan.io/")
         self.shodan = shodan.Shodan(key)
 
@@ -346,10 +360,12 @@ class Wappalyser:
     Class allowing the manipulation of Wappalyser and the parsing of its output
 
     Attributes:
+        self: Wappalyser object
         key: API key for Wappalyser
     """
 
     def __init__(self, key: str):
+        """Init the Wappalyser object with API key."""
         self.api = APIClient("https://api.wappalyzer.com/v2", key={"x-api-key": key})
 
     def lookup(self, target: str) -> dict:

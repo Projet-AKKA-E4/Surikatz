@@ -18,7 +18,7 @@ from surikatz.error import APIError, AppNotInstalled
     A powerful tool for searching informations before pentest.
 
     Can be used as 3 way :
-      * Passive : Only search on public sources (Shodan, TheHarvester, VeryLeaks...)
+      * Passive : Only search on public sources (Shodan, TheHarvester, ...)
       * Discrete : Use Passsive technics and soft nmap surikatz.scan, soft HTTrack...
       * Agressive : Use Passive and Discrete technics but more... agressive.
                    Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, enumeration for kerberos...
@@ -54,7 +54,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.AGRESSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use Discret and vulerability surikatz.scanner, ennumeration and bruteforce",
+    help="Use Passive and Discrete technics but more... agressive. Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, ...",
 )
 @click.option(
     "-d",
@@ -63,7 +63,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.DISCRET,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use passive mode with soft surikatz.scans",
+    help="Use Passsive technics and soft nmap surikatz.scan, soft HTTrack...",
 )
 @click.option(
     "-p",
@@ -72,10 +72,10 @@ class ScanMode(Enum):
     flag_value=ScanMode.PASSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use only OSINT technics to retrive data",
+    help="Only search on public sources (Shodan, TheHarvester, ...)",
 )
-def init(target, level):
 
+def init(target:str, level:ScanMode):
     motd(0.2)
     utils.Checker.check_time()
     utils.Checker.check_ip_public()
@@ -96,6 +96,11 @@ def init(target, level):
 
 
 def motd(version):
+    """Display of the Surikatz launch
+
+    Args: 
+        version: version number of the Surikatz program
+    """
     console.print(
         f"""
          ,/****/*,,          
@@ -112,6 +117,12 @@ def motd(version):
     )
 
 def launch(target, level):
+    """Launch of the Surikatz program
+
+    Args: 
+        target: IP address or domain name of the target
+        level: program launch level (passive, discret, agressive)
+    """
     
     global surikatz_dict
 
@@ -146,6 +157,8 @@ def launch(target, level):
                 surikatz_dict.update({"thehaverster": harvester_data})
                 result.Analyze.get_clean_data_theHarvester(harvester_data.copy())
                 console.print("\n")
+            else:
+                console.print("No informations on domain\n")
         except AppNotInstalled:
             harvester_data = None
 
@@ -215,7 +228,7 @@ def launch(target, level):
     #############################################################################
     #############################################################################
 
-    if utils.Checker.service_exists("http",surikatz_dict):
+    if ("services" in surikatz_dict["shodan"] and utils.Checker.service_exists("http",surikatz_dict) ):
         targets = []
         if surikatz_dict["shodan"]:
                 for service in surikatz_dict["shodan"]["services"]:
@@ -236,6 +249,7 @@ def launch(target, level):
         #############################################################################
         ########################## WAPPALYSER #######################################
         #############################################################################
+
         if level.value >= ScanMode.PASSIVE.value and conf.get_wappalyzer_key():
             
             console.rule("[bold]Wappalizer")
@@ -281,6 +295,7 @@ def launch(target, level):
         #############################################################################
         ############################# NIKTO #########################################
         #############################################################################
+
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]Nikto")
             
@@ -333,10 +348,15 @@ def launch(target, level):
     #############################################################################
 
     surikatz_dict = result.Analyze.clean_dict(surikatz_dict)
-
+    console.print(surikatz_dict)
     result.Analyze.save_to_csv(surikatz_dict)
 
 def json_output(dict_to_store):
+    """Save into file 
+
+    Args: 
+        dict_to_store: Dictionary to save
+    """
     result.Analyze.save_to_json(dict_to_store)
 
 if __name__ == "__main__":

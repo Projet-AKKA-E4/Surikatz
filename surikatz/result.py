@@ -19,8 +19,12 @@ class Analyze:
     @staticmethod
     def clean_dict(global_dict: dict) -> dict:
         """Clean dict data
+
         Args:
             global_dict: All concatenated data in python dict form
+
+        Returns: 
+            global_dict: Cleaned dictionary
         """
         if 'fqdns' in global_dict and 'hostnames' in global_dict:
             used = set()
@@ -37,8 +41,9 @@ class Analyze:
         return global_dict
 
     @staticmethod
-    def save_to_csv(dict_to_save: dict) -> None:
+    def save_to_csv(dict_to_save: dict):
         """Transform dict data to a csv file
+
         Args:
             dict_to_save: All concatenated data in python dict form
         """
@@ -66,8 +71,9 @@ class Analyze:
         console.print("Writing all data in final_data.csv", style="bold #008000")
 
     @staticmethod
-    def save_to_json(dict_to_save: dict) -> None:
+    def save_to_json(dict_to_save: dict):
         """Transform dict data to a json file
+
         Args:
             dict_to_save: All concatenated data in python dict form
         """
@@ -78,6 +84,7 @@ class Analyze:
     @staticmethod
     def get_cvss(cve: str) -> dict:
         """Retrieves information of a CVE
+
         Args:
             cve: CVE ID
         
@@ -97,7 +104,7 @@ class Analyze:
         return result
 
     @staticmethod
-    def get_clean_data_theHarvester(theharvester_data: dict) -> None:
+    def get_clean_data_theHarvester(theharvester_data: dict):
         """Get clean data for TheHarvester and Display them.
 
         Args:
@@ -150,12 +157,11 @@ class Analyze:
         Display.display_theharvester_data(theharvester_data, lens)
 
     @staticmethod
-    def get_clean_data_dirsearch(parsed_data: list) -> None:
+    def get_clean_data_dirsearch(parsed_data: list):
         """Get clean data for DirSearch and Display them.
 
         Args:
             parsed_data: DirSearch parsed data.
-
         """
         interresting = [
             "test",
@@ -258,7 +264,7 @@ class Display:
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
 
     @staticmethod
-    def display_theharvester_data(theharvester_data :dict, lens :list) -> None:
+    def display_theharvester_data(theharvester_data: dict, lens: list):
         """Display DirSearch cleaned data.
 
         Args:
@@ -274,7 +280,7 @@ class Display:
             console.print(" ... ", style="red")
 
     @staticmethod
-    def display_txt(path: str) -> None:
+    def display_txt(path: str):
         """Display txt file
             
             Args:
@@ -284,7 +290,7 @@ class Display:
             console.print(file.read())
 
     @staticmethod
-    def display_json(path: str) -> None:
+    def display_json(path: str):
         """Display json file
             
             Args:
@@ -294,7 +300,7 @@ class Display:
             Display.display_dict(json.loads(file.read()))
 
     @staticmethod
-    def display_Dirsearch_data(dirsearch_data: list) -> None:
+    def display_Dirsearch_data(dirsearch_data: list):
         """Display DirSearch cleaned data.
 
         Args:

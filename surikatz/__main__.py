@@ -260,9 +260,9 @@ def launch(target, level):
 
             for tg in targets:
                 wappalyzer_data = wappalyzer_api.lookup(tg)
-                if wappalyzer_data==None:
+                if wappalyzer_data == None:
                     console.print("API Key is no longer valid : Error 403")
-                else: 
+                else:
                     console.print(wappalyzer_data)
                     surikatz_dict["wappalizer"].append(wappalyzer_data)
 
@@ -285,22 +285,51 @@ def launch(target, level):
                 console.print(f"HTTrack for {tg}")
                 scan.HTTrak(tg, f"/tmp/{urlparse(tg).netloc}_httrack")
                 try:
-                    shutil.copytree(f"/tmp/{urlparse(tg).netloc}_httrack",f"./httrack/{urlparse(tg).netloc}_httrack")
+                    shutil.copytree(f"/tmp/{urlparse(tg).netloc}_httrack", f"./httrack/{urlparse(tg).netloc}_httrack")
                     console.print("Folder moved in current pwd", end="\n\n")
                     console.print(f"HTTrack finished. Output folder : ./httrack/{urlparse(tg).netloc}_httrack")
                 except OSError:
-                    console.print(f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack", end="\n\n")
+                    console.print(
+                        f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack",
+                        end="\n\n")
+                    console.print(
+                        f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack",
+                        end="\n\n")
+
+        #############################################################################
+        ############################# WPSCAN #########################################
+        #############################################################################
+        console.rule("[bold]Wpscan information")
+        console.print("")
+
+        wpscan_data = {}
+        for item in surikatz_dict["wappalizer"]:  # Check if there is a Wordpress CMS to analyse
+            for techno in item["technologies"] :
+                if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze",
+                                                                                     style="bold #FFA500")
+                wpscan_call = scan.WpScan(whois_data["domain_name"], conf.get_wpscan_key(), item)
+
+                if conf.get_wpscan_key() and whois_data["domain_name"]:
+                    if level.value == ScanMode.PASSIVE.value:
+                        wpscan_data = wpscan_call.passive_wp_scan()
+                    if level.value == ScanMode.DISCRET.value:
+                        wpscan_call.discret_wp_scan()
+                        wpscan_data = wpscan_call.dict_concatenate()
+                    if level.value == ScanMode.AGRESSIVE.value:
+                        wpscan_call.aggressive_wp_scan()
+                        wpscan_data = wpscan_call.dict_concatenate()
+                surikatz_dict.update({"wpscan" : wpscan_data})
+
 
 
         #############################################################################
         ############################# NIKTO #########################################
         #############################################################################
-
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]Nikto")
             
             targets = []
-            for host in surikatz_dict["wappalizer"] :
+            for host in surikatz_dict["wappalizer"]:
                 targets.append(host["url"])
 
             for tg in targets:
@@ -317,7 +346,7 @@ def launch(target, level):
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]WafW00f")
 
-            for tg in targets : 
+            for tg in targets:
                 if urlparse(tg).scheme == "https":
                     console.print(f"WafWoof for {tg}")
                     scan.Wafwoof(tg, f"/tmp/{urlparse(tg).netloc}_wafwoof.json")
@@ -352,9 +381,9 @@ def launch(target, level):
     result.Analyze.save_to_csv(surikatz_dict)
 
 def json_output(dict_to_store):
-    """Save into file 
+    """Save into file
 
-    Args: 
+    Args:
         dict_to_store: Dictionary to save
     """
     result.Analyze.save_to_json(dict_to_store)

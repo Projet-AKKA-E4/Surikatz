@@ -98,7 +98,7 @@ class WpScan():
         wappalyzer_vuln = {}
         wappalyzer_vuln["plugins"] = []
         wappalyzer_vuln["themes"] = []
-        if not len(self.wapplayzer_dict["wp-plugins"]) == 0:
+        if not self.wapplayzer_dict["wp-plugins"] :
             for plugin in self.wapplayzer_dict["wp-plugins"]:
                 call = apiCall.request("plugins/" + plugin["slug"])
                 if 'status' in call.keys() and call['status'] == 'rate limit hit':
@@ -109,7 +109,7 @@ class WpScan():
                 else:
                     wappalyzer_vuln["plugins"].append(call)
 
-        if not len(self.wapplayzer_dict["wp-themes"]) == 0:
+        if not self.wapplayzer_dict["wp-themes"]:
             for theme in self.wapplayzer_dict["wp-themes"]:
                 call = apiCall.request("themes/" + theme["slug"])
                 if 'status' in call.keys() and call['status'] == 'rate limit hit':

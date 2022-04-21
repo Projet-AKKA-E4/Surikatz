@@ -18,17 +18,17 @@ console = console.Console()
 
 class ConfManager:
     def __init__(self):
-        self.confExists()
-        self.tmpExists()
+        self.conf_exists()
+        self.tmp_exists()
         load_dotenv(Path.home() / ".config/surikatz/.env")
 
-    def tmpExists(self):
+    def tmp_exists(self):
         if not Path(SURIKATZ_PATH).exists():
             Path.mkdir(Path("/tmp/surikatz") / SCAN_DATE, parents=True, exist_ok=True)
         else :
             console.print(f"Your result temporary files are located in {Path('/tmp/surikatz') / SCAN_DATE}\n", style="bold red")
 
-    def confExists(self):
+    def conf_exists(self):
         if not Path(Path.home() / ".config/surikatz/.env").exists():
             Path.mkdir(Path.home() / ".config/surikatz", parents=True, exist_ok=True)
             with importlib.resources.open_text(
@@ -42,7 +42,7 @@ class ConfManager:
         else:
             console.print(f"Your .env file is located in {Path.home() / '.config/surikatz/.env'}\n", style="bold red",)
 
-    def _getApiKey(self, api: str) -> str:
+    def _get_api_key(self, api: str) -> str:
         try:
             key = os.getenv(api)
             if key == "":
@@ -53,14 +53,14 @@ class ConfManager:
             print(f"Error, no {api} API key fond in .env file")
             return None
 
-    def getShodan(self) -> str:
-        return self._getApiKey("SHODAN_API")
+    def get_shodan(self) -> str:
+        return self._get_api_key("SHODAN_API")
 
-    def getRapid(self) -> str:
-        return self._getApiKey("RAPID_API")
+    def get_rapid(self) -> str:
+        return self._get_api_key("RAPID_API")
 
-    def getWappalyzerKey(self):
-        return self._getApiKey("WAPPALYZER_API")
+    def get_wappalyzer_key(self):
+        return self._get_api_key("WAPPALYZER_API")
 
 
 class Checker:
@@ -68,7 +68,7 @@ class Checker:
         A class that is mainly used for checking and verification parts that will be useful for the smooth running of the operation.
     """
     @staticmethod
-    def checkIpAddress(Ip: str) -> bool:
+    def check_ip_address(Ip: str) -> bool:
         """
         Function allowing to check if an Ip have a correct form
 
@@ -87,7 +87,7 @@ class Checker:
             return False
 
     @staticmethod
-    def checkDomain(domain: str) -> bool:
+    def check_domain(domain: str) -> bool:
         """
         Function allowing to check if a domain name have a correct form
 
@@ -106,8 +106,8 @@ class Checker:
             return False
     
     @staticmethod
-    def getTarget(target: str) -> str:
-        if Checker.checkIpAddress(urlparse(target).path):
+    def get_target(target: str) -> str:
+        if Checker.check_ip_address(urlparse(target).path):
             return urlparse(target).path
         
         if not urlparse(target).scheme:
@@ -115,13 +115,13 @@ class Checker:
         else:
             domain = urlparse(target).netloc
         # à corriger car va dans path si pas de scheme
-        if Checker.checkDomain(domain):
+        if Checker.check_domain(domain):
             return domain
         else:
             return None
 
     @staticmethod
-    def checkIPPublic() -> None:
+    def check_ip_public() -> None:
         """
             A function that will check and return our public IP address through the Ipify's
         """
@@ -130,7 +130,7 @@ class Checker:
         console.print(f'My public IP address is: {ip["ip"]}', style="bold red",)
 
     @staticmethod
-    def checkTime() -> None:
+    def check_time() -> None:
         """
             A function that will check and return the date and the time when we run our program
         """
@@ -139,7 +139,7 @@ class Checker:
         console.print(f'Date: {datenow}', style="bold red",)
    
     @staticmethod
-    def checkKali() -> None:
+    def check_kali() -> None:
         """
             A function that will check if the OS used is a Kali Linux distribution
 
@@ -156,7 +156,7 @@ class Checker:
                 raise OSError("You don't have a kali Distibution")
     
     @staticmethod
-    def serviceExists(name :str, data :dict) -> bool:
+    def service_exists(name :str, data :dict) -> bool:
 
         if "nmap" in data:
             for service in data["nmap"]:
@@ -183,7 +183,7 @@ class APIClient:
         if key:
             self._session.headers.update(key)
 
-    def makeUrlParams(self, params:dict) -> str:
+    def make_url_params(self, params:dict) -> str:
         """A function that create a string that will return an URL link for accesssing any API
 
         Args:
@@ -211,7 +211,7 @@ class APIClient:
 
         """
         if params:
-            target += self.makeUrlParams(params)
+            target += self.make_url_params(params)
 
         # Send the request
         try:

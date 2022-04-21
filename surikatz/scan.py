@@ -6,11 +6,9 @@ from typing import Any
 from surikatz import SURIKATZ_PATH
 from surikatz.utils import APIClient
 from rich import print
-from rich.console import Console
 import json
 import subprocess
 import nmap
-from rich import Console
 from surikatz.error import AppNotInstalled
 import subprocess
 from os.path import exists

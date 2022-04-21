@@ -238,17 +238,17 @@ class Display:
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
 
     @staticmethod
-    def display_theharvester_data(theHarvesterDATA :dict, lens :list) -> None:
+    def display_theharvester_data(theharvester_data :dict, lens :list) -> None:
         """Display DirSearch cleaned data.
 
         Args:
-            theHarvesterDATA: TheHarvester cleaned data.
+            theharvester_data: TheHarvester cleaned data.
             lens : Length of of each list [len(ips), len(emails), len(fqdns)]
         """
-        console.print("ips: ", lens[0], theHarvesterDATA["ips"], style="bold")
-        console.print("emails:", lens[1], theHarvesterDATA["emails"], style="bold")
+        console.print("ips: ", lens[0], theharvester_data["ips"], style="bold")
+        console.print("emails:", lens[1], theharvester_data["emails"], style="bold")
         console.print("fqdns:", lens[2], style="bold red")
-        for fqdn in theHarvesterDATA["fqdns"]:
+        for fqdn in theharvester_data["fqdns"]:
             console.print(" - "+str(fqdn), style="red")
         if(lens[2]>10):
             console.print(" ... ", style="red")
@@ -274,14 +274,14 @@ class Display:
             console.print(json.loads(file.read()))
 
     @staticmethod
-    def display_Dirsearch_data(dirsearchDATA: list) -> None:
+    def display_Dirsearch_data(dirsearch_data: list) -> None:
         """Display DirSearch cleaned data.
 
         Args:
-            dirsearchDATA: DirSearch cleaned data.
+            dirsearch_data: DirSearch cleaned data.
 
         """
         console.print("Interesting URLs : ", style="bold red")
-        for url in dirsearchDATA:
+        for url in dirsearch_data:
             console.print(" - "+str(url), style="red")
         

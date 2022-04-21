@@ -62,6 +62,9 @@ class ConfManager:
     def get_wappalyzer_key(self):
         return self._get_api_key("WAPPALYZER_API")
 
+    def get_wpscan_key(self):
+        return self._get_api_key("WPSCAN_API")
+
 
 class Checker:
     """

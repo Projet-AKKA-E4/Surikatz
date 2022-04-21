@@ -185,7 +185,7 @@ class Whois:
                 "emails": whois_data.emails,
                 "name_servers": whois_data.name_servers,
             }
-            print(dict_domain)
+        
             # Test if dict_domain have more than 3 None inside -> means that probably the domain name is not correct
             num = 0
             for key, value in dict_domain.items():

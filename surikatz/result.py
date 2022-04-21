@@ -216,6 +216,26 @@ class Display:
     """
 
     @staticmethod
+    def display_dict(data: dict, level=0):
+        for field in data:
+            if isinstance(data[field], list):
+                console.print("\t"*level + f"{field} ({len(data[field])}):")
+                for i, elm in enumerate(data[field]):
+                    if isinstance(elm, dict):
+                        Display.display_dict(elm, 1)
+                        continue
+                    console.print("\t"*level + f"\t{elm}")
+                    if i == 9:
+                        break
+                if len(data[field]) > 10:
+                    console.print("\t...")
+                continue
+            if isinstance(data[field], dict):
+                Display.display_dict(data[field])
+            else:
+                console.print("\t"*level + f"{field}: {data[field]}")
+
+    @staticmethod
     def display_CVSS(cve: str) -> None:
         """Display a CVE ID, CVSS score and type.
 
@@ -271,7 +291,7 @@ class Display:
                 path: path of the json file to be diplayed
         """
         with open(path) as file:
-            console.print(json.loads(file.read()))
+            Display.display_dict(json.loads(file.read()))
 
     @staticmethod
     def display_Dirsearch_data(dirsearch_data: list) -> None:

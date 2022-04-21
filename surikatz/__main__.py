@@ -124,6 +124,7 @@ def launch(target, level):
         console.print("")
         whois = osint.Whois()
         whois_data = whois.whoIs(target)
+        result.Display.display_dict(whois_data)
         console.print("\n")
         surikatz_dict.update({"whois": whois_data})
 
@@ -157,11 +158,11 @@ def launch(target, level):
         console.rule("[bold]Shodan information")
         console.print("")
         shodan_api = osint.ShodanUtils(conf.get_shodan())
-        shodan_api = shodan_api.get_data(whois_data["ip_address"])
+        shodan_data = shodan_api.get_data(whois_data["ip_address"])
 
         if shodan_api is not None:
-            cves = shodan_api.pop("vulns")
-            console.print(shodan_api)
+            cves = shodan_data.pop("vulns")
+            result.Display.display_dict(shodan_data)
             console.print("\n")
             surikatz_dict.update({"shodan": shodan_api})
 
@@ -320,9 +321,9 @@ def launch(target, level):
                 dirsearch = enumeration.DirSearch(tg)
                 try:
                     dirsearch_data = dirsearch.get_data(f"/tmp/{urlparse(tg).netloc}_dirsearch.json")
-                except AppNotInstalled:
                     surikatz_dict["dirsearch"] += dirsearch_data
                     result.Analyze.get_clean_data_dirsearch(dirsearch_data)
+                except AppNotInstalled:
                     break
                 
 

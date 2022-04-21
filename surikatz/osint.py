@@ -101,17 +101,18 @@ class TheHarvester:
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
-        # try:
-        # TODO: uncomment this part
-        # harvester = subprocess.run(
-        #     ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/output"],
-        #     stdout=subprocess.PIPE,
-        # )  # Launch theHarvester from the user's computer
-
-        # except OSError:
-        #     raise AppNotInstalled(
-        #         "Please install theHarvester on your device or use a Kali Linux."
-        #     )
+        try:
+            harvester = subprocess.run(
+                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/surikatz/theharvester"],
+                stdout=subprocess.PIPE,
+            )  # Launch theHarvester from the user's computer
+        except OSError:
+            raise surikatz.error.AppNotInstalled(
+                "Please install theHarvester on your device or use a Kali Linux."
+            )
+        except TypeError:
+            console.print_exception()
+            return
 
         emails, ips, fqdns = self._parse_xml()
 

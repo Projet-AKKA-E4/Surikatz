@@ -90,18 +90,14 @@ class Analyze:
             result = {
                 "cve": cve,
                 "cvss": r["cvss"],
-                "Type": r["capec"][0]["name"] if r["capec"] else "Undefined",
+                "Type": r["cals -pec"][0]["name"] if r["capec"] else "Undefined",
             }
         except:
             result = None
         return result
 
     @staticmethod
-<<<<<<< HEAD
-    def get_clean_data_theHarvester(theHarvesterDATA: dict):
-=======
-    def get_clean_data_theHarvester(theharvester_data):
->>>>>>> wordpress_scan
+    def get_clean_data_theHarvester(theharvester_data: dict) -> None:
         """Get clean data for TheHarvester and Display them.
 
         Args:
@@ -154,7 +150,7 @@ class Analyze:
         Display.display_theharvester_data(theharvester_data, lens)
 
     @staticmethod
-    def get_clean_data_dirsearch(parsed_data: list):
+    def get_clean_data_dirsearch(parsed_data: list) -> None:
         """Get clean data for DirSearch and Display them.
 
         Args:
@@ -242,11 +238,7 @@ class Display:
         console.print(f"CVSS : {cve['cvss']}", style=cvss_color)
 
     @staticmethod
-<<<<<<< HEAD
-    def display_TheHarvester_data(theHarvesterDATA: dict, lens: list) -> None:
-=======
-    def display_theharvester_data(theHarvesterDATA, lens):
->>>>>>> wordpress_scan
+    def display_theharvester_data(theHarvesterDATA :dict, lens :list) -> None:
         """Display DirSearch cleaned data.
 
         Args:

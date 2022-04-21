@@ -14,6 +14,8 @@ import subprocess
 from os.path import exists
 import os
 from rich import console, traceback
+from urllib.parse import urlparse
+from pathlib import Path
 
 traceback.install(show_locals=True)
 console = console.Console()
@@ -198,11 +200,11 @@ class Nikto:
     Args: 
         target: domain name or IP address of the target   
     """
-    def __init__(self, target: str):
+    def __init__(self, target: str, path: Path):
         """Init the Nikto object with target."""
         try:    
             self.nikto = subprocess.run(
-                ["nikto","-output",f"/tmp/{target}_nikto.txt","-h",target],
+                ["nikto","-output", path,"-h",target],
                 stdout=subprocess.PIPE,
             )
         except OSError:

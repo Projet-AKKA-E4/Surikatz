@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from distutils.log import error
-from surikatz import utils, osint, scan, result, enumeration
+from surikatz import SURIKATZ_PATH, utils, osint, scan, result, enumeration
 import click
 from rich import console, traceback, markdown
 from enum import Enum
@@ -9,6 +9,7 @@ import os
 from urllib.parse import urlparse
 import surikatz
 import shutil
+from pathlib import Path
 
 from surikatz.error import APIError, AppNotInstalled
 
@@ -216,10 +217,10 @@ def launch(target, level):
             ports = "-p-"
             scripts = "-sC"
         
-        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
+        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 1000)
         nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
         surikatz_dict.update({**nmap_analyse})
-        result.Display.display_txt("/tmp/nmap")
+        result.Display.display_txt(SURIKATZ_PATH / "nmap" / target)
 
 
     #############################################################################
@@ -235,10 +236,10 @@ def launch(target, level):
                     if "http" in service["type"]:
                         targets += service["fqdn"] if service["fqdn"] else [f'{surikatz_dict["whois"]["ip_address"]}:{service["port"]}']
 
-        if level.value >= ScanMode.DISCRET.value:
-             for service in surikatz_dict["nmap"]:
-                if service["type"] == "http":
-                    targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
+        #if level.value >= ScanMode.DISCRET.value:
+        #     for service in surikatz_dict["nmap"]:
+        #        if service["type"] == "http":
+        #            targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
                         
         if not targets:
             print(f"No Web server exists for {target}")
@@ -267,34 +268,35 @@ def launch(target, level):
                     surikatz_dict["wappalizer"].append(wappalyzer_data)
 
             console.print("\n")
+            for host in surikatz_dict["wappalizer"] :
+                if not urlparse(host["url"]).netloc in targets:
+                    targets.append(host["url"])
+
+            targets = list(set(targets))
+            console.print(targets)
 
         #############################################################################
         ############################# HTTrack #######################################
         #############################################################################
         
         if level.value >= ScanMode.DISCRET.value:
+            print(targets)
             console.rule("[bold]HTTrack")
 
-            targets = []
-            for host in surikatz_dict["wappalizer"] :
-                targets.append(host["url"])
-
-            targets = list(set(targets))
-
             for tg in targets:
-                console.print(f"HTTrack for {tg}")
-                scan.HTTrak(tg, f"/tmp/{urlparse(tg).netloc}_httrack")
-                try:
-                    shutil.copytree(f"/tmp/{urlparse(tg).netloc}_httrack", f"./httrack/{urlparse(tg).netloc}_httrack")
-                    console.print("Folder moved in current pwd", end="\n\n")
-                    console.print(f"HTTrack finished. Output folder : ./httrack/{urlparse(tg).netloc}_httrack")
+                if urlparse(tg).scheme:
+                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_httrack")
+                    scan.HTTrak(tg, SURIKATZ_PATH / base_path)
+                else:
+                    base_path = Path(f"{tg.replace('-','_')}_httrack")
+                    scan.HTTrak(tg, SURIKATZ_PATH / base_path)
+                try: 
+                    shutil.copytree(SURIKATZ_PATH / base_path, Path().cwd() / "httrack" / base_path, dirs_exist_ok=True)
+                    console.print("Folder moved in current pwd")
+                    console.print(f"HTTrack finished. Output folder : {Path().cwd() / 'httrack' / base_path}", end="\n\n")
                 except OSError:
-                    console.print(
-                        f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack",
-                        end="\n\n")
-                    console.print(
-                        f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack",
-                        end="\n\n")
+                    console.print(f"Error while moving folding. Result is still available at {SURIKATZ_PATH / base_path}", end="\n\n")
+
 
         #############################################################################
         ############################# WPSCAN #########################################
@@ -346,8 +348,6 @@ def launch(target, level):
                 console.print(f"Nikto for {tg}")
                 result.Display.display_txt(f"/tmp/{tg}_nikto.txt")
 
-
-
         #############################################################################
         ############################## WafW00f ######################################
         #############################################################################
@@ -358,8 +358,9 @@ def launch(target, level):
             for tg in targets:
                 if urlparse(tg).scheme == "https":
                     console.print(f"WafWoof for {tg}")
-                    scan.Wafwoof(tg, f"/tmp/{urlparse(tg).netloc}_wafwoof.json")
-                    result.Display.display_json(f"/tmp/{urlparse(tg).netloc}_wafwoof.json")
+                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_wafwoof.json")
+                    scan.Wafwoof(tg, SURIKATZ_PATH / base_path)
+                    result.Display.display_json(SURIKATZ_PATH / base_path)
 
 
         #############################################################################            
@@ -373,13 +374,38 @@ def launch(target, level):
                 console.print(f"Diresearch for {tg}")
                 dirsearch = enumeration.DirSearch(tg)
                 try:
-                    dirsearch_data = dirsearch.get_data(f"/tmp/{urlparse(tg).netloc}_dirsearch.json")
+                    if urlparse(tg).scheme:
+                        base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_dirsearch.json")
+                        dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / base_path)
+                    else:
+                        base_path = Path(f"{tg.replace('-','_')}_dirsearch.json")
+                        dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / base_path)
+
                     surikatz_dict["dirsearch"] += dirsearch_data
                     result.Analyze.get_clean_data_dirsearch(dirsearch_data)
                 except AppNotInstalled:
                     break
                 
+        #############################################################################
+        ############################# NIKTO #########################################
+        #############################################################################
+        if level == ScanMode.AGRESSIVE:
+            console.rule(f"[bold]Nikto")
 
+            for tg in targets:
+                if urlparse(tg).scheme:
+                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_nikto.txt")
+                    scan.Nikto(tg, SURIKATZ_PATH / base_path)
+                else:
+                    base_path = Path(f"{tg.replace('-','_')}_nikto.txt")
+                    scan.Nikto(tg, SURIKATZ_PATH / base_path)
+                try: 
+                    shutil.copytree(SURIKATZ_PATH / base_path, Path().cwd() / "nikto" / base_path, dirs_exist_ok=True)
+                    console.print("Folder moved in current pwd")
+                    console.print(f"nikto finished. Output folder : {Path().cwd() / 'nikto' / base_path}", end="\n\n")
+                except OSError:
+                    console.print(f"Error while moving folding. Result is still available at {SURIKATZ_PATH / base_path}", end="\n\n")
+                
 
     #############################################################################
     ############################ SAVE INTO FILE #################################

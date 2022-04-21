@@ -100,22 +100,31 @@ class TheHarvester:
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
-        try:
-            harvester = subprocess.run(
-                ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/surikatz/theharvester"],
-                stdout=subprocess.PIPE,
-            )  # Launch theHarvester from the user's computer
-        except OSError:
-            raise surikatz.error.AppNotInstalled(
-                "Please install theHarvester on your device or use a Kali Linux."
-            )
-        except TypeError:
-            console.print_exception()
-            return
+        # try:
+        #     harvester = subprocess.run(
+        #         ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/surikatz/theharvester"],
+        #         stdout=subprocess.PIPE,
+        #     )  # Launch theHarvester from the user's computer
+        # except OSError:
+        #     raise surikatz.error.AppNotInstalled(
+        #         "Please install theHarvester on your device or use a Kali Linux."
+        #     )
+        # except TypeError:
+        #     console.print_exception()
+        #     return
 
         emails, ips, fqdns = self._parse_xml()
 
-        return {"emails": list(emails), "ips": list(ips), "fqdns": list(fqdns)}
+        dic = {"emails": list(emails), "ips": list(ips), "fqdns": list(fqdns)}
+        
+        if dic["emails"] == list():
+            dic.pop("emails")
+        if dic["ips"] == list():
+            dic.pop("ips")
+        if dic["fqdns"] == list():
+            dic.pop("fqdns")
+        
+        return dic
 
 
 class IHaveBeenPawn:

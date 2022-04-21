@@ -145,6 +145,8 @@ def launch(target, level):
                 surikatz_dict.update({"thehaverster": harvester_data})
                 result.Analyze.get_clean_data_theHarvester(harvester_data.copy())
                 console.print("\n")
+            else:
+                console.print("No informations on domain\n")
         except AppNotInstalled:
             harvester_data = None
 
@@ -160,7 +162,10 @@ def launch(target, level):
         shodan_api = shodan_api.get_data(whois_data["ip_address"])
 
         if shodan_api is not None:
-            cves = shodan_api.pop("vulns")
+            if "vulns" in shodan_api:
+                cves = shodan_api.pop("vulns")
+            else:
+                cves = list()
             console.print(shodan_api)
             console.print("\n")
             surikatz_dict.update({"shodan": shodan_api})
@@ -214,7 +219,7 @@ def launch(target, level):
     #############################################################################
     #############################################################################
 
-    if utils.Checker.service_exists("http",surikatz_dict):
+    if ("services" in surikatz_dict["shodan"] and utils.Checker.service_exists("http",surikatz_dict) ):
         targets = []
         if surikatz_dict["shodan"]:
                 for service in surikatz_dict["shodan"]["services"]:
@@ -332,7 +337,7 @@ def launch(target, level):
     #############################################################################
 
     surikatz_dict = result.Analyze.clean_dict(surikatz_dict)
-
+    console.print(surikatz_dict)
     result.Analyze.save_to_csv(surikatz_dict)
 
 def json_output(dict_to_store):

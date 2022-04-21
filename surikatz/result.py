@@ -2,6 +2,7 @@
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
 
+from pytest import Instance
 from surikatz import SURIKATZ_PATH
 from surikatz.utils import APIClient
 import json
@@ -302,7 +303,11 @@ class Display:
                 path: path of the json file to be diplayed
         """
         with open(path) as file:
-            Display.display_dict(json.loads(file.read()))
+            temp = json.loads(file.read())
+            if isinstance(temp,list):
+                Display.display_dict(*temp)
+            else:
+                Display.display_dict(temp)
 
     @staticmethod
     def display_Dirsearch_data(dirsearch_data: list):

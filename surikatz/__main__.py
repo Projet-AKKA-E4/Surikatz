@@ -217,10 +217,10 @@ def launch(target, level):
             ports = "-p-"
             scripts = "-sC"
         
-        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 1000)
-        nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
-        surikatz_dict.update({**nmap_analyse})
-        result.Display.display_txt(SURIKATZ_PATH / "nmap" / target)
+        #nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 1000)
+        #nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
+        #surikatz_dict.update({**nmap_analyse})
+        #result.Display.display_txt(SURIKATZ_PATH / "nmap" / target)
 
 
     #############################################################################
@@ -236,10 +236,10 @@ def launch(target, level):
                     if "http" in service["type"]:
                         targets += service["fqdn"] if service["fqdn"] else [f'{surikatz_dict["whois"]["ip_address"]}:{service["port"]}']
 
-        if level.value >= ScanMode.DISCRET.value:
-             for service in surikatz_dict["nmap"]:
-                if service["type"] == "http":
-                    targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
+        #if level.value >= ScanMode.DISCRET.value:
+        #     for service in surikatz_dict["nmap"]:
+        #        if service["type"] == "http":
+        #            targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
                         
         if not targets:
             print(f"No Web server exists for {target}")
@@ -269,11 +269,23 @@ def launch(target, level):
 
             console.print("\n")
             for host in surikatz_dict["wappalizer"] :
-                if not urlparse(host["url"]).netloc in targets:
+                if not urlparse(host["url"]) in targets:
                     targets.append(host["url"])
 
+            target_with_schem = []
+            target_without_scheme = []
+            for tg in targets:
+                if urlparse(tg).scheme:
+                    target_with_schem.append(tg)
+                else:
+                    target_without_scheme.append(tg)
+
+            for tgw in target_with_schem:
+                if urlparse(tgw).netloc in target_without_scheme:
+                    target_without_scheme.remove(urlparse(tgw).netloc)
+
+            targets = target_with_schem + target_without_scheme
             targets = list(set(targets))
-            console.print(targets)
 
         #############################################################################
         ############################# HTTrack #######################################
@@ -353,6 +365,7 @@ def launch(target, level):
                     base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")
                     scan.Wafwoof(tg, SURIKATZ_PATH / "wafwoof" / base_path)
                     result.Display.display_json(SURIKATZ_PATH / "wafwoof" /base_path)
+                    console.print("")
 
 
         #############################################################################            

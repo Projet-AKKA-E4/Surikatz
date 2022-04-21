@@ -74,8 +74,14 @@ class ScanMode(Enum):
     default=ScanMode.AGRESSIVE,
     help="Use only OSINT technics to retrive data",
 )
-def init(target, level):
 
+def init(target, level):
+    """Init the launch of the surikatz program
+    
+    Args: 
+        target: IP address or domain name of the target
+        level: program launch level (passive, discret, agressive)
+    """
     motd(0.2)
     utils.Checker.check_time()
     utils.Checker.check_ip_public()
@@ -96,6 +102,11 @@ def init(target, level):
 
 
 def motd(version):
+    """Display of the Surikatz launch
+
+    Args: 
+        version: version number of the Surikatz program
+    """
     console.print(
         f"""
          ,/****/*,,          
@@ -112,6 +123,12 @@ def motd(version):
     )
 
 def launch(target, level):
+    """Launch of the Surikatz program
+
+    Args: 
+        target: IP address or domain name of the target
+        level: program launch level (passive, discret, agressive)
+    """
     
     global surikatz_dict
 
@@ -240,6 +257,7 @@ def launch(target, level):
         #############################################################################
         ########################## WAPPALYSER #######################################
         #############################################################################
+
         if level.value >= ScanMode.PASSIVE.value and conf.get_wappalyzer_key():
             
             console.rule("[bold]Wappalizer")
@@ -285,6 +303,7 @@ def launch(target, level):
         #############################################################################
         ############################# NIKTO #########################################
         #############################################################################
+
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]Nikto")
             
@@ -341,6 +360,11 @@ def launch(target, level):
     result.Analyze.save_to_csv(surikatz_dict)
 
 def json_output(dict_to_store):
+    """Save into file
+
+    Args: 
+        dict_to_store: Dictionary to save
+    """
     result.Analyze.save_to_json(dict_to_store)
 
 if __name__ == "__main__":

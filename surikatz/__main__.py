@@ -170,14 +170,14 @@ def launch(target, level):
     if level.value >= ScanMode.PASSIVE.value:
         console.rule("[bold]Shodan information")
         console.print("")
-        shodan_api = osint.ShodanUtils(conf.get_shodan())
+        shodan_api = osint.ShodanUtils(conf.get_shodan_key())
         shodan_data = shodan_api.get_data(whois_data["ip_address"])
 
         if shodan_api is not None:
             cves = shodan_data.pop("vulns")
             result.Display.display_dict(shodan_data)
             console.print("\n")
-            surikatz_dict.update({"shodan": shodan_api})
+            surikatz_dict.update({"shodan": shodan_data})
 
             # CVSS Management
             for cve in cves:
@@ -228,7 +228,7 @@ def launch(target, level):
     #############################################################################
     #############################################################################
 
-    if ("services" in surikatz_dict["shodan"] and utils.Checker.service_exists("http",surikatz_dict) ):
+    if "services" in surikatz_dict["shodan"] and utils.Checker.service_exists("http", surikatz_dict):
         targets = []
         if surikatz_dict["shodan"]:
                 for service in surikatz_dict["shodan"]["services"]:
@@ -254,7 +254,7 @@ def launch(target, level):
             
             console.rule("[bold]Wappalizer")
             console.print("")
-            
+
             wappalyzer_api = osint.Wappalyser(conf.get_wappalyzer_key())
             surikatz_dict["wappalizer"] = []
 
@@ -303,22 +303,31 @@ def launch(target, level):
         console.print("")
 
         wpscan_data = {}
+        flag = False
         for item in surikatz_dict["wappalizer"]:  # Check if there is a Wordpress CMS to analyse
             for techno in item["technologies"] :
-                if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze",
+                if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze for "+ item["url"],
                                                                                      style="bold #FFA500")
                 wpscan_call = scan.WpScan(whois_data["domain_name"], conf.get_wpscan_key(), item)
 
                 if conf.get_wpscan_key() and whois_data["domain_name"]:
                     if level.value == ScanMode.PASSIVE.value:
                         wpscan_data = wpscan_call.passive_wp_scan()
+                        result.Display.display_dict(wpscan_data)
+                        flag = True
+                        break
                     if level.value == ScanMode.DISCRET.value:
                         wpscan_call.discret_wp_scan()
                         wpscan_data = wpscan_call.dict_concatenate()
+                        flag = True
+                        break
                     if level.value == ScanMode.AGRESSIVE.value:
                         wpscan_call.aggressive_wp_scan()
                         wpscan_data = wpscan_call.dict_concatenate()
-                surikatz_dict.update({"wpscan" : wpscan_data})
+                        flag = True
+                        break
+            surikatz_dict.update({"wpscan" : wpscan_data})
+            if flag : break
 
 
 

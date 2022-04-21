@@ -96,8 +96,6 @@ class WpScan():
         base = {"Authorization": "Token token=" + self.key}
         apiCall = APIClient("https://wpscan.com/api/v3/", base)
         wappalyzer_vuln = {}
-        wappalyzer_vuln["plugins"] = []
-        wappalyzer_vuln["themes"] = []
         if not self.wapplayzer_dict["wp-plugins"] :
             for plugin in self.wapplayzer_dict["wp-plugins"]:
                 call = apiCall.request("plugins/" + plugin["slug"])
@@ -107,7 +105,7 @@ class WpScan():
                         style="bold red")
                     break
                 else:
-                    wappalyzer_vuln["plugins"].append(call)
+                    wappalyzer_vuln.update({"plugins": call})
 
         if not self.wapplayzer_dict["wp-themes"]:
             for theme in self.wapplayzer_dict["wp-themes"]:
@@ -118,7 +116,7 @@ class WpScan():
                         style="bold red")
                     break
                 else:
-                    wappalyzer_vuln["themes"].append(call)
+                    wappalyzer_vuln.update({"themes": call})
         return wappalyzer_vuln
 
     def discret_wp_scan(self):

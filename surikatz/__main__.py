@@ -74,11 +74,10 @@ class ScanMode(Enum):
     default=ScanMode.AGRESSIVE,
     help="Use only OSINT technics to retrive data",
 )
-
 def init(target, level):
     """Init the launch of the surikatz program
-    
-    Args: 
+
+    Args:
         target: IP address or domain name of the target
         level: program launch level (passive, discret, agressive)
     """
@@ -104,7 +103,7 @@ def init(target, level):
 def motd(version):
     """Display of the Surikatz launch
 
-    Args: 
+    Args:
         version: version number of the Surikatz program
     """
     console.print(
@@ -125,11 +124,11 @@ def motd(version):
 def launch(target, level):
     """Launch of the Surikatz program
 
-    Args: 
+    Args:
         target: IP address or domain name of the target
         level: program launch level (passive, discret, agressive)
     """
-    
+
     global surikatz_dict
 
     #############################################################################
@@ -193,42 +192,40 @@ def launch(target, level):
                 print("")
         else:
             print(f"Shodan does not have any information for {target}\n")
-    
-    
+
     #############################################################################
     ################################# NMAP ######################################
     #############################################################################
 
-    if level.value >= ScanMode.DISCRET.value:
-        console.rule("[bold]NMAP SCAN")
-        nm = scan.Nmap()
-       
-        try:
+    # if level.value >= ScanMode.DISCRET.value:
+    #     console.rule("[bold]NMAP SCAN")
+    #     nm = scan.Nmap()
 
-            leures = f"{surikatz_dict['theharvester']['ips'][0]},{surikatz_dict['theharvester']['ips'][1]}"
-        except:
-            leures = surikatz_dict["whois"]['ip_address']
+    #     try:
 
-        if os.geteuid() == 0:
-            frag = "-f"
-        else :
-            frag = ""
+    #         leures = f"{surikatz_dict['theharvester']['ips'][0]},{surikatz_dict['theharvester']['ips'][1]}"
+    #     except:
+    #         leures = surikatz_dict["whois"]['ip_address']
 
-        temps = ""
-        if level == ScanMode.DISCRET:
-            temps = "-T2"
-        
-        ports = ""
-        scripts = ""
-        if level == ScanMode.AGRESSIVE:
-            ports = "-p-"
-            scripts = "-sC"
-        
-        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
-        nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
-        surikatz_dict.update({**nmap_analyse})
-        result.Display.display_txt("/tmp/nmap")
+    #     if os.geteuid() == 0:
+    #         frag = "-f"
+    #     else :
+    #         frag = ""
 
+    #     temps = ""
+    #     # if level == ScanMode.DISCRET:
+    #     #     temps = "-T2"
+
+    #     ports = ""
+    #     scripts = ""
+    #     if level == ScanMode.AGRESSIVE:
+    #         ports = "-p-"
+    #         scripts = "-sC"
+
+    #     nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
+    #     nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
+    #     surikatz_dict.update({**nmap_analyse})
+    #     result.Display.display_txt("/tmp/nmap")
 
     #############################################################################
     #############################################################################
@@ -239,18 +236,19 @@ def launch(target, level):
     if ("services" in surikatz_dict["shodan"] and utils.Checker.service_exists("http",surikatz_dict) ):
         targets = []
         if surikatz_dict["shodan"]:
-                for service in surikatz_dict["shodan"]["services"]:
-                    if "http" in service["type"]:
-                        targets += service["fqdn"] if service["fqdn"] else [f'{surikatz_dict["whois"]["ip_address"]}:{service["port"]}']
+            for service in surikatz_dict["shodan"]["services"]:
+                if "http" in service["type"]:
+                    targets += service["fqdn"] if service["fqdn"] else [
+                        f'{surikatz_dict["whois"]["ip_address"]}:{service["port"]}']
 
-        if level.value >= ScanMode.DISCRET.value:
-             for service in surikatz_dict["nmap"]:
-                if service["type"] == "http":
-                    targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
-                        
+        # if level.value >= ScanMode.DISCRET.value:
+        #     for service in surikatz_dict["nmap"]:
+        #         if service["type"] == "http":
+        #             targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
+
         if not targets:
             print(f"No Web server exists for {target}")
-            
+
         targets = list(set(targets))
 
     
@@ -259,18 +257,18 @@ def launch(target, level):
         #############################################################################
 
         if level.value >= ScanMode.PASSIVE.value and conf.get_wappalyzer_key():
-            
-            console.rule("[bold]Wappalizer")
+
+            console.rule("[bold]Wappalizer information")
             console.print("")
-            
+
             wappalyzer_api = osint.Wappalyser(conf.get_wappalyzer_key())
             surikatz_dict["wappalizer"] = []
 
             for tg in targets:
                 wappalyzer_data = wappalyzer_api.lookup(tg)
-                if wappalyzer_data==None:
+                if wappalyzer_data == None:
                     console.print("API Key is no longer valid : Error 403")
-                else: 
+                else:
                     console.print(wappalyzer_data)
                     surikatz_dict["wappalizer"].append(wappalyzer_data)
 
@@ -279,12 +277,12 @@ def launch(target, level):
         #############################################################################
         ############################# HTTrack #######################################
         #############################################################################
-        
+
         if level.value >= ScanMode.DISCRET.value:
             console.rule("[bold]HTTrack")
 
             targets = []
-            for host in surikatz_dict["wappalizer"] :
+            for host in surikatz_dict["wappalizer"]:
                 targets.append(host["url"])
 
             targets = list(set(targets))
@@ -293,30 +291,57 @@ def launch(target, level):
                 console.print(f"HTTrack for {tg}")
                 scan.HTTrak(tg, f"/tmp/{urlparse(tg).netloc}_httrack")
                 try:
-                    shutil.copytree(f"/tmp/{urlparse(tg).netloc}_httrack",f"./httrack/{urlparse(tg).netloc}_httrack")
+                    shutil.copytree(f"/tmp/{urlparse(tg).netloc}_httrack", f"./httrack/{urlparse(tg).netloc}_httrack")
                     console.print("Folder moved in current pwd", end="\n\n")
                     console.print(f"HTTrack finished. Output folder : ./httrack/{urlparse(tg).netloc}_httrack")
                 except OSError:
-                    console.print(f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack", end="\n\n")
+                    console.print(
+                        f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack",
+                        end="\n\n")
+                    console.print(
+                        f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack",
+                        end="\n\n")
+
+        #############################################################################
+        ############################# WPSCAN #########################################
+        #############################################################################
+        console.rule("[bold]Wpscan information")
+        console.print("")
+
+        wpscan_data = {}
+        for item in surikatz_dict["wappalizer"]:  # Check if there is a Wordpress CMS to analyse
+            for techno in item["technologies"] :
+                if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze",
+                                                                                     style="bold #FFA500")
+                wpscan_call = scan.WpScan(whois_data["domain_name"], conf.get_wpscan_key(), item)
+
+                if conf.get_wpscan_key() and whois_data["domain_name"]:
+                    if level.value == ScanMode.PASSIVE.value:
+                        wpscan_data = wpscan_call.passive_wp_scan()
+                    if level.value == ScanMode.DISCRET.value:
+                        wpscan_call.discret_wp_scan()
+                        wpscan_data = wpscan_call.dict_concatenate()
+                    if level.value == ScanMode.AGRESSIVE.value:
+                        wpscan_call.aggressive_wp_scan()
+                        wpscan_data = wpscan_call.dict_concatenate()
+                surikatz_dict.update({"wpscan" : wpscan_data})
+
 
 
         #############################################################################
         ############################# NIKTO #########################################
         #############################################################################
-
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]Nikto")
-            
+
             targets = []
-            for host in surikatz_dict["wappalizer"] :
+            for host in surikatz_dict["wappalizer"]:
                 targets.append(host["url"])
 
             for tg in targets:
-                scan.Nikto(tg)
+                # scan.Nikto(tg)
                 console.print(f"Nikto for {tg}")
-                result.Display.display_txt(f"/tmp/{tg}_nikto.txt")
-
-
+                # result.Display.display_txt(f"/tmp/{tg}_nikto.txt")
 
         #############################################################################
         ############################## WafW00f ######################################
@@ -325,7 +350,7 @@ def launch(target, level):
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]WafW00f")
 
-            for tg in targets : 
+            for tg in targets:
                 if urlparse(tg).scheme == "https":
                     console.print(f"WafWoof for {tg}")
                     scan.Wafwoof(tg, f"/tmp/{urlparse(tg).netloc}_wafwoof.json")
@@ -359,13 +384,15 @@ def launch(target, level):
     console.print(surikatz_dict)
     result.Analyze.save_to_csv(surikatz_dict)
 
+
 def json_output(dict_to_store):
     """Save into file
 
-    Args: 
+    Args:
         dict_to_store: Dictionary to save
     """
     result.Analyze.save_to_json(dict_to_store)
+
 
 if __name__ == "__main__":
     init()

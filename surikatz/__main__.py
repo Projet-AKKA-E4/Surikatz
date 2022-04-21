@@ -285,10 +285,10 @@ def launch(target, level):
 
             for tg in targets:
                 if urlparse(tg).scheme:
-                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_httrack")
+                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}")
                     scan.HTTrak(tg, SURIKATZ_PATH / base_path)
                 else:
-                    base_path = Path(f"{tg.replace('-','_')}_httrack")
+                    base_path = Path(f"{tg.replace('-','_')}")
                     scan.HTTrak(tg, SURIKATZ_PATH / base_path)
                 try: 
                     shutil.copytree(SURIKATZ_PATH / base_path, Path().cwd() / "httrack" / base_path, dirs_exist_ok=True)
@@ -342,9 +342,9 @@ def launch(target, level):
             for tg in targets:
                 if urlparse(tg).scheme == "https":
                     console.print(f"WafWoof for {tg}")
-                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_wafwoof.json")
-                    scan.Wafwoof(tg, SURIKATZ_PATH / base_path)
-                    result.Display.display_json(SURIKATZ_PATH / base_path)
+                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")
+                    scan.Wafwoof(tg, SURIKATZ_PATH / "wafwoof" / base_path)
+                    result.Display.display_json(SURIKATZ_PATH / "wafwoof" /base_path)
 
 
         #############################################################################            
@@ -359,11 +359,11 @@ def launch(target, level):
                 dirsearch = enumeration.DirSearch(tg)
                 try:
                     if urlparse(tg).scheme:
-                        base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}_dirsearch.json")
-                        dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / base_path)
+                        base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")
+                        dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / "dirsearch" / base_path)
                     else:
-                        base_path = Path(f"{tg.replace('-','_')}_dirsearch.json")
-                        dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / base_path)
+                        base_path = Path(f"{tg.replace('-','_')}.json")
+                        dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / "dirsearch" / base_path)
 
                     surikatz_dict["dirsearch"] += dirsearch_data
                     result.Analyze.get_clean_data_dirsearch(dirsearch_data)

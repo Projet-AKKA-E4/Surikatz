@@ -6,3 +6,6 @@ SCAN_DATE =now.strftime("%d_%m_%Y_%H_%M_%S")
 SURIKATZ_PATH = Path("/tmp") / "surikatz" / SCAN_DATE
 Path.mkdir(SURIKATZ_PATH, parents=True, exist_ok=True)
 Path.mkdir(SURIKATZ_PATH / "nmap", parents=True, exist_ok=True)
+Path.mkdir(SURIKATZ_PATH / "httrack", parents=True, exist_ok=True)
+Path.mkdir(SURIKATZ_PATH / "wafwfoof", parents=True, exist_ok=True)
+Path.mkdir(SURIKATZ_PATH / "dirsearch", parents=True, exist_ok=True)

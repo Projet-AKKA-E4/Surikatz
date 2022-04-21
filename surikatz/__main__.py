@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
+from distutils.log import error
 from surikatz import utils, osint, scan, result, enumeration
 import click
 from rich import console, traceback, markdown
 from enum import Enum
 import os
 from urllib.parse import urlparse
+import surikatz
 
-from surikatz.error import APIError
+from surikatz.error import APIError, AppNotInstalled
 
 """
     Surikatz
@@ -74,8 +76,8 @@ class ScanMode(Enum):
 def init(target, level):
 
     motd(0.2)
-    utils.Checker.checkTime()
-    utils.Checker.checkIPPublic()
+    utils.Checker.check_time()
+    utils.Checker.check_ip_public()
 
     if level == ScanMode.PASSIVE:
         console.print(markdown.Markdown("# Passive mode", style="white"), style="bold green")
@@ -119,25 +121,29 @@ def launch(target, level):
     if level.value >= ScanMode.PASSIVE.value:
         console.rule("[bold]Whois information")
         console.print("")
-        whoisAPI = osint.Whois()
-        whoisData = whoisAPI.whoIs(target)
+        whois = osint.Whois()
+        whois_data = whois.whoIs(target)
         console.print("\n")
-        surikatz_dict.update({"whois": whoisData})
+        surikatz_dict.update({"whois": whois_data})
 
 
     #############################################################################
     ######################### THE HARVESTER #####################################
     #############################################################################
 
-    if level.value >= ScanMode.PASSIVE.value and whoisData["domain_name"]:
+    if level.value >= ScanMode.PASSIVE.value and whois_data["domain_name"]:
         console.rule("[bold]TheHarvester information")
         console.print("")
-        theHarvesterAPI = osint.TheHarvester(whoisData["domain_name"])
-        harvesterDATA = theHarvesterAPI.get_data()
-        if harvesterDATA:
-            result.Analyze.get_clean_data_theHarvester(harvesterDATA.copy())
-            console.print("\n")
-            surikatz_dict.update({"thehaverster": harvesterDATA})
+        the_harvester = osint.TheHarvester(whois_data["domain_name"])
+        try:
+            harvester_data = the_harvester.get_data()
+            if harvester_data:
+                surikatz_dict.update({"thehaverster": harvester_data})
+                result.Analyze.get_clean_data_theHarvester(harvester_data.copy())
+                console.print("\n")
+        except AppNotInstalled:
+            harvester_data = None
+
 
     #############################################################################
     ############################### SHODAN ######################################
@@ -146,18 +152,18 @@ def launch(target, level):
     if level.value >= ScanMode.PASSIVE.value:
         console.rule("[bold]Shodan information")
         console.print("")
-        shodanApi = osint.ShodanUtils(conf.getShodan())
-        shodanData = shodanApi.get_data(whoisData["ip_address"])
+        shodan_api = osint.ShodanUtils(conf.get_shodan())
+        shodan_api = shodan_api.get_data(whois_data["ip_address"])
 
-        if shodanData is not None:
-            cves = shodanData.pop("vulns")
-            console.print(shodanData)
+        if shodan_api is not None:
+            cves = shodan_api.pop("vulns")
+            console.print(shodan_api)
             console.print("\n")
-            surikatz_dict.update({"shodan": shodanData})
+            surikatz_dict.update({"shodan": shodan_api})
 
             # CVSS Management
             for cve in cves:
-                result.Analyse.get_cvss(cve)
+                result.Analyze.get_cvss(cve)
                 print("")
         else:
             print(f"Shodan does not have any information for {target}\n")
@@ -192,7 +198,7 @@ def launch(target, level):
     #         ports = "-p-"
     #         scripts = "-sC"
         
-    #     nm.start_nmap(utils.Checker.getTarget(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
+    #     nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
     #     nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
     #     surikatz_dict.update({**nmap_analyse})
     #     result.Display.display_txt("/tmp/nmap")
@@ -204,7 +210,7 @@ def launch(target, level):
     #############################################################################
     #############################################################################
 
-    if utils.Checker.serviceExists("http",surikatz_dict):
+    if utils.Checker.service_exists("http",surikatz_dict):
         targets = []
         if surikatz_dict["shodan"]:
                 for service in surikatz_dict["shodan"]["services"]:
@@ -236,21 +242,21 @@ def launch(target, level):
         #############################################################################
         ########################## WAPPALYSER #######################################
         #############################################################################
-        if level.value >= ScanMode.PASSIVE.value and conf.getWappalyzerKey():
+        if level.value >= ScanMode.PASSIVE.value and conf.get_wappalyzer_key():
             
             console.rule("[bold]Wappalizer")
             console.print("")
             
-            wappalizerApi = osint.Wappalyser(conf.getWappalyzerKey())
+            wappalyzer_api = osint.Wappalyser(conf.get_wappalyzer_key())
             surikatz_dict["wappalizer"] = []
 
             for tg in targets:
-                wappalizerData = wappalizerApi.lookup(tg)
-                if wappalizerData==None:
+                wappalyzer_data = wappalyzer_api.lookup(tg)
+                if wappalyzer_data==None:
                     console.print("API Key is no longer valid : Error 403")
                 else: 
-                    console.print(wappalizerData)
-                    surikatz_dict["wappalizer"].append(wappalizerData)
+                    console.print(wappalyzer_data)
+                    surikatz_dict["wappalizer"].append(wappalyzer_data)
 
             console.print("\n")
 
@@ -295,9 +301,12 @@ def launch(target, level):
             for tg in targets:
                 console.print(f"Diresearch for {tg}")
                 dirsearch = enumeration.DirSearch(tg)
-                dirSearchDATA = dirsearch.get_data(f"/tmp/{urlparse(tg).netloc}_dirsearch.json")
-                surikatz_dict["dirsearch"] += dirSearchDATA
-                result.Analyze.get_clean_data_dirsearch(dirSearchDATA)
+                try:
+                    dirsearch_data = dirsearch.get_data(f"/tmp/{urlparse(tg).netloc}_dirsearch.json")
+                except AppNotInstalled:
+                    surikatz_dict["dirsearch"] += dirsearch_data
+                    result.Analyze.get_clean_data_dirsearch(dirsearch_data)
+                    break
                 
 
 

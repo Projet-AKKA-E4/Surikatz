@@ -19,8 +19,7 @@ class DirSearch:
         ip: ip adress. For example : 10.10.0.1
     """
     def __init__(self, ip: str):
-            """Init the DirSearch object.
-            """
+            """Init the DirSearch object with ip address."""
             self.ip = ip
             
     def get_data(self, path: str) -> list:
@@ -42,7 +41,7 @@ class DirSearch:
         """
         try:
             dirsearch = subprocess.run(
-                ["dirsearch", "-u", self.ip, "--format", "json", "-o", path,"--skip-on-status", "401,402,404","-r","-t","60"],
+                ["dirsearch", "-u", self.ip, "--format", "json", "-o", path,"--skip-on-status", "401,402,403,404","-r","-t","60"],
                 stderr=subprocess.STDOUT, stdout=subprocess.PIPE
             )  # Launch dirsearch from the user's computer
         except OSError:

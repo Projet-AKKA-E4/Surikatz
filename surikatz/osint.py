@@ -19,15 +19,14 @@ console = console.Console()
 class TheHarvester:
     """
     Class allowing the manipulation of The Harvester tool and the parsing of its output
+
+    Attributes:
+        self: TheHarvester object.
+        domain: domain name. For example : blabla.fr
     """
 
     def __init__(self, domain: str):
-        """Init the theHarvester object.
-
-        Args:
-            self: TheHarvester object.
-            domain: domain name. For example : blabla.fr
-        """
+        """Init the theHarvester object with domain name."""
         self.domain = domain
 
     def _parse_xml(self) -> list:
@@ -49,7 +48,7 @@ class TheHarvester:
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
         # parse the xml
         try:
-            harvester_obj = untangle.parse("/tmp/output.xml")
+            harvester_obj = untangle.parse("/tmp/surikatz/theharvester.xml")
         except TypeError:
             console.print("The XML file is probably empty",style="bold red")
             console.print_exception()
@@ -141,9 +140,9 @@ class Whois:
             A dictionnary of Whois information
         """
 
-        target = Checker.getTarget(target)
+        target = Checker.get_target(target)
 
-        if Checker.checkIpAddress(target):  # For an ip Address
+        if Checker.check_ip_address(target):  # For an ip Address
             # print("Valid Ip address: ", target)
 
             host = whois.whois(target)
@@ -170,8 +169,8 @@ class Whois:
 
             return dict_ip
         # For Domain Name
-        elif Checker.checkDomain(target):
-            whoisData = whois.whois(target)
+        elif Checker.check_domain(target):
+            whois_data = whois.whois(target)
 
             try:
                 host = socket.gethostbyname(target)
@@ -181,10 +180,10 @@ class Whois:
             dict_domain = {
                 "domain_name": target,
                 "ip_address": host,
-                "status": whoisData.status,
-                "registrar": whoisData.registrar,
-                "emails": whoisData.emails,
-                "name_servers": whoisData.name_servers,
+                "status": whois_data.status,
+                "registrar": whois_data.registrar,
+                "emails": whois_data.emails,
+                "name_servers": whois_data.name_servers,
             }
             print(dict_domain)
             # Test if dict_domain have more than 3 None inside -> means that probably the domain name is not correct

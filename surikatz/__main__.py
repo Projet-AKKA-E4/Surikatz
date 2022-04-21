@@ -54,7 +54,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.AGRESSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use Passive and Discrete technics but more... agressive. Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, enumeration for kerberos...",
+    help="Use Passive and Discrete technics but more... agressive. Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, ...",
 )
 @click.option(
     "-d",
@@ -75,13 +75,7 @@ class ScanMode(Enum):
     help="Only search on public sources (Shodan, TheHarvester, ...)",
 )
 
-def init(target, level):
-    """Init the launch of the surikatz program
-    
-    Args: 
-        target: IP address or domain name of the target
-        level: program launch level (passive, discret, agressive)
-    """
+def init(target:str, level:ScanMode):
     motd(0.2)
     utils.Checker.check_time()
     utils.Checker.check_ip_public()

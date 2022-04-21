@@ -286,10 +286,18 @@ def launch(target, level):
             for tg in targets:
                 if urlparse(tg).scheme:
                     base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}")
-                    scan.HTTrak(tg, SURIKATZ_PATH / base_path)
+                    try : 
+                        scan.HTTrak(tg, SURIKATZ_PATH / base_path)
+                    except AppNotInstalled as e:
+                        console.print(e)
+                        break
                 else:
                     base_path = Path(f"{tg.replace('-','_')}")
-                    scan.HTTrak(tg, SURIKATZ_PATH / base_path)
+                    try:
+                        scan.HTTrak(tg, SURIKATZ_PATH / base_path)
+                    except AppNotInstalled as e:
+                        console.print(e)
+                        break
                 try: 
                     shutil.copytree(SURIKATZ_PATH / base_path, Path().cwd() / "httrack" / base_path, dirs_exist_ok=True)
                     console.print("Folder moved in current pwd")
@@ -356,7 +364,11 @@ def launch(target, level):
             surikatz_dict["dirsearch"] = []
             for tg in targets:
                 console.print(f"Diresearch for {tg}")
-                dirsearch = enumeration.DirSearch(tg)
+                try:
+                    dirsearch = enumeration.DirSearch(tg)
+                except AppNotInstalled:
+                    console.print(e)
+                    break
                 try:
                     if urlparse(tg).scheme:
                         base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")

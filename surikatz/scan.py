@@ -138,7 +138,7 @@ class WpScan():
                     "Failed to scan the host, maybe FQDN or IP adresse is not correct. Or you have reached your API limit call. You need to refund your wpscan api plan or change api key in .env config")
                 return
             subprocess.run(["python3", "-m", "wpscan_out_parse", "--summary",
-                            "/tmp/surikatz/test/wpscan.json"])  # Summary printed in command line
+                            SURIKATZ_PATH / "wpscan.json"])
         with open(SURIKATZ_PATH / 'wpscan_clean.json', "w") as fp:
             subprocess.run(["python3", "-m", "wpscan_out_parse", SURIKATZ_PATH / "wpscan.json", "--format", "json"],
                            stdout=fp)

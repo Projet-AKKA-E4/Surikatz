@@ -27,15 +27,7 @@ class ConfManager:
     def __init__(self):
         """Init the Shodan object."""
         self.conf_exists()
-        self.tmp_exists()
-        load_dotenv(Path.home() / ".config/surikatz/.env")
-
-    def tmp_exists(self):
-        """Check if the surikatz folder in /tmp exists"""
-        if not Path(SURIKATZ_PATH).exists():
-            Path.mkdir(Path("/tmp/surikatz") / SCAN_DATE, parents=True, exist_ok=True)
-        else :
-            console.print(f"Your result temporary files are located in {Path('/tmp/surikatz') / SCAN_DATE}\n", style="bold red")
+        load_dotenv(Path.home() / ".config" / "surikatz" / ".env")
 
     def conf_exists(self):
         """Check if a config already exists"""
@@ -51,6 +43,7 @@ class ConfManager:
             )
         else:
             console.print(f"Your .env file is located in {Path.home() / '.config/surikatz/.env'}\n", style="bold red",)
+            console.print(f"Your result temporary files are located in {SURIKATZ_PATH}\n", style="bold red")
 
     def _get_api_key(self, api: str) -> str:
         """Read the config file and try to get API keys

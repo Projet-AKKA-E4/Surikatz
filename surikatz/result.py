@@ -2,6 +2,7 @@
     Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information
 """
 
+from surikatz import SURIKATZ_PATH
 from surikatz.utils import APIClient
 import json
 import pandas as pd
@@ -56,17 +57,15 @@ class Analyze:
             )
         )
         filename = "final_data.csv"
-        tmp_dest = Path("/tmp/surikatz")
-        if not tmp_dest.exists():
-            Path.mkdir(tmp_dest, parents=True, exist_ok=True)
-        df.to_csv(tmp_dest / filename, index=False, header=True)
+
+        df.to_csv(SURIKATZ_PATH / filename, index=False, header=True)
         try:
             dest = Path().cwd() / filename
-            dest.write_text(tmp_dest.joinpath(filename).read_text())
+            dest.write_text(SURIKATZ_PATH.joinpath(filename).read_text())
         except OSError:
             print(
                 "You don't have writing permission on current directory."
-                f"The output file is written at {tmp_dest / filename}"
+                f"The output file is written at {SURIKATZ_PATH / filename}"
             )
         console.print("Writing all data in final_data.csv", style="bold #008000")
 

@@ -37,7 +37,7 @@ class HTTrak:
     def __init__(self, target, path):
         try :
             subprocess.run(
-                ["httrack",target,"-o", path],
+                ["httrack",target,"-O", path],
                 stdout=subprocess.PIPE
             )
         except OSError:

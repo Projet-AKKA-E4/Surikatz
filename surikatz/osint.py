@@ -234,19 +234,6 @@ class ShodanUtils:
                 rq = None
             finally:
                 return (rq, None)
-            
-        # try: 
-        #     intdb_rq = self.internetdb.request(target)
-        #     shodan_rq = self.shodan.host(target)
-        # except APIError:
-        #     if "error" in intdb_rq:
-        #         print("InternetDB : ", intdb_rq["error"])  
-        #     if "error" in shodan_rq:
-        #         print("Shodan : ", shodan_rq["error"])
-        #     intdb_rq = None
-        #     shodan_rq = None
-        # finally:
-        #     return (intdb_rq, shodan_rq)
 
         try:
             intdb_rq = self.internetdb.request(target)

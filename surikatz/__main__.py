@@ -8,6 +8,7 @@ from enum import Enum
 import os
 from urllib.parse import urlparse
 import surikatz
+import shutil
 
 from surikatz.error import APIError, AppNotInstalled
 
@@ -173,35 +174,35 @@ def launch(target, level):
     ################################# NMAP ######################################
     #############################################################################
 
-    # if level.value >= ScanMode.DISCRET.value:
-    #     console.rule("[bold]NMAP SCAN")
-    #     nm = scan.Nmap()
-        
-    #     try:
+    if level.value >= ScanMode.DISCRET.value:
+        console.rule("[bold]NMAP SCAN")
+        nm = scan.Nmap()
+       
+        try:
 
-    #         leures = f"{surikatz_dict['theharvester']['ips'][0]},{surikatz_dict['theharvester']['ips'][1]}"
-    #     except:
-    #         leures = surikatz_dict["whois"]['ip_address']
+            leures = f"{surikatz_dict['theharvester']['ips'][0]},{surikatz_dict['theharvester']['ips'][1]}"
+        except:
+            leures = surikatz_dict["whois"]['ip_address']
 
-    #     if os.geteuid() == 0:
-    #         frag = "-f"
-    #     else :
-    #         frag = ""
+        if os.geteuid() == 0:
+            frag = "-f"
+        else :
+            frag = ""
 
-    #     temps = ""
-    #     # if level == ScanMode.DISCRET:
-    #     #     temps = "-T2"
+        temps = ""
+        if level == ScanMode.DISCRET:
+            temps = "-T2"
         
-    #     ports = ""
-    #     scripts = ""
-    #     if level == ScanMode.AGRESSIVE:
-    #         ports = "-p-"
-    #         scripts = "-sC"
+        ports = ""
+        scripts = ""
+        if level == ScanMode.AGRESSIVE:
+            ports = "-p-"
+            scripts = "-sC"
         
-    #     nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
-    #     nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
-    #     surikatz_dict.update({**nmap_analyse})
-    #     result.Display.display_txt("/tmp/nmap")
+        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN /tmp/nmap {temps} {ports} {scripts} -Pn", 1000)
+        nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
+        surikatz_dict.update({**nmap_analyse})
+        result.Display.display_txt("/tmp/nmap")
 
 
     #############################################################################
@@ -217,26 +218,15 @@ def launch(target, level):
                     if "http" in service["type"]:
                         targets += service["fqdn"] if service["fqdn"] else [f'{surikatz_dict["whois"]["ip_address"]}:{service["port"]}']
 
-        # if level.value >= ScanMode.DISCRET.value:
-        #     for service in surikatz_dict["nmap"]:
-        #         if service["type"] == "http":
-        #             targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
+        if level.value >= ScanMode.DISCRET.value:
+             for service in surikatz_dict["nmap"]:
+                if service["type"] == "http":
+                    targets.append(surikatz_dict["whois"]["ip_address"] + f":{service['port']}")
                         
         if not targets:
             print(f"No Web server exists for {target}")
             
         targets = list(set(targets))
-
-        #############################################################################
-        ############################# HTTrack #######################################
-        #############################################################################
-        if level.value >= ScanMode.DISCRET.value:
-            console.rule("[bold]HTTrack")
-            
-            for tg in targets:
-                console.print(f"HTTrack for {tg}")
-                scan.HTTrak(tg, f"/tmp/{urlparse(tg).netloc}_httrack")
-                console.print(f"HTTrack finished. Output folder : /tmp/{urlparse(tg).netloc}_httrack")
 
     
         #############################################################################
@@ -261,6 +251,30 @@ def launch(target, level):
             console.print("\n")
 
         #############################################################################
+        ############################# HTTrack #######################################
+        #############################################################################
+        
+        if level.value >= ScanMode.DISCRET.value:
+            console.rule("[bold]HTTrack")
+
+            targets = []
+            for host in surikatz_dict["wappalizer"] :
+                targets.append(host["url"])
+
+            targets = list(set(targets))
+
+            for tg in targets:
+                console.print(f"HTTrack for {tg}")
+                scan.HTTrak(tg, f"/tmp/{urlparse(tg).netloc}_httrack")
+                try:
+                    shutil.copytree(f"/tmp/{urlparse(tg).netloc}_httrack",f"./httrack/{urlparse(tg).netloc}_httrack")
+                    console.print("Folder moved in current pwd", end="\n\n")
+                    console.print(f"HTTrack finished. Output folder : ./httrack/{urlparse(tg).netloc}_httrack")
+                except OSError:
+                    console.print(f"Error while moving folding. Result is still available at /tmp/{urlparse(tg).netloc}_httrack", end="\n\n")
+
+
+        #############################################################################
         ############################# NIKTO #########################################
         #############################################################################
         if level == ScanMode.AGRESSIVE:
@@ -271,9 +285,9 @@ def launch(target, level):
                 targets.append(host["url"])
 
             for tg in targets:
-                #scan.Nikto(tg)
+                scan.Nikto(tg)
                 console.print(f"Nikto for {tg}")
-                #result.Display.display_txt(f"/tmp/{tg}_nikto.txt")
+                result.Display.display_txt(f"/tmp/{tg}_nikto.txt")
 
 
 

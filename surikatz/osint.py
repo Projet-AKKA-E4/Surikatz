@@ -11,6 +11,7 @@ import subprocess
 import untangle
 import shodan
 from rich import print, console, traceback
+from surikatz import SURIKATZ_PATH
 
 traceback.install(show_locals=True)
 console = console.Console()
@@ -48,7 +49,7 @@ class TheHarvester:
         regex = "^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$"
         # parse the xml
         try:
-            harvester_obj = untangle.parse("/tmp/surikatz/theharvester.xml")
+            harvester_obj = untangle.parse(SURIKATZ_PATH / "theharvester.xml")
         except TypeError:
             console.print("The XML file is probably empty",style="bold red")
             console.print_exception()
@@ -100,18 +101,18 @@ class TheHarvester:
         Raises:
             AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.
         """
-        # try:
-        #     harvester = subprocess.run(
-        #         ["theHarvester", "-d", self.domain, "-b", "all", "-f", "/tmp/surikatz/theharvester"],
-        #         stdout=subprocess.PIPE,
-        #     )  # Launch theHarvester from the user's computer
-        # except OSError:
-        #     raise surikatz.error.AppNotInstalled(
-        #         "Please install theHarvester on your device or use a Kali Linux."
-        #     )
-        # except TypeError:
-        #     console.print_exception()
-        #     return
+        try:
+            harvester = subprocess.run(
+                ["theHarvester", "-d", self.domain, "-b", "all", "-f", SURIKATZ_PATH / "theharvester"],
+                stdout=subprocess.PIPE,
+            )  # Launch theHarvester from the user's computer
+        except OSError:
+            raise surikatz.error.AppNotInstalled(
+                "Please install theHarvester on your device or use a Kali Linux."
+            )
+        except TypeError:
+            console.print_exception()
+            return
 
         emails, ips, fqdns = self._parse_xml()
 
@@ -390,7 +391,9 @@ class Wappalyser:
         except surikatz.error.APIError:
             return None
 
-        if "errors" in secured_rq:
+        if all("errors" in rq for rq in [secured_rq, unsecured_rq]):
+            return None
+        elif "errors" in secured_rq:
             rq = unsecured_rq
         else:
             rq = secured_rq

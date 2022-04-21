@@ -135,7 +135,10 @@ def launch(target, level):
     if level.value >= ScanMode.PASSIVE.value and whois_data["domain_name"]:
         console.rule("[bold]TheHarvester information")
         console.print("")
-        the_harvester = osint.TheHarvester(whois_data["domain_name"])
+        if(type(whois_data["domain_name"])==list):
+            the_harvester = osint.TheHarvester(whois_data["domain_name"][0])
+        else:
+            the_harvester = osint.TheHarvester(whois_data["domain_name"])
         try:
             harvester_data = the_harvester.get_data()
             if harvester_data:

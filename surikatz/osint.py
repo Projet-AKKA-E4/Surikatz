@@ -216,9 +216,14 @@ class Whois:
 class ShodanUtils:
     """
     Class allowing the manipulation of Shodan API
+
+    Attributes:
+        self: Shodan object.
+        key: API key for Shodan.
     """
 
     def __init__(self, key):
+        """Init the Shodan object with API key."""
         self.internetdb = APIClient("https://internetdb.shodan.io/")
         self.shodan = shodan.Shodan(key)
 
@@ -355,10 +360,12 @@ class Wappalyser:
     Class allowing the manipulation of Wappalyser and the parsing of its output
 
     Attributes:
+        self: Wappalyser object
         key: API key for Wappalyser
     """
 
     def __init__(self, key: str):
+        """Init the Wappalyser object with API key."""
         self.api = APIClient("https://api.wappalyzer.com/v2", key={"x-api-key": key})
 
     def lookup(self, target: str) -> dict:

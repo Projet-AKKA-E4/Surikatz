@@ -18,7 +18,7 @@ from surikatz.error import APIError, AppNotInstalled
     A powerful tool for searching informations before pentest.
 
     Can be used as 3 way :
-      * Passive : Only search on public sources (Shodan, TheHarvester, VeryLeaks...)
+      * Passive : Only search on public sources (Shodan, TheHarvester, ...)
       * Discrete : Use Passsive technics and soft nmap surikatz.scan, soft HTTrack...
       * Agressive : Use Passive and Discrete technics but more... agressive.
                    Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, enumeration for kerberos...
@@ -54,7 +54,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.AGRESSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use Discret and vulerability surikatz.scanner, ennumeration and bruteforce",
+    help="Use Passive and Discrete technics but more... agressive. Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, enumeration for kerberos...",
 )
 @click.option(
     "-d",
@@ -63,7 +63,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.DISCRET,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use passive mode with soft surikatz.scans",
+    help="Use Passsive technics and soft nmap surikatz.scan, soft HTTrack...",
 )
 @click.option(
     "-p",
@@ -72,7 +72,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.PASSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use only OSINT technics to retrive data",
+    help="Only search on public sources (Shodan, TheHarvester, ...)",
 )
 
 def init(target, level):
@@ -360,7 +360,7 @@ def launch(target, level):
     result.Analyze.save_to_csv(surikatz_dict)
 
 def json_output(dict_to_store):
-    """Save into file
+    """Save into file 
 
     Args: 
         dict_to_store: Dictionary to save

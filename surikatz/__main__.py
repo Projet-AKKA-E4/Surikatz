@@ -426,14 +426,7 @@ def launch(target, level):
     surikatz_dict = result.Analyze.clean_dict(surikatz_dict)
     console.print(surikatz_dict)
     result.Analyze.save_to_csv(surikatz_dict)
-
-def json_output(dict_to_store):
-    """Save into file
-
-    Args:
-        dict_to_store: Dictionary to save
-    """
-    result.Analyze.save_to_json(dict_to_store)
+    result.Analyze.save_to_json(surikatz_dict)
 
 if __name__ == "__main__":
     init()

@@ -77,7 +77,7 @@ class Analyze:
         Args:
             dict_to_save: All concatenated data in python dict form
         """
-        with open(Path.home() / "surikatz/final_data.json", "w") as fp:
+        with open(Path.cwd() / "final_data.json", "w") as fp:
             json.dump(dict_to_save, fp)
             console.print("Writing all data in final_data.json", style="bold #008000")
 

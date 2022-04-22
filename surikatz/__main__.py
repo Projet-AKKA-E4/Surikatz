@@ -3,7 +3,7 @@
 from distutils.log import error
 from surikatz import SURIKATZ_PATH, utils, osint, scan, result, enumeration
 import click
-from rich import console, traceback, markdown
+from rich import console, traceback, markdown, progress
 from enum import Enum
 import os
 from urllib.parse import urlparse
@@ -77,7 +77,7 @@ class ScanMode(Enum):
 )
 
 def init(target:str, level:ScanMode):
-    motd(0.2)
+    motd(1.0)
     utils.Checker.check_time()
     utils.Checker.check_ip_public()
 
@@ -217,7 +217,7 @@ def launch(target, level):
             ports = "-p-"
             scripts = "-sC"
         
-        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 1000)
+        nm.start_nmap(utils.Checker.get_target(target), f"{frag} -D {leures} -sV -oN {SURIKATZ_PATH / 'nmap' / target} {temps} {ports} {scripts} -Pn", 10000)
         nmap_analyse = result.Analyze.analyse_nmap(nm.scan_result)
         surikatz_dict.update({**nmap_analyse})
         result.Display.display_txt(SURIKATZ_PATH / "nmap" / target)
@@ -259,7 +259,7 @@ def launch(target, level):
             wappalyzer_api = osint.Wappalyser(conf.get_wappalyzer_key())
             surikatz_dict["wappalizer"] = []
 
-            for tg in targets:
+            for tg in progress.track(targets, description="Processing...", total=len(targets)):
                 wappalyzer_data = wappalyzer_api.lookup(tg)
                 if wappalyzer_data == None:
                     console.print("API Key is no longer valid : Error 403")
@@ -292,7 +292,6 @@ def launch(target, level):
         #############################################################################
         
         if level.value >= ScanMode.DISCRET.value:
-            print(targets)
             console.rule("[bold]HTTrack")
 
             for tg in targets:
@@ -326,6 +325,8 @@ def launch(target, level):
 
         wpscan_data = {}
         flag = False
+        count = 0
+
         for item in surikatz_dict["wappalizer"]:  # Check if there is a Wordpress CMS to analyse
             for techno in item["technologies"] :
                 if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze for "+ item["url"],
@@ -337,20 +338,24 @@ def launch(target, level):
                         wpscan_data = wpscan_call.passive_wp_scan()
                         result.Display.display_dict(wpscan_data)
                         flag = True
+                        count+=1
                         break
                     if level.value == ScanMode.DISCRET.value:
                         wpscan_call.discret_wp_scan()
                         wpscan_data = wpscan_call.dict_concatenate()
                         flag = True
+                        count+=1
                         break
                     if level.value == ScanMode.AGRESSIVE.value:
                         wpscan_call.aggressive_wp_scan()
                         wpscan_data = wpscan_call.dict_concatenate()
                         flag = True
+                        count+=1
                         break
             surikatz_dict.update({"wpscan" : wpscan_data})
             if flag : break
-
+        if count == 0:
+            console.print("No wordpress detected")
 
         #############################################################################
         ############################## WafW00f ######################################
@@ -359,15 +364,21 @@ def launch(target, level):
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]WafW00f")
             surikatz_dict["wafwoof"] = []
-
+            count = 0
             for tg in targets:
                 if urlparse(tg).scheme == "https":
-                    console.print(f"WafWoof for {tg}")
-                    base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")
-                    scan.Wafwoof(tg, SURIKATZ_PATH / "wafwoof" / base_path)
-                    wafwoof_data = result.Display.display_json(SURIKATZ_PATH / "wafwoof" /base_path)
-                    surikatz_dict["wafwoof"].append(wafwoof_data)
-                    console.print("")
+                    try:
+                        console.print(f"WafWoof for {tg}")
+                        base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")
+                        scan.Wafwoof(tg, SURIKATZ_PATH / "wafwoof" / base_path)
+                        wafwoof_data = result.Display.display_json(SURIKATZ_PATH / "wafwoof" /base_path)
+                        surikatz_dict["wafwoof"].append(wafwoof_data)
+                        console.print("")
+                        count +=1
+                    except:
+                        pass
+            if count==0:
+                console.print("No https for WAF analyse")
 
         #############################################################################            
         ############################### DIRSEARCH ###################################
@@ -391,10 +402,14 @@ def launch(target, level):
                         base_path = Path(f"{tg.replace('-','_')}.json")
                         dirsearch_data = dirsearch.get_data(SURIKATZ_PATH / "dirsearch" / base_path)
 
+                    if dirsearch_data == None:
+                        continue
+
                     surikatz_dict["dirsearch"] += dirsearch_data
                     result.Analyze.get_clean_data_dirsearch(dirsearch_data)
                 except AppNotInstalled:
                     break
+
                 
         #############################################################################
         ############################# NIKTO #########################################
@@ -422,8 +437,7 @@ def launch(target, level):
     #############################################################################
 
     surikatz_dict = result.Analyze.clean_dict(surikatz_dict)
-    console.print(surikatz_dict)
-    result.Analyze.save_to_csv(surikatz_dict)
+    #result.Analyze.save_to_csv(surikatz_dict)
     result.Analyze.save_to_json(surikatz_dict)
 
 if __name__ == "__main__":

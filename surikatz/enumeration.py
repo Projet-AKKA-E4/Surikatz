@@ -50,7 +50,7 @@ class DirSearch:
             )
         # try to open dirsearch output and parsed the data
         try:
-            with open(path) as json_file:
+            with open(path, "r") as json_file:
                 dirsearch_data = json.load(json_file)
                 parsed_data = list()
                 # Get all the informations on the urls founded
@@ -62,8 +62,8 @@ class DirSearch:
                 for url in urls:
                     parsed_data.append(fqdn.rstrip(fqdn[-1])+url['path'])
                 return parsed_data
-        except FileNotFoundError:
-            console.print_exception()
+        except :
+            return None
 
 
 class Kerbrut:

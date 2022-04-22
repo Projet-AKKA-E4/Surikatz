@@ -358,15 +358,18 @@ def launch(target, level):
 
         if level == ScanMode.AGRESSIVE:
             console.rule(f"[bold]WafW00f")
+            surikatz_dict["wafwoof"] = []
 
             for tg in targets:
                 if urlparse(tg).scheme == "https":
                     console.print(f"WafWoof for {tg}")
                     base_path = Path(f"{urlparse(tg).netloc.replace('-','_')}.json")
                     scan.Wafwoof(tg, SURIKATZ_PATH / "wafwoof" / base_path)
-                    result.Display.display_json(SURIKATZ_PATH / "wafwoof" /base_path)
+                    wafwoof_data = result.Display.display_json(SURIKATZ_PATH / "wafwoof" /base_path)
+                    surikatz_dict["wafwoof"].append(wafwoof_data)
                     console.print("")
 
+        print(surikatz_dict)
 
         #############################################################################            
         ############################### DIRSEARCH ###################################

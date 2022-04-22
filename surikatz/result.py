@@ -306,8 +306,10 @@ class Display:
             temp = json.loads(file.read())
             if isinstance(temp,list):
                 Display.display_dict(*temp)
+                return temp
             else:
                 Display.display_dict(temp)
+                return temp
 
     @staticmethod
     def display_Dirsearch_data(dirsearch_data: list):

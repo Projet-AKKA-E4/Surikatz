@@ -29,7 +29,7 @@ class ConfManager:
         self.conf_exists()
         load_dotenv(Path.home() / ".config" / "surikatz" / ".env")
 
-    def conf_exists(self):
+    def conf_exists(self) -> None:
         """Check if a config already exists"""
         if not Path(Path.home() / ".config/surikatz/.env").exists():
             Path.mkdir(Path.home() / ".config/surikatz", parents=True, exist_ok=True)
@@ -72,15 +72,20 @@ class ConfManager:
         """
         return self._get_api_key("SHODAN_API")
 
-    def get_wappalyzer_key(self):
-        """Get Wappalyser API key
+    def get_wappalyzer_key(self) -> str:
+        """Get Wappalyzer API key
         
         Returns: 
-            WAPPALYSER_API: API key for Wappalyser
+            WAPPALYZER_API: API key for Wappalyzer
         """
         return self._get_api_key("WAPPALYZER_API")
 
-    def get_wpscan_key(self):
+    def get_wpscan_key(self) -> str:
+        """Get WPScan API key
+        
+        Returns: 
+            WPSCAN_API: API key for WPScan
+        """
         return self._get_api_key("WPSCAN_API")
 
 
@@ -134,7 +139,7 @@ class Checker:
             target: IP address or domain name
 
         Returns: 
-            domain: retrun domain name
+            domain: return domain name
         """
 
         if Checker.check_ip_address(urlparse(target).path):
@@ -151,7 +156,7 @@ class Checker:
             return None
 
     @staticmethod
-    def check_ip_public():
+    def check_ip_public() -> None:
         """
             A function that will check and return our public IP address through the Ipify's
         """
@@ -160,7 +165,7 @@ class Checker:
         console.print(f'My public IP address is: {ip["ip"]}', style="bold red",)
 
     @staticmethod
-    def check_time():
+    def check_time() -> None:
         """
             A function that will check and return the date and the time when we run our program
         """
@@ -169,12 +174,12 @@ class Checker:
         console.print(f'Date: {datenow}', style="bold red",)
    
     @staticmethod
-    def check_kali():
+    def check_kali() -> None:
         """
             A function that will check if the OS used is a Kali Linux distribution
 
-            Returns:
-                Raise an exception if we do not have a Kali Linux Distribution
+            Raises:
+                OSError: an exception if you do not have a Kali Linux Distribution
         """
         f = open("/etc/os-release", "r")
         OS="ID=kali"
@@ -213,7 +218,7 @@ class APIClient:
     """
         A class that will be used for gathering information from any API.
 
-        Args: 
+        Attributes: 
             basic_url: URL on which we want to make an API request
             key: API key if needed
             proxies: proxies address

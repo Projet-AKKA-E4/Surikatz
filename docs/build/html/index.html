@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to Surikatz’s documentation! &#8212; Surikatz 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="welcome-to-surikatz-s-documentation">
+<h1>Welcome to Surikatz’s documentation!<a class="headerlink" href="#welcome-to-surikatz-s-documentation" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="module-surikatz.__main__">
+<span id="module-main"></span><h1>Module main<a class="headerlink" href="#module-surikatz.__main__" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.__main__.ScanMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.__main__.</span></span><span class="sig-name descname"><span class="pre">ScanMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.__main__.ScanMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="surikatz.__main__.launch">
+<span class="sig-prename descclassname"><span class="pre">surikatz.__main__.</span></span><span class="sig-name descname"><span class="pre">launch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.__main__.launch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch of the Surikatz program</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>target: IP address or domain name of the target
+level: program launch level (passive, discret, agressive)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="surikatz.__main__.motd">
+<span class="sig-prename descclassname"><span class="pre">surikatz.__main__.</span></span><span class="sig-name descname"><span class="pre">motd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.__main__.motd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display of the Surikatz launch</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>version: version number of the Surikatz program</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-osint">
+<h1>Module osint<a class="headerlink" href="#module-osint" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-surikatz.osint"></span><p>Module for using OSINT tools and databases to perform passives scans</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.IHaveBeenPawn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">IHaveBeenPawn</span></span><a class="headerlink" href="#surikatz.osint.IHaveBeenPawn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of I Have Been Pawn API</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.OWASPfavicon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">OWASPfavicon</span></span><a class="headerlink" href="#surikatz.osint.OWASPfavicon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the identification of website information with favicon</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.PwnDB">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">PwnDB</span></span><a class="headerlink" href="#surikatz.osint.PwnDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of PawnDB database</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.Rapid7">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">Rapid7</span></span><a class="headerlink" href="#surikatz.osint.Rapid7" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Rapid7 API/database</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.SearchSploit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">SearchSploit</span></span><a class="headerlink" href="#surikatz.osint.SearchSploit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Searchsploit tool and Exploit-DB database and the parsing of its output</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.ShodanUtils">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">ShodanUtils</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.osint.ShodanUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Shodan API</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>self: Shodan object.
+key: API key for Shodan.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.osint.ShodanUtils.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.osint.ShodanUtils.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect and generate data from databases</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>target: Device’s IP to target</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dictionnary with all revelant information</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.TheHarvester">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">TheHarvester</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.osint.TheHarvester" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of The Harvester tool and the parsing of its output</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>self: TheHarvester object.
+domain: domain name. For example : blabla.fr</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.osint.TheHarvester.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.osint.TheHarvester.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns data found by TheHarvester</p>
+<dl>
+<dt>Args:</dt><dd><p>self: TheHarvester object.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dict of list. For example :</p>
+<p>{“emails”: [<a class="reference external" href="mailto:admissions&#37;&#52;&#48;blabla&#46;fr">admissions<span>&#64;</span>blabla<span>&#46;</span>fr</a>, <a class="reference external" href="mailto:admin&#37;&#52;&#48;blabla&#46;fr">admin<span>&#64;</span>blabla<span>&#46;</span>fr</a>, <a class="reference external" href="mailto:jean&#46;dupond&#37;&#52;&#48;blabla&#46;fr">jean<span>&#46;</span>dupond<span>&#64;</span>blabla<span>&#46;</span>fr</a>],
+“ips”: [6.23.128.1, 6.23.128.2, 134.1.1.2, 134.1.1.6, 10.10.1.2, 128.2.2.1],
+“FQDN”: [vpn.blabla.fr, test200.blabla.fr, www.blabla.fr]}</p>
+</dd>
+<dt>Raises:</dt><dd><p>AppNotInstalled: Please install theHarvester on your device or use a Kali Linux.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.Wappalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">Wappalyser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.osint.Wappalyser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Wappalyser and the parsing of its output</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>self: Wappalyser object
+key: API key for Wappalyser</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.osint.Wappalyser.lookup">
+<span class="sig-name descname"><span class="pre">lookup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.osint.Wappalyser.lookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for finding out the technology stack of any website, such as the CMS or ecommerce platform.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>target: Device’s FQDN to target</p>
+</dd>
+<dt>Returns:</dt><dd><p>data: Dict of technology stack of the target</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.osint.Whois">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.osint.</span></span><span class="sig-name descname"><span class="pre">Whois</span></span><a class="headerlink" href="#surikatz.osint.Whois" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Whois service provide by registars</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.osint.Whois.whoIs">
+<span class="sig-name descname"><span class="pre">whoIs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.osint.Whois.whoIs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whois function get information about an Ip address or a domain name</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>target: The IP address or the domain name</p>
+</dd>
+<dt>Return:</dt><dd><p>A dictionnary of Whois information</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-surikatz.scan">
+<span id="module-scan"></span><h1>Module scan<a class="headerlink" href="#module-surikatz.scan" title="Permalink to this headline">¶</a></h1>
+<p>Module for performing several scans</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.scan.HTTrak">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.scan.</span></span><span class="sig-name descname"><span class="pre">HTTrak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.scan.HTTrak" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of HTTrack and the parsing of its output</p>
+<dl class="simple">
+<dt>Attributes: </dt><dd><p>target: IP address or doamin name of the target
+path: path where save result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.scan.Nikto">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.scan.</span></span><span class="sig-name descname"><span class="pre">Nikto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.scan.Nikto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Nikto and the parsing of its output</p>
+<dl class="simple">
+<dt>Attributes: </dt><dd><p>target: domain name or IP address of the target</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.scan.Nmap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.scan.</span></span><span class="sig-name descname"><span class="pre">Nmap</span></span><a class="headerlink" href="#surikatz.scan.Nmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of nmap and the parsing of its output</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.scan.Nmap.start_nmap">
+<span class="sig-name descname"><span class="pre">start_nmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.scan.Nmap.start_nmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch the nmap command according to what has been put in parameter</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>target: domain nam or IP address of the target
+args: parameter(s) we want to put in the nmap command
+timeout: timeout parameter if we want use it for the nmap command</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.scan.OpenVAS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.scan.</span></span><span class="sig-name descname"><span class="pre">OpenVAS</span></span><a class="headerlink" href="#surikatz.scan.OpenVAS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of OpenVAS and the parsing of its output</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.scan.Wafwoof">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.scan.</span></span><span class="sig-name descname"><span class="pre">Wafwoof</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.scan.Wafwoof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of WafW00f and the parsing of its output</p>
+<dl class="simple">
+<dt>Attributes: </dt><dd><p>target: domain name or IP address of the target
+path: path in which the file will be saved</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.scan.WpScan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.scan.</span></span><span class="sig-name descname"><span class="pre">WpScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wapplayzer_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.scan.WpScan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing to get more information about Wordpress vulnerabilities</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>self: WpScan object.
+domain: A string representing the domain name to analyze. For example : blabla.fr
+key: A string representing the WpScan API Key available at <a class="reference external" href="https://wpscan.com/">https://wpscan.com/</a>
+wapplayzer_dict: A python dict representing Wappalizer result</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dict containing wpscan passive part and wpscan aggressive|discret part</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.scan.WpScan.aggressive_wp_scan">
+<span class="sig-name descname"><span class="pre">aggressive_wp_scan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.scan.WpScan.aggressive_wp_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows to use wp_scan tool which returns the Wordpress website vulnerabilities with aggressive arguments.
+Write the output (wpscan.json) and it’s cleaned version (wpscan_clean.json) in a file at /tmp/surikatz/&lt;date&gt;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.scan.WpScan.dict_concatenate">
+<span class="sig-name descname"><span class="pre">dict_concatenate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.scan.WpScan.dict_concatenate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wich concatenate passive and aggressive/discret dict</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>final_dict: Final dict containing all dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.scan.WpScan.discret_wp_scan">
+<span class="sig-name descname"><span class="pre">discret_wp_scan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.scan.WpScan.discret_wp_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows to use wp_scan tool which returns the Wordpress website vulnerabilities with discret arguments.
+Write the output (wpscan.json) and it’s cleaned version (wpscan_clean.json) in a file at /tmp/surikatz/&lt;date&gt;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.scan.WpScan.passive_wp_scan">
+<span class="sig-name descname"><span class="pre">passive_wp_scan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.scan.WpScan.passive_wp_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Passive WpScan analyze wich call WpScan API for every Wordpress plugins and themes contained in wappalyzer dict</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>wappalyzer_vuln: a dict containing WpScan API call from wappalyzer containing plugins and theme</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-enumeration">
+<h1>Module enumeration<a class="headerlink" href="#module-enumeration" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-surikatz.enumeration"></span><p>Module for perform some kind of enumeration on an information system</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.enumeration.DirSearch">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.enumeration.</span></span><span class="sig-name descname"><span class="pre">DirSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.enumeration.DirSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of DirBuster for Website enumeration and the parsing of its output</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>self: DirSearch object.
+ip: ip adress. For example : 10.10.0.1</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.enumeration.DirSearch.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#surikatz.enumeration.DirSearch.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns data found by DirSearch</p>
+<dl>
+<dt>Args:</dt><dd><p>self: DirSearch object.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A list of urls. For example :</p>
+<p>[’<a class="reference external" href="http://blabla.fr:80/admin">http://blabla.fr:80/admin</a>’,
+‘<a class="reference external" href="http://blabla.fr:80/admin/passwd.txt">http://blabla.fr:80/admin/passwd.txt</a>’,
+‘<a class="reference external" href="http://blabla.fr:80/js/app.js">http://blabla.fr:80/js/app.js</a>’,
+‘<a class="reference external" href="http://blabla.fr:80/index.html">http://blabla.fr:80/index.html</a>’]</p>
+</dd>
+<dt>Raises:</dt><dd><p>AppNotInstalled: Please install DirSearch on your device.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.enumeration.Kerbrut">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.enumeration.</span></span><span class="sig-name descname"><span class="pre">Kerbrut</span></span><a class="headerlink" href="#surikatz.enumeration.Kerbrut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of Kerbrut for Kerberos enumeration and the parsing of its output</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.enumeration.LDAP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.enumeration.</span></span><span class="sig-name descname"><span class="pre">LDAP</span></span><a class="headerlink" href="#surikatz.enumeration.LDAP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the enumeration of LDAP directory</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.enumeration.SMBMap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.enumeration.</span></span><span class="sig-name descname"><span class="pre">SMBMap</span></span><a class="headerlink" href="#surikatz.enumeration.SMBMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class allowing the manipulation of SMBMap for SMB enumeration and the parsing of its output</p>
+</dd></dl>
+
+</section>
+<section id="module-utils">
+<h1>Module utils<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-surikatz.utils"></span><dl class="py class">
+<dt class="sig sig-object py" id="surikatz.utils.APIClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.utils.</span></span><span class="sig-name descname"><span class="pre">APIClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.utils.APIClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that will be used for gathering information from any API.</p>
+<dl class="simple">
+<dt>Attributes: </dt><dd><p>basic_url: URL on which we want to make an API request
+key: API key if needed
+proxies: proxies address</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.APIClient.make_url_params">
+<span class="sig-name descname"><span class="pre">make_url_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#surikatz.utils.APIClient.make_url_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that create a string that will return an URL link for accesssing any API</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>result: a dictionnary that will contain the parameters that we must add to the URL in order to access the ressources</p>
+</dd>
+<dt>Returns:</dt><dd><p>A string character that will represent an URL link for accesssing the ressources of an API</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.APIClient.request">
+<span class="sig-name descname"><span class="pre">request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.utils.APIClient.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>General-purpose function to create web requests to any API.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>target: The endpoint for accessing the ressources we aim for.
+params: dictionary of parameters for the function</p>
+</dd>
+<dt>Returns</dt><dd><p>A dictionary containing the function’s results.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.utils.Checker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.utils.</span></span><span class="sig-name descname"><span class="pre">Checker</span></span><a class="headerlink" href="#surikatz.utils.Checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that is mainly used for checking and verification parts that will be useful for the smooth running of the operation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.check_domain">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.check_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function allowing to check if a domain name have a correct form</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>domain: The domain name to check</p>
+</dd>
+<dt>Returns:</dt><dd><p>A boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.check_ip_address">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_ip_address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.check_ip_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function allowing to check if an Ip have a correct form</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>Ip: The IP address to check</p>
+</dd>
+<dt>Returns:</dt><dd><p>A boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.check_ip_public">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_ip_public</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.check_ip_public" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that will check and return our public IP address through the Ipify’s</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.check_kali">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_kali</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.check_kali" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that will check if the OS used is a Kali Linux distribution</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>OSError: an exception if you do not have a Kali Linux Distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.check_time">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.check_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that will check and return the date and the time when we run our program</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.get_target">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.get_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get target IP address or domain name</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>target: IP address or domain name</p>
+</dd>
+<dt>Returns: </dt><dd><p>domain: return domain name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.Checker.service_exists">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">service_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#surikatz.utils.Checker.service_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if service is in data</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>name: name of service (http, ssh, …)
+data: data from the dictionary</p>
+</dd>
+<dt>Returns: </dt><dd><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.utils.ConfManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.utils.</span></span><span class="sig-name descname"><span class="pre">ConfManager</span></span><a class="headerlink" href="#surikatz.utils.ConfManager" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Class that has 3 main roles<span class="classifier"></span></dt><dd><ul class="simple">
+<li><p>check if a config already exists, otherwise it will generate it</p></li>
+<li><p>check if the surikatz folder in /tmp exists, otherwise it will create it</p></li>
+<li><p>read the config file, and complete it with the API keys</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.ConfManager.conf_exists">
+<span class="sig-name descname"><span class="pre">conf_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.utils.ConfManager.conf_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a config already exists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.ConfManager.get_shodan_key">
+<span class="sig-name descname"><span class="pre">get_shodan_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#surikatz.utils.ConfManager.get_shodan_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Shodan API key</p>
+<dl class="simple">
+<dt>Returns: </dt><dd><p>SHODAN_API: API key for Shodan</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.ConfManager.get_wappalyzer_key">
+<span class="sig-name descname"><span class="pre">get_wappalyzer_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#surikatz.utils.ConfManager.get_wappalyzer_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Wappalyzer API key</p>
+<dl class="simple">
+<dt>Returns: </dt><dd><p>WAPPALYZER_API: API key for Wappalyzer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.utils.ConfManager.get_wpscan_key">
+<span class="sig-name descname"><span class="pre">get_wpscan_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#surikatz.utils.ConfManager.get_wpscan_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get WPScan API key</p>
+<dl class="simple">
+<dt>Returns: </dt><dd><p>WPSCAN_API: API key for WPScan</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-result">
+<h1>Module result<a class="headerlink" href="#module-result" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-surikatz.result"></span><p>Module for manipulate the final JSON output obtained by the previous scans to extract remarkable information</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.result.Analyze">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.result.</span></span><span class="sig-name descname"><span class="pre">Analyze</span></span><a class="headerlink" href="#surikatz.result.Analyze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for analysing the JSON, compare and eliminate obsolete data</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.analyse_nmap">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyse_nmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.analyse_nmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse nmap result in order to extract</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>result: raw result of nmap scan</p>
+</dd>
+<dt>Returns:</dt><dd><p>Return a dictionnary containing for each host port its state, name of the product, version, cpe and protocol</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.clean_dict">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clean_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.clean_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean dict data</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>global_dict: All concatenated data in python dict form</p>
+</dd>
+<dt>Returns: </dt><dd><p>global_dict: Cleaned dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.get_clean_data_dirsearch">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_clean_data_dirsearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parsed_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.get_clean_data_dirsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get clean data for DirSearch and Display them.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>parsed_data: DirSearch parsed data.</p>
+</dd>
+</dl>
+<p>Return a list of 10 first element of dirsearch data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.get_clean_data_theHarvester">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_clean_data_theHarvester</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theharvester_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.get_clean_data_theHarvester" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get clean data for TheHarvester and Display them.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>parsed_data: TheHarvester parsed data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A tuple containing a dict and a list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.get_cvss">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_cvss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cve</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.get_cvss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves information of a CVE</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cve: CVE ID</p>
+</dd>
+<dt>Returns:</dt><dd><p>Return a dictionnary with for one CVE, its ID, its CVSS score and its type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.save_to_csv">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_to_save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.save_to_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform dict data to a csv file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>dict_to_save: All concatenated data in python dict form</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Analyze.save_to_json">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_to_save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.result.Analyze.save_to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform dict data to a json file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>dict_to_save: All concatenated data in python dict form</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="surikatz.result.Display">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.result.</span></span><span class="sig-name descname"><span class="pre">Display</span></span><a class="headerlink" href="#surikatz.result.Display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for determining revelant information for pentest</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Display.display_CVSS">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_CVSS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cve</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#surikatz.result.Display.display_CVSS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a CVE ID, CVSS score and type.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cve: Information of a CVE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Display.display_Dirsearch_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_Dirsearch_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirsearch_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.result.Display.display_Dirsearch_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display DirSearch cleaned data.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>dirsearch_data: DirSearch cleaned data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Display.display_json">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.result.Display.display_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display json file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>path: path of the json file to be diplayed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Display.display_theharvester_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_theharvester_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theharvester_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.result.Display.display_theharvester_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display DirSearch cleaned data.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>theharvester_data: TheHarvester cleaned data.
+lens : Length of of each list [len(ips), len(emails), len(fqdns)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surikatz.result.Display.display_txt">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">display_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surikatz.result.Display.display_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display txt file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>path: path of the text file to be diplayed</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-error">
+<h1>Module error<a class="headerlink" href="#module-error" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-surikatz.error"></span><p>Module with custom Exception classes</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="surikatz.error.APIError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.error.</span></span><span class="sig-name descname"><span class="pre">APIError</span></span><a class="headerlink" href="#surikatz.error.APIError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception generated when an API is unreachable</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="surikatz.error.AppNotInstalled">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.error.</span></span><span class="sig-name descname"><span class="pre">AppNotInstalled</span></span><a class="headerlink" href="#surikatz.error.AppNotInstalled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception generated when an app isn’t installed on the user device</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="surikatz.error.FQDNError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.error.</span></span><span class="sig-name descname"><span class="pre">FQDNError</span></span><a class="headerlink" href="#surikatz.error.FQDNError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception generated when an FQDN address is misformed</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="surikatz.error.IPError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.error.</span></span><span class="sig-name descname"><span class="pre">IPError</span></span><a class="headerlink" href="#surikatz.error.IPError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception generated when an IP address is misformed</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="surikatz.error.ReadError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">surikatz.error.</span></span><span class="sig-name descname"><span class="pre">ReadError</span></span><a class="headerlink" href="#surikatz.error.ReadError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception generated when an API is unreachable</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Surikatz</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Abdelmalik KERBADOU, Théo PERESSE-GOURBIL, Manon HERMANN, Rayane BOUDJEMAA, Nathan SAUCET, Laurent DELATTE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -43,7 +43,7 @@ class Analyze:
         return global_dict
 
     @staticmethod
-    def save_to_csv(dict_to_save: dict):
+    def save_to_csv(dict_to_save: dict) -> None:
         """Transform dict data to a csv file
 
         Args:
@@ -71,7 +71,7 @@ class Analyze:
         console.print("Writing all data in final_data.csv", style="bold #008000")
 
     @staticmethod
-    def save_to_json(dict_to_save: dict):
+    def save_to_json(dict_to_save: dict) -> None:
         """Transform dict data to a json file
 
         Args:
@@ -104,12 +104,14 @@ class Analyze:
         return result
 
     @staticmethod
-    def get_clean_data_theHarvester(theharvester_data: dict):
+    def get_clean_data_theHarvester(theharvester_data: dict) -> tuple:
         """Get clean data for TheHarvester and Display them.
 
         Args:
             parsed_data: TheHarvester parsed data.
 
+        Returns:
+            A tuple containing a dict and a list of int
         """
         interresting = [
             "test",
@@ -132,7 +134,8 @@ class Analyze:
             "pop3",
             "file",
             "secret",
-            "prod"
+            "prod",
+            "db"
         ]
         # Gather lists length informations 
         if(not('ips' in theharvester_data)):
@@ -160,14 +163,16 @@ class Analyze:
         # Get 10 first IP address
         theharvester_data["ips"] = theharvester_data["ips"][:10]
         # Display all informations
-        Display.display_theharvester_data(theharvester_data, lens)
+        return theharvester_data, lens
 
     @staticmethod
-    def get_clean_data_dirsearch(parsed_data: list):
+    def get_clean_data_dirsearch(parsed_data: list) -> list:
         """Get clean data for DirSearch and Display them.
 
         Args:
             parsed_data: DirSearch parsed data.
+
+        Return a list of 10 first element of dirsearch data
         """
         interresting = [
             "test",
@@ -194,11 +199,13 @@ class Analyze:
             if tmp_url:
                 clean_data.append(tmp_url)
         # Display only the first 10 elements
-        Display.display_Dirsearch_data(clean_data[:10])
+        return clean_data[:10]
+        
 
     @staticmethod
     def analyse_nmap(result: dict) -> dict:
         """Parse nmap result in order to extract 
+        
             Args:
                 result: raw result of nmap scan 
 
@@ -319,7 +326,8 @@ class Display:
             dirsearch_data: DirSearch cleaned data.
 
         """
-        console.print("Interesting URLs : ", style="bold red")
-        for url in dirsearch_data:
-            console.print(" - "+str(url), style="red")
+        if len(dirsearch_data) > 0:
+            console.print("Interesting URLs : ", style="bold red")
+            for url in dirsearch_data:
+                console.print(" - "+str(url), style="red")
         

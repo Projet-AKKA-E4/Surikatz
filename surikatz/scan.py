@@ -30,7 +30,7 @@ class Nmap:
         self.scanner = nmap.PortScanner()
         self.scan_result = {}
 
-    def start_nmap(self, target: str, args: str, timeout: int):
+    def start_nmap(self, target: str, args: str, timeout: int) -> None:
         """Launch the nmap command according to what has been put in parameter
         
         Args: 
@@ -44,7 +44,7 @@ class HTTrak:
     """
     Class allowing the manipulation of HTTrack and the parsing of its output
 
-    Args: 
+    Attributes: 
         target: IP address or doamin name of the target
         path: path where save result
     """
@@ -72,7 +72,7 @@ class WpScan():
     """
         Class allowing to get more information about Wordpress vulnerabilities
 
-        Args:
+        Attributes:
             self: WpScan object.
             domain: A string representing the domain name to analyze. For example : blabla.fr
             key: A string representing the WpScan API Key available at https://wpscan.com/
@@ -121,7 +121,7 @@ class WpScan():
                     wappalyzer_vuln.update({"themes": call})
         return wappalyzer_vuln
 
-    def discret_wp_scan(self):
+    def discret_wp_scan(self) -> None:
         """
         Allows to use wp_scan tool which returns the Wordpress website vulnerabilities with discret arguments.
         Write the output (wpscan.json) and it's cleaned version (wpscan_clean.json) in a file at /tmp/surikatz/<date>
@@ -143,7 +143,7 @@ class WpScan():
             subprocess.run(["python3", "-m", "wpscan_out_parse", SURIKATZ_PATH / "wpscan.json", "--format", "json"],
                            stdout=fp)
 
-    def aggressive_wp_scan(self):
+    def aggressive_wp_scan(self) -> None:
         """
         Allows to use wp_scan tool which returns the Wordpress website vulnerabilities with aggressive arguments.
         Write the output (wpscan.json) and it's cleaned version (wpscan_clean.json) in a file at /tmp/surikatz/<date>
@@ -197,7 +197,7 @@ class Nikto:
     """
     Class allowing the manipulation of Nikto and the parsing of its output
 
-    Args: 
+    Attributes: 
         target: domain name or IP address of the target   
     """
     def __init__(self, target: str, path: Path):
@@ -214,11 +214,11 @@ class Wafwoof:
     """
     Class allowing the manipulation of WafW00f and the parsing of its output
 
-    Args: 
+    Attributes: 
         target: domain name or IP address of the target
         path: path in which the file will be saved
     """
-    def __init__(self, target, path):
+    def __init__(self, target: str, path: Path):
         """Init the WafWoof object with target."""
         try:    
             self.wafwoof = subprocess.run(

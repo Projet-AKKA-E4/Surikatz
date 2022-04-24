@@ -1,4 +1,25 @@
 #!/usr/bin/env python3
+# Surikatz - A powerful tool for searching informations before pentest.
+#
+# This software is provided under GNU General Public License v3.0.
+# See the accompanying LICENSE.md file for more information.
+#
+# Description:
+#    It can be used in three different ways :
+#        * Passive     : Only search on public sources (Shodan, TheHarvester, Wappalyzer...)
+#        * Discrete    : Use Passsive technics and soft nmap scan, soft HTTrack, ...
+#        * Aggressive  : Use Passive and Discrete technics but more ... aggressive. Use nmap NSE scrips, Dirsearch, Nikto, ...
+#
+#    Usage:
+#        ./surikatz [IP|Domain] [Options]
+#
+# Authors:
+#       Abdelmalik KERBADOU
+#       Théo PERESSE-GOURBIL
+#       Manon HERMANN
+#       Rayane BOUDJEMAA
+#       Nathan SAUCET
+#       Laurent DELATTE
 
 from distutils.log import error
 from surikatz import SURIKATZ_PATH, utils, osint, scan, result, enumeration
@@ -12,29 +33,6 @@ import shutil
 from pathlib import Path
 
 from surikatz.error import APIError, AppNotInstalled
-
-"""
-    Surikatz
-
-    A powerful tool for searching informations before pentest.
-
-    Can be used as 3 way :
-      * Passive : Only search on public sources (Shodan, TheHarvester, ...)
-      * Discrete : Use Passsive technics and soft nmap surikatz.scan, soft HTTrack...
-      * Agressive : Use Passive and Discrete technics but more... agressive.
-                   Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, enumeration for kerberos...
-
-    Usage:
-        ./surikatz [IP/FQDN] [Options]
-
-    Authors:
-        Abdelmalik KERBADOU
-        Théo PERESSE-GOURBIL
-        Manon HERMANN
-        Rayane BOUDJEMAA
-        Nathan SAUCET
-        Laurent DELATTE
-"""
 
 traceback.install(show_locals=True)
 console = console.Console()  # Console configuration for rich package allowing beautiful print
@@ -50,12 +48,12 @@ class ScanMode(Enum):
 @click.argument("target")
 @click.option(
     "-a",
-    "--agressive",
+    "--aggressive",
     "level",
     flag_value=ScanMode.AGRESSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use Passive and Discrete technics but more... agressive. Use nmap NSE scrips for firewall, WAF, IDS detection and evasion, ...",
+    help="Use Passive and Discrete technics but more ... aggressive. Use nmap NSE scrips, Dirsearch, Nikto, ...",
 )
 @click.option(
     "-d",
@@ -64,7 +62,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.DISCRET,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Use Passsive technics and soft nmap surikatz.scan, soft HTTrack...",
+    help="Use Passsive technics and soft nmap, soft HTTrack, ...",
 )
 @click.option(
     "-p",
@@ -73,7 +71,7 @@ class ScanMode(Enum):
     flag_value=ScanMode.PASSIVE,
     type=ScanMode,
     default=ScanMode.AGRESSIVE,
-    help="Only search on public sources (Shodan, TheHarvester, ...)",
+    help="Only search on public sources (Shodan, TheHarvester, Wappalyzer...)",
 )
 
 def init(target:str, level:ScanMode):
@@ -156,7 +154,9 @@ def launch(target, level):
             harvester_data = the_harvester.get_data()
             if harvester_data:
                 surikatz_dict.update({"thehaverster": harvester_data})
-                result.Analyze.get_clean_data_theHarvester(harvester_data.copy())
+                clean_data_theharvester, lens_data_theharvester = result.Analyze.get_clean_data_theHarvester(harvester_data.copy())
+                result.Display.display_theharvester_data(clean_data_theharvester, lens_data_theharvester)
+
                 console.print("\n")
             else:
                 console.print("No informations on domain\n")
@@ -197,7 +197,6 @@ def launch(target, level):
         nm = scan.Nmap()
        
         try:
-
             leures = f"{surikatz_dict['theharvester']['ips'][0]},{surikatz_dict['theharvester']['ips'][1]}"
         except:
             leures = surikatz_dict["whois"]['ip_address']
@@ -320,42 +319,44 @@ def launch(target, level):
         #############################################################################
         ############################# WPSCAN #########################################
         #############################################################################
-        console.rule("[bold]Wpscan information")
-        console.print("")
 
-        wpscan_data = {}
-        flag = False
-        count = 0
+        if "wappalizer" in surikatz_dict:
+            console.rule("[bold]Wpscan information")
+            console.print("")
 
-        for item in surikatz_dict["wappalizer"]:  # Check if there is a Wordpress CMS to analyse
-            for techno in item["technologies"] :
-                if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze for "+ item["url"],
-                                                                                     style="bold #FFA500")
-                wpscan_call = scan.WpScan(whois_data["domain_name"], conf.get_wpscan_key(), item)
+            wpscan_data = {}
+            flag = False
+            count = 0
 
-                if conf.get_wpscan_key() and whois_data["domain_name"]:
-                    if level.value == ScanMode.PASSIVE.value:
-                        wpscan_data = wpscan_call.passive_wp_scan()
-                        result.Display.display_dict(wpscan_data)
-                        flag = True
-                        count+=1
-                        break
-                    if level.value == ScanMode.DISCRET.value:
-                        wpscan_call.discret_wp_scan()
-                        wpscan_data = wpscan_call.dict_concatenate()
-                        flag = True
-                        count+=1
-                        break
-                    if level.value == ScanMode.AGRESSIVE.value:
-                        wpscan_call.aggressive_wp_scan()
-                        wpscan_data = wpscan_call.dict_concatenate()
-                        flag = True
-                        count+=1
-                        break
-            surikatz_dict.update({"wpscan" : wpscan_data})
-            if flag : break
-        if count == 0:
-            console.print("No wordpress detected")
+            for item in surikatz_dict["wappalizer"]:  # Check if there is a Wordpress CMS to analyse
+                for techno in item["technologies"] :
+                    if not techno["slug"] == "wordpress": console.print("There is no Worpress to analyze for "+ item["url"],
+                                                                                        style="bold #FFA500")
+                    wpscan_call = scan.WpScan(whois_data["domain_name"], conf.get_wpscan_key(), item)
+
+                    if conf.get_wpscan_key() and whois_data["domain_name"]:
+                        if level.value == ScanMode.PASSIVE.value:
+                            wpscan_data = wpscan_call.passive_wp_scan()
+                            result.Display.display_dict(wpscan_data)
+                            flag = True
+                            count+=1
+                            break
+                        if level.value == ScanMode.DISCRET.value:
+                            wpscan_call.discret_wp_scan()
+                            wpscan_data = wpscan_call.dict_concatenate()
+                            flag = True
+                            count+=1
+                            break
+                        if level.value == ScanMode.AGRESSIVE.value:
+                            wpscan_call.aggressive_wp_scan()
+                            wpscan_data = wpscan_call.dict_concatenate()
+                            flag = True
+                            count+=1
+                            break
+                surikatz_dict.update({"wpscan" : wpscan_data})
+                if flag : break
+            if count == 0:
+                console.print("No wordpress or plugins detected")
 
         #############################################################################
         ############################## WafW00f ######################################
@@ -406,7 +407,8 @@ def launch(target, level):
                         continue
 
                     surikatz_dict["dirsearch"] += dirsearch_data
-                    result.Analyze.get_clean_data_dirsearch(dirsearch_data)
+                    dirsearch_clean_data = result.Analyze.get_clean_data_dirsearch(dirsearch_data)
+                    result.Display.display_Dirsearch_data(dirsearch_clean_data)
                 except AppNotInstalled:
                     break
 
@@ -429,7 +431,7 @@ def launch(target, level):
                     console.print("Folder moved in current pwd")
                     console.print(f"nikto finished. Output folder : {Path().cwd() / 'nikto' / base_path}", end="\n\n")
                 except OSError:
-                    console.print(f"Error while moving folding. Result is still available at {SURIKATZ_PATH / base_path}", end="\n\n")
+                    console.print(f"Error while moving folder. Result is still available at {SURIKATZ_PATH / base_path}", end="\n\n")
                 
 
     #############################################################################

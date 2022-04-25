@@ -6,7 +6,7 @@ Surikatz is a powerful tool for searching informations before pentest. It can be
 
 # How to install ?
 You can download the release at : https://github.com/Projet-AKKA-E4/Surikatz/releases/ and do :
-`sudo pip3 install ./file.weel`
+`sudo pip3 install file.whl`
 
 Then, pip will take care of installing all the dependencies. An executable will be created in the current folder. 
 
@@ -26,7 +26,7 @@ Here is a list of software you need to install in order to make surikatz work :
 # How to use ?
 You have 4 options :
 ```
-$ ./surikatz --help
+$ surikatz --help
 
 Usage: surikatz [OPTIONS] TARGET
 

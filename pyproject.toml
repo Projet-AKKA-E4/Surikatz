@@ -1,15 +1,20 @@
 [tool.poetry]
 name = "Surikatz"
-version = "1.0"
+version = "1.1"
 description = "A powerful tool for searching informations during pentest"
-authors = ["alphae-nix <18laurent@gmail.com>", 
-           "Anemys <abdelmalik_kerbadou@yahoo.fr>",
-           "NathanSaucet <pro.nathan.saucet@gmail.com>",
-           "Mogulzz <raayanb94@gmail.com>",
-           "blackjack-nix <theo.peresse-gourbil@edu.esiee.fr>",
-           "CappiLucky <manon.hermann@edu.esiee.fr>"           ]
+authors = ["alphae-nix <18laurent@gmail.com>","Anemys <abdelmalik_kerbadou@yahoo.fr>","NathanSaucet <pro.nathan.saucet@gmail.com>","Mogulzz <raayanb94@gmail.com>","blackjack-nix <theo.peresse-gourbil@edu.esiee.fr>","CappiLucky <manon.hermann@edu.esiee.fr>",]
+license = "GPL-3.0-only"
+
 readme = "README.md"
+
 include = ["surikatz/static/.env"]
+
+repository = "https://github.com/Projet-AKKA-E4/Surikatz"
+
+classifiers = [
+	"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+	"Programming Language :: Python :: 3"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"

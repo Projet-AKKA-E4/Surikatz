@@ -43,7 +43,7 @@ Options:
 
 The target can either be a domain name or an IP address.
 
-Notice that discret and aggresive mode may take a while to finish depending one the size of the target.
+Notice that discret and aggresive mode may take a while to finish depending on the size of the target.
 Also notice that you should not launch Surikatz on a target neither in discret nor in aggressive without the owner's permission on the target.  
                                                                                                                         
 ## Collaborators

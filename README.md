@@ -48,7 +48,7 @@ Also notice that you should not launch Surikatz on a target neither in discret n
                                                                                                                         
 ## Collaborators
 Surikatz has been made by M1 students of ESIEE Paris in collaboration with AKKA Technologies.
-  - **Nathan SAUCET** _alias_ [@NathanSaucet](https://github.com/NathanSaucet)
+  - **Nathan SAUCET** _alias_ [@NathanSaucet](https://github.com/wwwGeneral)
   - **Théo PERESSE-GOURBIL** _alias_ [@blackjack-nix](https://github.com/blackjack-nix)
   - **Laurent DELATTE** _alias_ [@alphae-nix](https://github.com/alphae-nix)
   - **Abdelmalik KERBADOU** _alias_ [@Anemys](https://github.com/Anemys)
